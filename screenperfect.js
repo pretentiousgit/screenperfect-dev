@@ -4,7 +4,7 @@ var express = require('express'),
     wrench = require('wrench'),
     exec = require('child_process').exec,
     util = require('util'),
-    Files = {}, _hopper, fs = require('fs'),
+    Files = {}, fs = require('fs'),
     eavesdropper = 0,
     json, app = express.createServer();
 require('sugar')
@@ -82,7 +82,6 @@ var io = sio.listen(app),
 app.listen(3003, function () {
     var addr = app.address();
     console.log('   app is listening on\033[31m http://' + addr.address + ':' + addr.port +'\033[0m');
-    console.log(_hopper);
     console.log('controlList '+controlList);
     console.log('clientList '+clientList);
 });
@@ -104,7 +103,6 @@ io.sockets.on('connection', function (socket) { //send various events to connect
         socket.on('control event', function (e) {
             socket.broadcast.emit('control event', e);
             console.log('control event ' + e);
-            _hopper = e;
             return false;
         });
 
@@ -124,10 +122,9 @@ io.sockets.on('connection', function (socket) { //send various events to connect
 
 		socket.on('listener', function (listener, e) {
 			eavesdropper++;
-			console.log('eavesdropper '+ eavesdropper+' connected, _hopper is '+ _hopper);
-			socket.broadcast.emit('announcement', 'eavesdropper '+ eavesdropper+' connected, _hopper is '+ _hopper);
+			console.log('eavesdropper '+ eavesdropper+' connected');
+			socket.broadcast.emit('announcement', 'eavesdropper '+ eavesdropper +' connected' );
             
-            socket.emit('control event', _hopper );
             socket.emit('video quant', clientLength );
             socket.emit('video list', clientList);
 		});
