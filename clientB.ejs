@@ -1,17 +1,32 @@
-<p id="time" style="color:#FFF">0</p><br />
-<p id="timeB"  style="color:#FFF">TimeB</p>
-<input type="text" class="timeName" style="colour:#000; background:#ccc;"></input>
+<button type="button" id='playNow'>Play</button>
+<button type="button" id='pauseNow'>Pause</button>
+
+<p id='timeDif' style="color:#FFF">Difference</p>
+
+<div class="videoHolder" style="width:100%; float:left; clear:right;">
+
+<div class="videoBox" style="width:49%; float:left; position:relative;">
+<p id="timeA"  style="color:#FFF">TimeA</p>
+<p id="frameA"  style="color:#FFF">TimeA</p>
 <video id="v0" width=250px;controls tabindex="0" autobuffer preload>
     <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
     <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 </video>
-<video id="v1" controls tabindex="0" autobuffer preload width="250px">
+</div>
+
+<div class="videoBox"style="width:49%; float:left; position:relative;">
+<p id="timeB" style="color:#FFF">TimeB</p>
+<p id="frameB"  style="color:#FFF">TimeA</p>
+<video id="v1" tabindex="0" autobuffer preload width="250px">
     <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/A/4A.webm"></source>
     <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 </video>
+</div>
+
+</div>
 
 <script type="text/javascript">
-var time,
+var gap,
 	vid = $('#v0')[0],
 	vid1 = $('#v1')[0];
 
@@ -25,28 +40,33 @@ var time,
 // 	$('#v0')[0].load();
 // });
 
-// socket.on('time', function(e) {
-// 	$('#time').text(e);
-// 	$('#v0')[0].currentTime=e;
-// });
 
-// socket.on('playNow', function(e){
-// 	var vid = $('v0')[0];
-// 	vid.play();
-// })
+$('#playNow').on('click', function(){ //shows video frame while playing	
+	vid.play();	
 
-
-$('#v0').on('play', function(){ //shows video frame while playing
-	vid1.play();	
     setInterval(function() {
-        $('#timeB').html(vid.currentTime);
+        $('#timeA').html(vid.currentTime);
+        $('#timeB').html(vid1.currentTime);
+        $('#frameA').html(vid.playbackRate);
+        $('#frameB').html(vid1.playbackRate);
 
-        var updater = vid.currentTime - vid1.currentTime;
-		console.log(updater);
-		$('#time').text(updater);
+        gap = vid.currentTime - vid1.currentTime;
+		console.log(gap);
+		$('#timeDif').text(gap);
     	}, 100);
     vid1.currentTime=vid.currentTime;
+    ;
 
+});
+
+$('#pauseNow').on('click', function(){
+	vid.pause();
+	vid1.pause();
+	});
+
+$('#v0').on('pause', function (){
+	vid1.pause();
+	vid.pause();
 });
 
 
