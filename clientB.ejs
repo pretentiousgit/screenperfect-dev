@@ -1,6 +1,7 @@
 <p id="time" style="color:#FFF">0</p><br />
 <p id="timeB"  style="color:#FFF">TimeB</p>
-<video id="v0" controls tabindex="0" autobuffer preload>
+<input type="text" class="timeName" style="colour:#000; background:#ccc;"></input>
+<video id="v0" width=250px;controls tabindex="0" autobuffer preload>
     <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
     <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 </video>
@@ -31,11 +32,10 @@ socket.on('playNow', function(e){
 	vid.play();
 })
 
-$('#v0').on('play', function(){ //prevent playthrough if there is no frame selected
-    vid.currentTime = time;
+
+$('#v0').on('play', function(){ //shows video frame while playing
     setInterval(function() {
         $('#timeB').html(vid.currentTime);
-        vid.currentTime = time;
     	}, 100);
 	});
 
