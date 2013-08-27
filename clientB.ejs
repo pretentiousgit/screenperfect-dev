@@ -5,41 +5,49 @@
     <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
     <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 </video>
+<video id="v1" controls tabindex="0" autobuffer preload width="250px">
+    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/A/4A.webm"></source>
+    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
+</video>
 
 <script type="text/javascript">
 var time,
-	vid = $('#v0')[0];
+	vid = $('#v0')[0],
+	vid1 = $('#v1')[0];
 
-socket.on('connect', function () {
-	socket.emit('hello', function (error) {
-		if (!error) return;
-		  socket.disconnect();
-		  $('#connection').trigger('disconnected');
-		  message('There is already a listener connected');
-		});
-	$('#v0')[0].load();
-});
+// socket.on('connect', function () {
+// 	socket.emit('hello', function (error) {
+// 		if (!error) return;
+// 		  socket.disconnect();
+// 		  $('#connection').trigger('disconnected');
+// 		  message('There is already a listener connected');
+// 		});
+// 	$('#v0')[0].load();
+// });
 
-socket.on('time', function(e) {
-	$('#time').text(e);
-	$('#v0')[0].currentTime=e;
-});
+// socket.on('time', function(e) {
+// 	$('#time').text(e);
+// 	$('#v0')[0].currentTime=e;
+// });
 
-socket.on('playNow', function(e){
-	var vid = $('v0')[0];
-	vid.play();
-})
+// socket.on('playNow', function(e){
+// 	var vid = $('v0')[0];
+// 	vid.play();
+// })
 
 
 $('#v0').on('play', function(){ //shows video frame while playing
+	vid1.play();
     setInterval(function() {
         $('#timeB').html(vid.currentTime);
     	}, 100);
+    vid1.currentTime=vid.currentTime;
 	});
 
-$('#v0').on('timeupdate', function(e) {
-		console.log(vid.currentTime - parseInt($('#time').html()));
-	});
+
+// $('#v0').on('timeupdate', function(e) {
+// 		console.log(vid.currentTime - parseInt($('#time').html()));
+// 	});
 
 
 </script>
