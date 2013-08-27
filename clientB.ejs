@@ -37,17 +37,17 @@ var time,
 
 
 $('#v0').on('play', function(){ //shows video frame while playing
-	vid1.play();
+	vid1.play();	
     setInterval(function() {
         $('#timeB').html(vid.currentTime);
+
+        var updater = vid.currentTime - vid1.currentTime;
+		console.log(updater);
+		$('#time').text(updater);
     	}, 100);
     vid1.currentTime=vid.currentTime;
-	});
 
-
-// $('#v0').on('timeupdate', function(e) {
-// 		console.log(vid.currentTime - parseInt($('#time').html()));
-// 	});
+});
 
 
 </script>
