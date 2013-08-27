@@ -11,7 +11,7 @@ var time,
 	vid = $('#v0')[0];
 
 socket.on('connect', function () {
-	socket.emit('role', 'hello', function (error) {
+	socket.emit('hello', function (error) {
 		if (!error) return;
 		  socket.disconnect();
 		  $('#connection').trigger('disconnected');
@@ -22,13 +22,11 @@ socket.on('connect', function () {
 
 socket.on('time', function(e) {
 	$('#time').text(e);
-	time = e;
-	// vid.currentTime= e;
+	$('#v0')[0].currentTime=e;
 });
 
 socket.on('playNow', function(e){
 	var vid = $('v0')[0];
-	vid.currentTime = time;
 	vid.play();
 })
 
@@ -39,25 +37,9 @@ $('#v0').on('play', function(){ //shows video frame while playing
     	}, 100);
 	});
 
-$('#v0').on('timeupdate', function() {
+$('#v0').on('timeupdate', function(e) {
 		console.log(vid.currentTime - parseInt($('#time').html()));
 	});
 
-// $('#v0').on('canplay', function(){
-// 		console.log('I can play');
-// 		time = $('#time').html();
-// 		console.log( time );
-// 		vid.currentTime= time; // this is undefined in the current function. it SHOUlD be the contents of #time
-// 		$('#timeB').html(vid.currentTime);
-// });
 
-
-// $('#v0').on('canplaythrough', function(){
-// 	if (time > 0){
-// 		$('#time').append(' I can play through');
-// 		vid.currentTime=time;
-// 		vid.play();
-// 		}else {
-// 		}
-// 	});
 </script>
