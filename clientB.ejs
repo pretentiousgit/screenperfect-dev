@@ -1,0 +1,63 @@
+<p id="time" style="color:#FFF">0</p><br />
+<p id="timeB"  style="color:#FFF">TimeB</p>
+<video id="v0" controls tabindex="0" autobuffer preload>
+    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
+    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
+</video>
+
+<script type="text/javascript">
+var time,
+	vid = $('#v0')[0];
+
+socket.on('connect', function () {
+	socket.emit('role', 'hello', function (error) {
+		if (!error) return;
+		  socket.disconnect();
+		  $('#connection').trigger('disconnected');
+		  message('There is already a listener connected');
+		});
+	$('#v0')[0].load();
+});
+
+socket.on('time', function(e) {
+	$('#time').text(e);
+	time = e;
+	// vid.currentTime= e;
+});
+
+socket.on('playNow', function(e){
+	var vid = $('v0')[0];
+	vid.currentTime = time;
+	vid.play();
+})
+
+$('#v0').on('play', function(){ //prevent playthrough if there is no frame selected
+    vid.currentTime = time;
+    setInterval(function() {
+        $('#timeB').html(vid.currentTime);
+        vid.currentTime = time;
+    	}, 100);
+	});
+
+$('#v0').on('timeupdate', function() {
+		console.log(vid.currentTime - parseInt($('#time').html()));
+	});
+
+// $('#v0').on('canplay', function(){
+// 		console.log('I can play');
+// 		time = $('#time').html();
+// 		console.log( time );
+// 		vid.currentTime= time; // this is undefined in the current function. it SHOUlD be the contents of #time
+// 		$('#timeB').html(vid.currentTime);
+// });
+
+
+// $('#v0').on('canplaythrough', function(){
+// 	if (time > 0){
+// 		$('#time').append(' I can play through');
+// 		vid.currentTime=time;
+// 		vid.play();
+// 		}else {
+// 		}
+// 	});
+</script>

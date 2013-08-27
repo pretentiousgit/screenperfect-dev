@@ -1,0 +1,255 @@
+<!-- <script src="/js/setup.js"></script> -->
+<script src="/js/chunkLoader.js"></script>
+
+<!-- main app canvas page 1 -->
+<div id='canvas'>
+	<div id="videoListBox">
+<h3>Hotspot Linking Tools</h3>
+	<div>
+		<div class="buttonPanel">		
+		<a href="#" class="button" id="save" >Save Hotspots</a>
+		<a href="#" class="button" id="clear" >Clear Hotspots</a>
+		</div>
+	</div>
+<h3>Video Uploads</h3>
+	<div>
+		<div class="buttonPanel">
+			<a href="#" class="button" id="uploadButton" >Add Video</a>
+		</div>
+		<div class="imgGrid">
+	<%  
+		id=1;
+		app.locals.videoA.each(function(video){ 
+		 %>
+		 <li id="<%= id %>" > 
+		 	<a href="#" class="linkButton"><img src="/image/A/<%= id %>A.png" /></a>
+		 </li>
+		<% 
+		id++
+		 });
+	%>
+		</div>
+	</div>
+</div>
+</div>
+
+<!-- selection dialog for linking hotspots -->
+<div title="Path Options" id="dialog">
+	<div class="imgGrid">
+		<ul id="selectable" class="hidden">
+		<%  
+			id=1;
+			app.locals.videoA.each(function(video){ 
+		 %>
+		 <li id="<%= id %>" > 
+			<a href="#" class="linkButton"><img src="/image/A/<%= id %>A.png" /></a>
+		 </li>
+		<% 
+			id++
+			 });
+		%>
+		</ul>
+	</div>
+</div>
+
+<!-- new media upload box -->
+<div title="Upload New Media" id="uploadPanel" class="hidden" >
+	<div id="uploadBox">
+			<label for="fileBox">Browse... </label>
+			<input type="file" id="FileBox">
+			<br />
+			<label for="nameBox">Name: </label><input type="text" id="nameBox">
+	</div>
+</div>
+
+
+<script></script>
+
+<script type="text/javascript" >
+$("#selectable").selectable();
+$("#videoListBox").accordion();
+
+// function drawspots takes all of function because of mousedown events.
+$(function () {
+    var x1, y1;
+    $("#canvas").mousedown(function (e) {
+        if (e.target !== this)
+            return;
+
+        $("#current").attr({
+            id: ''
+        });
+
+        var box = $('<div class="send-video"><div class="close">X</div><div class="thumb">Click here to set a video link.</div></div>');
+        $(this).append(box);
+
+        var parentOffset = $(this).parent().offset();
+        x1 = e.pageX - parentOffset.left;
+        y1 = e.pageY - parentOffset.top;
+
+        box.attr({
+            id: 'current'
+        });
+
+        box.css({
+            top: y1, //offsets
+            left: x1, //offsets
+            background: '#FFF'
+        });
+    });
+
+    $("#canvas").mousemove(function (e) {
+        var w = e.pageX - x1;
+        var h = e.pageY - y1;
+        $("#current").css({
+            width: w, //offsets
+            height: h, //offsets
+        });
+    });
+
+    $("#canvas").mouseup(function () {
+        $("#current")
+            .attr({
+                id: ''
+            });
+
+    });
+});
+
+//clear all spots
+$(document).on('click', '#clear', function () {
+    $("div.send-video").remove();
+});
+
+//save spots to server json
+$(document).on('touchstart click', '#save',function(e){
+	var current = $(".fullscreen").attr("id");
+	var links = [current];
+
+	$(".send-video").each(function (index) {
+		  var $video = $(this);
+		
+		  var obj = {
+			id: $video.attr("id"),
+			left: $video.offset().left,
+			top: $video.offset().top,
+			width: $video.width(),
+			height: $video.height(),
+			link: $video.attr("link")
+	  };
+	
+	  links.push(obj);
+
+	});
+	
+	message('emitted \'' + JSON.stringify(links) + '\'');
+	socket.emit('setup event', links);
+	
+	return false;
+});
+
+//hook hotspot to video link
+$(document).on('click', '.send-video', function (e) {
+    if (e.target !== this) return;
+    var spot = $(this);
+    var nextVid;
+    $('#dialog').dialog({
+        modal: true,
+        buttons: [{
+            text: "Save",
+            click: function () {
+                nextVid = $('.ui-selected').attr('id');
+                $(spot).attr('nextVid', nextVid)
+                $(".thumb", spot).html('<img src="/image/A/' + nextVid +'A.png" />');
+                $(this).dialog("destroy");
+                $('#selectable').addClass('hidden');
+            }
+        }, {
+            text: "Cancel",
+            click: function () {
+                $(this).dialog("destroy");
+                $('#selectable').addClass('hidden');
+            }
+        }],
+        maxHeight: 500,
+        position: {
+            my: "center top",
+            at: "center top",
+            of: "#canvas"
+        }
+    });
+    $(this).attr('id', nextVid);
+    $('#selectable').removeClass('hidden')
+    $('.ui-selectee').removeClass('ui-selected');
+});
+
+//delete individual spots
+$(document).on('click', '.close', function () {
+    $(this).parent().remove();
+});
+
+//upload new video to server
+$(document).on('click','#uploadButton', function (e) {
+	var	fileSize
+		, fileName
+		, file
+		, reader = new FileReader()
+		;
+	
+	$('#fileBox').on('change', function(e) {
+		
+		fileName= $(this).val();
+		fileSize = this.files[0].size;
+		file = this.files[0];
+		
+		$('#nameBox').val(fileName);	
+		
+	});
+	
+	
+	$('#uploadPanel').removeClass('hidden').dialog({
+		modal:true,
+		width:500,
+		 buttons: [{
+		 	text: "Cancel",
+		 	click: function(){
+				$(this).dialog("destroy");
+				$('#uploadPanel').addClass('hidden');
+				$('#fileBox').val('');
+				$('#nameBox').val('');	
+		 	}
+		 	},
+		 	{
+		 	text: "Upload",
+		 	click: function(){
+		 					
+		 	if ($('#fileBox').val() != "")
+			 	{
+
+				
+// 			 		reader.onload = function(evnt){
+// 						message('emitted \'' + JSON.stringify(evnt) + '\'');
+// 						socket.emit('Upload', { 'Name' : fileName, 'Data' : evnt.target.result });
+//       				}
+// 					
+// 					socket.emit('Start', { 'Name' : fileName, 'Size' : fileSize });
+// 					message('fileSize '+fileSize);
+// 					reader.readAsDataURL(file);
+// 					
+// 		 			$(this).dialog("destroy");
+// 				 	$('#uploadPanel').addClass('hidden');
+// 				 	$('#fileBox').val('');
+			 	}
+ 			else 
+ 				{
+ 				 $('#nameBox').val("Please choose a file.");
+				}
+				
+		 	}
+		 }]
+	});
+	 
+});
+
+
+</script>

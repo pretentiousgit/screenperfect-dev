@@ -1,0 +1,39 @@
+<script src="/js/control.js"></script>
+
+<div id="timestamp"></div>
+  <div id="controlSpots"></div>
+  <img src="/image/A/1A.gif" class="fullscreen swap" id="1" set="1"/>
+
+
+  <%
+var id=2;
+var videoList = app.locals.videoA.length-1;
+
+for (var i = videoList - 1; i >= 0; i--) {     
+  %>
+    	<video  class="hidden" id="<%= id %>" preload="none" muted="true" />
+      	<source src="/video/webm/A/<%= id %>A.webm" type='video/webm; codecs="vp8, vorbis"' />
+      	Your browser does not support the video tag.
+    	</video>	
+    <%
+  id++
+   };
+  %>
+
+</div>
+
+<script>
+
+$.getJSON('/tmp/1.json', function(data) {
+    for (var i in data.spots) {
+			var skeleton = $('<a class="send-video">&nbsp;</a>');
+        	$(skeleton).attr('nextvid', data.spots[i].link);
+        	$(skeleton).css('top', data.spots[i].top);
+        	$(skeleton).css('left', data.spots[i].left);
+        	$(skeleton).css('width', data.spots[i].width);
+        	$(skeleton).css('height', data.spots[i].height);
+        	$(skeleton).appendTo($('#controlSpots'));
+    }
+  });
+
+</script>

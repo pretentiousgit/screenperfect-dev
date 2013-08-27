@@ -1,0 +1,34 @@
+
+<!--<script src="/js/control.js"></script>
+
+<!-- this needs to go server side because appended elements are not firing on touch  */
+var jsLoc = "/tmp/"+$('.fullscreen').attr("id")+".json";
+
+$.getJSON( jsLoc, function(data){
+      $.each(data, function(index, d){
+      var styles = {
+	    top: d.top,
+		left: d.left,
+		height: d.height,
+		width: d.width,
+		display:"block",
+		backgroundColor:"red"
+      };
+      	$('<a/>',{
+		width: d.width,
+		height: d.height,
+		nextVid: d.id}).addClass('send-video').appendTo('body').css( styles ).html("<img src='/still.png' />");
+      });
+    });
+-->
+
+
+
+<!--
+/* Example of server-generated buttons. */
+
+<!-- for each json in the back end, make a video hotspot, with defined variables -->
+ <button class="send-video" nextVid="<%= nextVid =%>" style="height:<%= spot.height %>; width:<%= spot.width %>; top:<%= spot.top %>; left:<%= spot.left %>;"><img src='/still.png' /></button>
+
+
+-->
