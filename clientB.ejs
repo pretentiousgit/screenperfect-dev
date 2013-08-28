@@ -2,6 +2,8 @@
 <button type="button" id='pauseNow'>Pause</button>
 
 <p id='timeDif' style="color:#FFF">Difference</p>
+<p id='dur' style="color:#FFF">Duration</p>
+
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
@@ -27,22 +29,13 @@
 
 <script type="text/javascript">
 var gap,
+	duration,
 	vid = $('#v0')[0],
 	vid1 = $('#v1')[0];
 
-// socket.on('connect', function () {
-// 	socket.emit('hello', function (error) {
-// 		if (!error) return;
-// 		  socket.disconnect();
-// 		  $('#connection').trigger('disconnected');
-// 		  message('There is already a listener connected');
-// 		});
-// 	$('#v0')[0].load();
-// });
-
-
 $('#playNow').on('click', function(){ //shows video frame while playing	
 	vid.play();	
+	vid1.play();
 
     setInterval(function() {
         $('#timeA').html(vid.currentTime);
