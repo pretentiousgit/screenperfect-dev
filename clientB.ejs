@@ -46,6 +46,7 @@ function playVideos() {
 function pauseVideos() {
 	document.getElementById('v0').pause();
 	document.getElementById('v1').pause();
+	document.getElementById('v1').currentTime = document.getElementById('v0').currentTime;
 }
 
 var gap,
