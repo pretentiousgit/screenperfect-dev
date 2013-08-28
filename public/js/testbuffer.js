@@ -5,7 +5,6 @@ socket.on('connect', function () {
           $('#connection').trigger('disconnected');
           message('There is already a listener connected');
         });
-
 });
 
 
