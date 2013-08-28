@@ -1,4 +1,4 @@
-<button type="button" id='playNow'>Play</button>
+<button type="button" id='playNow' onclick='playVideos()'>Play</button>
 <button type="button" id='pauseNow'>Pause</button>
 
 <p id='timeDif' style="color:#FFF">Difference</p>
@@ -28,14 +28,26 @@
 </div>
 
 <script type="text/javascript">
+
+function playVideos() {
+   document.getElementById('v1').play();
+   document.getElementById('v0').play();
+}
+
+function pauseVideos() {
+	document.getElementById('v1').pause();
+	document.getElementById('v0').pause();
+}
+
 var gap,
 	duration,
 	vid = $('#v0')[0],
-	vid1 = $('#v1')[0];
+	vid1 = $('#v1')[0],
+	vidAll = document.getElementsByTagName("video");
 
-$('#playNow').on('click', function(){ //shows video frame while playing	
-	vid.play();	
-	vid1.play();
+$('#v0').on('play', function(){
+ //shows video frame while playing	
+	
 
     setInterval(function() {
         $('#timeA').html(vid.currentTime);
@@ -44,10 +56,10 @@ $('#playNow').on('click', function(){ //shows video frame while playing
         $('#frameB').html(vid1.playbackRate);
 
         gap = vid.currentTime - vid1.currentTime;
-		console.log(gap);
+		
 		$('#timeDif').text(gap);
     	}, 100);
-    vid1.currentTime=vid.currentTime;
+    // vid1.currentTime=vid.currentTime;
     ;
 
 });
