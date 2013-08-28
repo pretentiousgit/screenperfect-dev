@@ -2,8 +2,7 @@
 <button type="button" id='pauseNow' onclick='pauseVideos()'>Pause</button>
 
 <p id='timeDif' style="color:#FFF">Difference</p>
-<p id='dur' style="color:#FFF">Duration</p>
-
+<p id='dur' style="color:#FFF">Runtime</p>
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
@@ -50,9 +49,14 @@ function pauseVideos() {
 }
 
 var gap,
-	duration,
+	duration=0,
 	vid = document.getElementById('v0'),
 	vid1 = document.getElementById('v1');
+
+setInterval(function() {
+	$('#dur').text(duration);
+	duration = duration + (24/1000);
+}, 24);
 
 $('#v0').on('play', function(){
  //shows video frame while playing
@@ -66,10 +70,12 @@ $('#v0').on('play', function(){
 		$('#timeDif').text(gap);
 
 		socket.emit('timestamp', vid.currentTime);
-    	}, 50);
-    // vid1.currentTime=vid.currentTime;
+    	}, 24);
+    	
+    	// vid1.currentTime=vid.currentTime;
     ;
 });
+
 
 
 </script>
