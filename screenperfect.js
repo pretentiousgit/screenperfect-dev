@@ -6,6 +6,7 @@ var express = require('express'),
     util = require('util'),
     Files = {}, fs = require('fs'),
     eavesdropper = 0,
+    playVal=0;
     json, app = express.createServer();
 require('sugar')
 
@@ -127,13 +128,15 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             
             socket.emit('video quant', clientLength );
             socket.emit('video list', clientList);
+            socket.emit('playVal', playVal);
             
 		});
 
         socket.on('playNow', function(e){
-            socket.emit('play', e);
+            socket.emit('playNow', e);
             socket.broadcast.emit('play command passing '+ e);
             console.log('play command passing '+ e);
+            playVal = e;
         });
 
         socket.on('role', function (role, func) { // uses boolean gate to set controller.

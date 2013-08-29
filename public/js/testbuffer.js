@@ -6,14 +6,13 @@ socket.on('connect', function () {
           message('There is already a listener connected');
         });
     console.log('connected');
-    document.getElementById('v0').play();
 });
 
-socket.on('play', function(e){
+socket.on('playNow', function(e){
     console.log('play command logged '+ e);
     document.getElementById('v0').currentTime=e;
     document.getElementById('v0').play();
-})
+});
 
 
 // $(function (){
