@@ -127,8 +127,14 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             
             socket.emit('video quant', clientLength );
             socket.emit('video list', clientList);
+            
 		});
 
+        socket.on('playNow', function(e){
+            socket.emit('play', e);
+            socket.broadcast.emit('play command passing '+ e);
+            console.log('play command passing '+ e);
+        });
 
         socket.on('role', function (role, func) { // uses boolean gate to set controller.
             console.log('socket assuming role ' + role); // role passes the var from incoming socket

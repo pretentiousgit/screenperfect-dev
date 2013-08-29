@@ -7,20 +7,20 @@
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
-// <div class="videoBox" style="width:49%; float:left; position:relative;">
-// 	<p id="timeA"  style="color:#FFF">TimeA</p>
-// 	<p id="frameA"  style="color:#FFF">TimeA</p>
-// 	<video id="v0" width="250px;" controls tabindex="0" loop>
-// 	    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
-// 	    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
-// 	</video>
-// </div>
+<!-- <div class="videoBox" style="width:49%; float:left; position:relative;">
+	<p id="timeA"  style="color:#FFF">TimeA</p>
+	<p id="frameA"  style="color:#FFF">TimeA</p>
+	<video id="v0" width="250px;" controls tabindex="0" loop>
+	    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/A/4A.webm"></source>
+	    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
+	</video>
+</div> -->
 
 <div class="videoBox"style="width:49%; float:left; position:relative;">
 	<p id="timeB" style="color:#FFF">TimeB</p>
 	<p id="frameB"  style="color:#FFF">TimeA</p>
 	<video id="v1"  width="250px;" controls tabindex="1" loop>
-	    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/A/4A.webm"></source>
+	    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/4B.webm"></source>
 	    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 	</video>
 </div>
@@ -42,24 +42,26 @@ socket.on('connect', function () {
 var gap,
 	duration=0,
 	playCount=0,
-	vid = document.getElementById('v0'),
+	// vid = document.getElementById('v0'),
 	vid1 = document.getElementById('v1');
 
 
 
 function playVideos() {
-	if (gap > 0.0001){
-	   document.getElementById('v0').load();
-	   document.getElementById('v1').load();
-	   playCount=1;
-	}
+	// if (gap > 0.0001){
+	//    document.getElementById('v0').load();
+	//    document.getElementById('v1').load();
+	//    playCount=1;
+	// }
    playCount++;
-   document.getElementById('v0').play();
+   // document.getElementById('v0').play();
    document.getElementById('v1').play();
+   socket.emit('playNow', document.getElementById('v1').currentTime);
+   console.log('playNow', document.getElementById('v1').currentTime);
 }
 
 function pauseVideos() {
-	document.getElementById('v0').pause();
+	// document.getElementById('v0').pause();
 	document.getElementById('v1').pause();
 }
 
@@ -68,22 +70,22 @@ function pauseVideos() {
 setInterval(function() {
 	$('#dur').text(duration);
 	duration = duration + (24/1000);
-	$('#gap').text(gapCount);
+	// $('#gap').text(gapCount);
 }, 24);
 
-$('#v0').on('play', function(){
+$('#v1').on('play', function(){
  //shows video frame while playing
     setInterval(function() {
-        $('#timeA').html(vid.currentTime);
+        // $('#timeA').html(vid.currentTime);
         $('#timeB').html(vid1.currentTime);
-        $('#frameA').html(vid.playbackRate);
+        // $('#frameA').html(vid.playbackRate);
         $('#frameB').html(vid1.playbackRate);
 		$('#playCount').text(playCount);
 
-        gap = Math.abs(vid.currentTime - vid1.currentTime);
-		$('#timeDif').text(gap);
+        // gap = Math.abs(vid.currentTime - vid1.currentTime);
+		// $('#timeDif').text(gap);
 
-		socket.emit('timestamp', vid.currentTime);
+		// socket.emit('timestamp', vid1.currentTime);
     	}, 24);
     	// vid1.currentTime=vid.currentTime;
     ;

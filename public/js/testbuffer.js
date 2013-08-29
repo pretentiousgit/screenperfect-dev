@@ -5,16 +5,19 @@ socket.on('connect', function () {
           $('#connection').trigger('disconnected');
           message('There is already a listener connected');
         });
+    console.log('connected');
     document.getElementById('v0').play();
 });
 
-socket.on('timestamp', function(time) {
-    document.getElementById('v0').currentTime=time;
-});
+socket.on('play', function(e){
+    console.log('play command logged '+ e);
+    document.getElementById('v0').currentTime=e;
+    document.getElementById('v0').play();
+})
 
 
-$(function (){
-var vid = $('#v0')[0];
+// $(function (){
+// var vid = $('#v0')[0];
 
 // $('#v0').on('play', function() {
 //     console.log('playing');
@@ -24,4 +27,4 @@ var vid = $('#v0')[0];
 //     }, 100);
 // });
 
-});
+// });
