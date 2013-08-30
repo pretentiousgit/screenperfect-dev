@@ -1,3 +1,7 @@
+var playTime,
+    pauseTime,
+    current;
+
 socket.on('connect', function () {
     socket.emit('listener', function (error) {
         if (!error) return;
@@ -9,26 +13,26 @@ socket.on('connect', function () {
 });
 
 socket.on('play', function(e){
-    console.log('play command logged '+ e);
-    document.getElementById('v0').currentTime=e;
+    var clientTime = document.getElementById('v0').currentTime;
+    console.log('time in other window '+ e);
+    console.log('currentTime this window '+ clientTime);
+    console.log('time difference '+ (e-clientTime));
+    document.getElementById('v0').currentTime = e + 0.025573;
     document.getElementById('v0').play();
+    $('#time').text(e - clientTime);
 });
 
 socket.on('pause', function(e){
-    console.log('pause command logged '+ e);
-    console.log('currentTime '+ document.getElementById('v0').currentTime);
+    var clientTime = document.getElementById('v0').currentTime;
+    console.log('time in other window '+ e);
+    console.log('this window '+ clientTime);
+    console.log('time difference '+ (e-clientTime));
     document.getElementById('v0').pause();
+    $('#time').text(e - clientTime);
 });
 
-// $(function (){
-// var vid = $('#v0')[0];
-
-// $('#v0').on('play', function() {
-//     console.log('playing');
-//     setInterval(function() { // needs to only do it while video is playing.
-//         $('#time').html(vid.currentTime);
-//         socket.emit('timestamp', vid.currentTime);
-//     }, 100);
-// });
-
-// });
+setInterval(function() {
+    $('#clock').text(current);
+    current = document.getElementById('v0').currentTime;
+    // $('#gap').text(gapCount);
+}, 24);
