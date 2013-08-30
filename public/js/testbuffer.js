@@ -8,7 +8,7 @@ socket.on('connect', function () {
     console.log('connected');
 });
 
-socket.on('playNow', function(e){
+socket.on('play', function(e){
     console.log('play command logged '+ e);
     document.getElementById('v0').currentTime=e;
     document.getElementById('v0').play();
