@@ -63,6 +63,8 @@ function playVideos() {
 function pauseVideos() {
 	// document.getElementById('v0').pause();
 	document.getElementById('v1').pause();
+	socket.emit('pauseNow', document.getElementById('v1').currentTime);
+	console.log('pauseNow', document.getElementById('v1').currentTime);
 }
 
 

@@ -14,6 +14,11 @@ socket.on('play', function(e){
     document.getElementById('v0').play();
 });
 
+socket.on('pause', function(e){
+    console.log('pause command logged '+ e);
+    console.log('currentTime '+ document.getElementById('v0').currentTime);
+    document.getElementById('v0').pause();
+});
 
 // $(function (){
 // var vid = $('#v0')[0];

@@ -139,6 +139,13 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             playVal = e;
         });
 
+        socket.on('pauseNow', function(e){
+            socket.broadcast.emit('pause', e);
+            socket.broadcast.emit('socket pause command passing '+ e);
+            console.log('console pause command passing '+ e);
+            playVal = e;
+        });
+
         socket.on('role', function (role, func) { // uses boolean gate to set controller.
             console.log('socket assuming role ' + role); // role passes the var from incoming socket
             if (control){ // if control is true, the function just returns.
