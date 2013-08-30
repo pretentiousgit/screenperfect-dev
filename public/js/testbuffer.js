@@ -17,7 +17,7 @@ socket.on('play', function(e){
     console.log('time in other window '+ e);
     console.log('currentTime this window '+ clientTime);
     console.log('time difference '+ (e-clientTime));
-    document.getElementById('v0').currentTime = e + 0.025573;
+    document.getElementById('v0').currentTime = e + 0.024;
     document.getElementById('v0').play();
     $('#time').text(e - clientTime);
 });
@@ -29,6 +29,12 @@ socket.on('pause', function(e){
     console.log('time difference '+ (e-clientTime));
     document.getElementById('v0').pause();
     $('#time').text(e - clientTime);
+});
+
+socket.on('time', function(e){
+    var curtime = document.getElementById('v0').currentTime;
+    curtime = e - curtime;
+    console.log('difference '+ curtime);
 });
 
 setInterval(function() {
