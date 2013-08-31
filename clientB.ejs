@@ -86,7 +86,7 @@ $('#v1').on('play', function(){
 
         // gap = Math.abs(vid.currentTime - vid1.currentTime);
 		// $('#timeDif').text(gap);
-		
+
 		socket.emit('timestamp', vid1.currentTime);
     	}, 24);
     	// vid1.currentTime=vid.currentTime;
