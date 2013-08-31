@@ -18,7 +18,7 @@ socket.on('play', function(e){
     console.log('time in other window '+ e);
     console.log('currentTime this window '+ clientTime);
     console.log('time difference '+ (e-clientTime));
-    document.getElementById('v0').currentTime = e + 0.024;
+    document.getElementById('v0').currentTime = e + 0.0290245;
     document.getElementById('v0').playbackRate = 1.00000000001;
     document.getElementById('v0').play();
     $('#time').text(e - clientTime);
