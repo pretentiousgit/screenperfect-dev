@@ -17,8 +17,8 @@
 		id=1;
 		app.locals.videoA.each(function(video){ 
 		 %>
-		 <li id="<%= id %>" class="videoListThumbnail"> 
-		 	<a href="#"><img src="/image/A/<%= id %>A.png" /></a>
+		 <li id="<%= id %>"> 
+		 	<a href="#" class="videoListThumbnail"><img src="/image/A/<%= id %>A.png" /></a>
 		 </li>
 		<% 
 		id++
@@ -38,7 +38,7 @@
 </div>
 
 <!-- video selection dialog for linking hotspots -->
-<div title="Path Options" id="dialog">
+<div title="Select Next Video" id="dialog">
 	<div class="imgGrid">
 		<ul id="thumbnailsForBranchSelection" class="selectable hidden">
 		<%  
@@ -67,72 +67,16 @@
 </div>
 
 
-<script></script>
-
 <script type="text/javascript" >
 $(".selectable").selectable();
 $("#videoListBox").accordion();
 
-// function drawspots takes all of function because of mousedown events.
-
-
-$(document).on('mousedown', '#canvas', function(){
-// Draw hotspots on canvas to trace where the video should link to.
-    var x1, y1;
-    $("#canvas").mousedown(function (e) {
-        if (e.target !== this)
-            return;
-        console.log('mousedown on canvas detected');
-        $("#current").attr({
-            id: ''
-        });
-
-        var box = $('<div class="send-video"><div class="close">X</div><div class="thumb">Click here to set a video link.</div></div>');
-        $(this).append(box);
-
-        var parentOffset = $(this).parent().offset();
-        x1 = e.pageX - parentOffset.left;
-        y1 = e.pageY - parentOffset.top;
-
-        box.attr({
-            id: 'current'
-        });
-
-        box.css({
-            top: y1, //offsets
-            left: x1, //offsets
-            background: '#FFF'
-        });
-    });
-
-// when the mouse moves, extend the box.
-    $("#canvas").mousemove(function (e) {
-        var w = e.pageX - x1;
-        var h = e.pageY - y1;
-        $("#current").css({
-            width: w, //offsets
-            height: h, //offsets
-        });
-    });
-
-// When the mouse stops moving, create the box
-    $("#canvas").mouseup(function () {
-        $("#current")
-            .attr({
-                id: ''
-            });
-
-    });
- 
-});
 
 //select a video from the thumbnail list of available videos in order to set spots on it
 $(document).on('click','.videoListThumbnail', function (){
 	console.log('new video added to canvas');
-	$('#canvas').append('ul-selected videoListThumbnail')
-
+	// $('#canvas').append('ul-selected videoListThumbnail');
 });
-
 
 //clear all spots
 $(document).on('click', '#clear', function () {
@@ -174,7 +118,8 @@ $(document).on('click', '.send-video', function (e) {
     var spot = $(this);
     var nextVideoInBranch;
 	console.log('send-video hotspot clicked');
-// Dialog of available videos
+	
+	// Dialog of available videos
     $('#dialog').dialog({
         modal: true,
         buttons: [{
@@ -211,69 +156,122 @@ $(document).on('click', '.close', function () {
     $(this).parent().remove();
 });
 
-//upload new video to server - this is a feature under development.
-$(document).on('click','#uploadButton', function (e) {
-	console.log('upload clicked');
-	var	fileSize
-		, fileName
-		, file
-		, reader = new FileReader()
-		;
+
+// $(document).on('click', '#canvas', function(){
+// // buggy, generates a multiple every time.
+// // Draw hotspots on canvas to trace where the video should link to.
+//     var x1, y1;
+//     $("#canvas").mousedown(function (e) {
+//         if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
+//         console.log('mousedown on canvas detected');
+//         $("#current").attr({
+//             id: ''
+//         });
+
+//         var box = $('<div class="send-video"><div class="close">X</div><div class="thumb">Click here to set a video link.</div></div>');
+//         $(this).append(box);
+
+//         var parentOffset = $(this).parent().offset();
+//         x1 = e.pageX - parentOffset.left;
+//         y1 = e.pageY - parentOffset.top;
+
+//         box.attr({
+//             id: 'current'
+//         });
+
+//         box.css({
+//             top: y1, //offsets
+//             left: x1, //offsets
+//             background: '#FFF'
+//         });
+//     });
+
+// // when the mouse moves, extend the box.
+//     $("#canvas").mousemove(function (e) {
+//         var w = e.pageX - x1;
+//         var h = e.pageY - y1;
+//         $("#current").css({
+//             width: w, //offsets
+//             height: h, //offsets
+//         });
+//     });
+
+// // When the mouse stops moving, create the box
+//     $("#canvas").mouseup(function () {
+//         $("#current")
+//             .attr({
+//                 id: ''
+//             });
+
+//     });
+ 
+// });
+
+</script>
+
+<script>
+
+
+// //upload new video to server - this is a feature under development.
+// $(document).on('click','#uploadButton', function (e) {
+// 	console.log('upload clicked');
+// 	var	fileSize
+// 		, fileName
+// 		, file
+// 		, reader = new FileReader()
+// 		;
 	
-	$('#fileBox').on('change', function(e) {
+// 	$('#fileBox').on('change', function(e) {
 		
-		fileName= $(this).val();
-		fileSize = this.files[0].size;
-		file = this.files[0];
+// 		fileName= $(this).val();
+// 		fileSize = this.files[0].size;
+// 		file = this.files[0];
 		
-		$('#nameBox').val(fileName);	
+// 		$('#nameBox').val(fileName);	
 		
-	});
+// 	});
 	
 	
-	$('#uploadPanel').removeClass('hidden').dialog({
-		modal:true,
-		width:500,
-		 buttons: [{
-		 	text: "Cancel",
-		 	click: function(){
-				$(this).dialog("destroy");
-				$('#uploadPanel').addClass('hidden');
-				$('#fileBox').val('');
-				$('#nameBox').val('');	
-		 	}
-		 	},
-		 	{
-		 	text: "Upload",
-		 	click: function(){
+// 	$('#uploadPanel').removeClass('hidden').dialog({
+// 		modal:true,
+// 		width:500,
+// 		 buttons: [{
+// 		 	text: "Cancel",
+// 		 	click: function(){
+// 				$(this).dialog("destroy");
+// 				$('#uploadPanel').addClass('hidden');
+// 				$('#fileBox').val('');
+// 				$('#nameBox').val('');	
+// 		 	}
+// 		 	},
+// 		 	{
+// 		 	text: "Upload",
+// 		 	click: function(){
 		 					
-		 	if ($('#fileBox').val() != "")
-			 	{
+// 		 	if ($('#fileBox').val() != "")
+// 			 	{
 
 				
-// 			 		reader.onload = function(evnt){
-// 						message('emitted \'' + JSON.stringify(evnt) + '\'');
-// 						socket.emit('Upload', { 'Name' : fileName, 'Data' : evnt.target.result });
-//       				}
-// 					
-// 					socket.emit('Start', { 'Name' : fileName, 'Size' : fileSize });
-// 					message('fileSize '+fileSize);
-// 					reader.readAsDataURL(file);
-// 					
-// 		 			$(this).dialog("destroy");
-// 				 	$('#uploadPanel').addClass('hidden');
-// 				 	$('#fileBox').val('');
-			 	}
- 			else 
- 				{
- 				 $('#nameBox').val("Please choose a file.");
-				}
+// // 			 		reader.onload = function(evnt){
+// // 						message('emitted \'' + JSON.stringify(evnt) + '\'');
+// // 						socket.emit('Upload', { 'Name' : fileName, 'Data' : evnt.target.result });
+// //       				}
+// // 					
+// // 					socket.emit('Start', { 'Name' : fileName, 'Size' : fileSize });
+// // 					message('fileSize '+fileSize);
+// // 					reader.readAsDataURL(file);
+// // 					
+// // 		 			$(this).dialog("destroy");
+// // 				 	$('#uploadPanel').addClass('hidden');
+// // 				 	$('#fileBox').val('');
+// 			 	}
+//  			else 
+//  				{
+//  				 $('#nameBox').val("Please choose a file.");
+// 				}
 				
-		 	}
-		 }]
-	});
-	 
-});
-
+// 		 	}
+// 		 }]
+// 	});
 
 </script>
