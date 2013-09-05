@@ -165,7 +165,7 @@ $(document).on('click', '.send-video', function (e) {
     if (e.target !== this) return;
     
     var spot = $(this);
-    var nextVid;
+    var nextVideoInBranch;
 
 // Dialog of available videos
     $('#dialog').dialog({
@@ -173,9 +173,9 @@ $(document).on('click', '.send-video', function (e) {
         buttons: [{
             text: "Save",
             click: function () {
-                nextVid = $('.ui-selected').attr('id');
-                $(spot).attr('nextVid', nextVid)
-                $(".thumb", spot).html('<img src="/image/A/' + nextVid +'A.png" />');
+                nextVideoInBranch = $('.ui-selected').attr('id');
+                $(spot).attr('nextVid', nextVideoInBranch)
+                $(".thumb", spot).html('<img src="/image/A/' + nextVideoInBranch +'A.png" />');
                 $(this).dialog("destroy");
                 $('#thumbnailsForBranchSelection').addClass('hidden');
             }
@@ -193,7 +193,7 @@ $(document).on('click', '.send-video', function (e) {
             of: "#canvas"
         }
     });
-    $(this).attr('id', nextVid);
+    $(this).attr('id', nextVideoInBranch);
     $('#thumbnailsForBranchSelection').removeClass('hidden')
     $('.ui-selectee').removeClass('ui-selected');
 });
