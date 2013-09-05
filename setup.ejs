@@ -17,8 +17,8 @@
 		id=1;
 		app.locals.videoA.each(function(video){ 
 		 %>
-		 <li id="<%= id %>" > 
-		 	<a href="#" class="linkButton"><img src="/image/A/<%= id %>A.png" /></a>
+		 <li id="<%= id %>" class="videoListThumbnail"> 
+		 	<a href="#"><img src="/image/A/<%= id %>A.png" /></a>
 		 </li>
 		<% 
 		id++
@@ -74,14 +74,15 @@ $(".selectable").selectable();
 $("#videoListBox").accordion();
 
 // function drawspots takes all of function because of mousedown events.
-$(function () {
 
+
+$(document).on('mousedown', '#canvas', function(){
 // Draw hotspots on canvas to trace where the video should link to.
     var x1, y1;
     $("#canvas").mousedown(function (e) {
         if (e.target !== this)
             return;
-
+        console.log('mousedown on canvas detected');
         $("#current").attr({
             id: ''
         });
@@ -122,14 +123,20 @@ $(function () {
             });
 
     });
+ 
 });
 
 //select a video from the thumbnail list of available videos in order to set spots on it
+$(document).on('click','.videoListThumbnail', function (){
+	console.log('new video added to canvas');
+	$('#canvas').append('ul-selected videoListThumbnail')
 
+});
 
 
 //clear all spots
 $(document).on('click', '#clear', function () {
+	console.log('clear clicked');
     $("div.send-video").remove();
 });
 
@@ -166,7 +173,7 @@ $(document).on('click', '.send-video', function (e) {
     
     var spot = $(this);
     var nextVideoInBranch;
-
+	console.log('send-video hotspot clicked');
 // Dialog of available videos
     $('#dialog').dialog({
         modal: true,
@@ -200,11 +207,13 @@ $(document).on('click', '.send-video', function (e) {
 
 //delete individual spots
 $(document).on('click', '.close', function () {
+	console.log('close clicked');
     $(this).parent().remove();
 });
 
 //upload new video to server - this is a feature under development.
 $(document).on('click','#uploadButton', function (e) {
+	console.log('upload clicked');
 	var	fileSize
 		, fileName
 		, file
