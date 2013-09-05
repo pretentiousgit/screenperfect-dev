@@ -124,6 +124,10 @@ $(function () {
     });
 });
 
+//select a video from the thumbnail list of available videos in order to set spots on it
+
+
+
 //clear all spots
 $(document).on('click', '#clear', function () {
     $("div.send-video").remove();
@@ -156,15 +160,14 @@ $(document).on('touchstart click', '#save',function(e){
 	return false;
 });
 
-//hook hotspot to video link
+// On clicking an existing video hotspot, make a modal of available branch videos appear.
 $(document).on('click', '.send-video', function (e) {
     if (e.target !== this) return;
     
     var spot = $(this);
     var nextVid;
 
-// When you click a set box, the list of available videos appears.
-
+// Dialog of available videos
     $('#dialog').dialog({
         modal: true,
         buttons: [{
@@ -200,7 +203,7 @@ $(document).on('click', '.close', function () {
     $(this).parent().remove();
 });
 
-//upload new video to server
+//upload new video to server - this is a feature under development.
 $(document).on('click','#uploadButton', function (e) {
 	var	fileSize
 		, fileName
