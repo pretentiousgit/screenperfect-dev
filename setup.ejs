@@ -1,5 +1,5 @@
-<!-- <script src="/js/setup.js"></script> -->
-<script src="/js/chunkLoader.js"></script>
+<script src="/js/setup.js"></script>
+<!-- <script src="/js/chunkLoader.js"></script> -->
 
 <!-- main app canvas page 1 -->
 <div id='canvas'>
@@ -71,6 +71,8 @@ $("#videoListBox").accordion();
 
 // function drawspots takes all of function because of mousedown events.
 $(function () {
+
+// Draw hotspots on canvas to trace where the video should link to.
     var x1, y1;
     $("#canvas").mousedown(function (e) {
         if (e.target !== this)
@@ -98,6 +100,7 @@ $(function () {
         });
     });
 
+// when the mouse moves, extend the box.
     $("#canvas").mousemove(function (e) {
         var w = e.pageX - x1;
         var h = e.pageY - y1;
@@ -106,7 +109,8 @@ $(function () {
             height: h, //offsets
         });
     });
-
+    
+// When the mouse stops moving, create the box
     $("#canvas").mouseup(function () {
         $("#current")
             .attr({
