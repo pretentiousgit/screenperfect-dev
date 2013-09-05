@@ -515,11 +515,11 @@ height:10px;
 
 #canvas { height:100%; width:100%; position:absolute;z-index:1;top:0;left:0;}
 
-#selectable { list-style-type: none; margin: 0; padding: 0; display:block; width:100%;}
-#selectable .ui-selecting { background: #FECA40; }
-#selectable .ui-selected { background: #F39814; color: white; }
-#selectable li { display:block; margin: 0.2em; padding:0.2em; font-size: 1.4em; height: 48px; float:left;position:relative;}
-#selectable li:hover {background:#F39814;} 
+#thumbnailsForBranchSelection { list-style-type: none; margin: 0; padding: 0; display:block; width:100%;}
+#thumbnailsForBranchSelection .ui-selecting { background: #FECA40; }
+#thumbnailsForBranchSelection .ui-selected { background: #F39814; color: white; }
+#thumbnailsForBranchSelection li { display:block; margin: 0.2em; padding:0.2em; font-size: 1.4em; height: 48px; float:left;position:relative;}
+#thumbnailsForBranchSelection li:hover {background:#F39814;} 
 
 a.button {
 background:#CCC;

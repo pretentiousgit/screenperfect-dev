@@ -3,20 +3,16 @@
 
 <!-- main app canvas page 1 -->
 <div id='canvas'>
+
+<!-- control panel -->
 	<div id="videoListBox">
-<h3>Hotspot Linking Tools</h3>
-	<div>
-		<div class="buttonPanel">		
-		<a href="#" class="button" id="save" >Save Hotspots</a>
-		<a href="#" class="button" id="clear" >Clear Hotspots</a>
-		</div>
-	</div>
-<h3>Video Uploads</h3>
+<h3>Video List</h3>
 	<div>
 		<div class="buttonPanel">
 			<a href="#" class="button" id="uploadButton" >Add Video</a>
 		</div>
 		<div class="imgGrid">
+	<ul class="selectable">
 	<%  
 		id=1;
 		app.locals.videoA.each(function(video){ 
@@ -28,15 +24,23 @@
 		id++
 		 });
 	%>
+</ul>
+		</div>
+	</div>
+<h3>Hotspot Linking Tools</h3>
+	<div>
+		<div class="buttonPanel">		
+		<a href="#" class="button" id="save" >Save Hotspots</a>
+		<a href="#" class="button" id="clear" >Clear Hotspots</a>
 		</div>
 	</div>
 </div>
 </div>
 
-<!-- selection dialog for linking hotspots -->
+<!-- video selection dialog for linking hotspots -->
 <div title="Path Options" id="dialog">
 	<div class="imgGrid">
-		<ul id="selectable" class="hidden">
+		<ul id="thumbnailsForBranchSelection" class="selectable hidden">
 		<%  
 			id=1;
 			app.locals.videoA.each(function(video){ 
@@ -66,7 +70,7 @@
 <script></script>
 
 <script type="text/javascript" >
-$("#selectable").selectable();
+$(".selectable").selectable();
 $("#videoListBox").accordion();
 
 // function drawspots takes all of function because of mousedown events.
@@ -109,7 +113,7 @@ $(function () {
             height: h, //offsets
         });
     });
-    
+
 // When the mouse stops moving, create the box
     $("#canvas").mouseup(function () {
         $("#current")
@@ -155,8 +159,12 @@ $(document).on('touchstart click', '#save',function(e){
 //hook hotspot to video link
 $(document).on('click', '.send-video', function (e) {
     if (e.target !== this) return;
+    
     var spot = $(this);
     var nextVid;
+
+// When you click a set box, the list of available videos appears.
+
     $('#dialog').dialog({
         modal: true,
         buttons: [{
@@ -166,13 +174,13 @@ $(document).on('click', '.send-video', function (e) {
                 $(spot).attr('nextVid', nextVid)
                 $(".thumb", spot).html('<img src="/image/A/' + nextVid +'A.png" />');
                 $(this).dialog("destroy");
-                $('#selectable').addClass('hidden');
+                $('#thumbnailsForBranchSelection').addClass('hidden');
             }
         }, {
             text: "Cancel",
             click: function () {
                 $(this).dialog("destroy");
-                $('#selectable').addClass('hidden');
+                $('#thumbnailsForBranchSelection').addClass('hidden');
             }
         }],
         maxHeight: 500,
@@ -183,7 +191,7 @@ $(document).on('click', '.send-video', function (e) {
         }
     });
     $(this).attr('id', nextVid);
-    $('#selectable').removeClass('hidden')
+    $('#thumbnailsForBranchSelection').removeClass('hidden')
     $('.ui-selectee').removeClass('ui-selected');
 });
 
