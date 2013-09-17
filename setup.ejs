@@ -17,7 +17,7 @@
 			app.locals.videoA.each(function(video){ 
 			 %>
 			 <li id="<%= id %>"> 
-			 	<a href="#" class="videoListThumbnail"><img src="/image/A/<%= id %>A.png" /></a>
+			 	<img class="videoListThumbnail" src="/image/A/<%= id %>A.png" />
 			 </li>
 			<% 
 			id++
@@ -89,46 +89,48 @@ $(function(){
 	    }
 
 	    // On clicking an existing video hotspot, make a modal of available branch videos appear.
-	    if ($(event.target).hasClass('send-video')) {
-
-	    	console.log('add a video link here');
-	    	console.log('send-video clicked');
-	    // if (e.target !== this) return;
-	    
-	    var spot = $(event.target);
-	    var nextVideoInBranch;
-		console.log('send-video hotspot clicked');
-		
-		// Dialog of available videos
-	    $('#dialog').dialog({
-	        modal: true,
-	        buttons: [{
-	            text: "Save",
-	            click: function () {
-	                nextVideoInBranch = $('.ui-selected').attr('id');
-	                $(spot).attr('nextVid', nextVideoInBranch)
-	                $(".thumb", spot).html('<img src="/image/A/' + nextVideoInBranch +'A.png" />');
-	                $(this).dialog("destroy");
-	                $('#thumbnailsForBranchSelection').addClass('hidden');
-	            }
-	        }, {
-	            text: "Cancel",
-	            click: function () {
-	                $(this).dialog("destroy");
-	                $('#thumbnailsForBranchSelection').addClass('hidden');
-	            }
-	        }],
-	        maxHeight: 500,
-	        position: {
-	            my: "center top",
-	            at: "center top",
-	            of: "#canvas"
-	        }
-	    });
-		    $(event.target).attr('id', nextVideoInBranch);
-		    $('#thumbnailsForBranchSelection').removeClass('hidden')
-		    $('.ui-selectee').removeClass('ui-selected');
+		    if ($(event.target).hasClass('send-video')) {
+		    var spot = $(event.target);
+		    var nextVideoInBranch;
+			console.log('send-video hotspot clicked');
+			
+			// Dialog of available videos
+		    $('#dialog').dialog({
+		        modal: true,
+		        buttons: [{
+		            text: "Save",
+		            click: function () {
+		                nextVideoInBranch = $('.ui-selected').attr('id');
+		                $(spot).attr('nextVid', nextVideoInBranch)
+		                $(".thumb", spot).html('<img src="/image/A/' + nextVideoInBranch +'A.png" />');
+		                $(this).dialog("destroy");
+		                $('#thumbnailsForBranchSelection').addClass('hidden');
+		            }
+		        }, {
+		            text: "Cancel",
+		            click: function () {
+		                $(this).dialog("destroy");
+		                $('#thumbnailsForBranchSelection').addClass('hidden');
+		            }
+		        }],
+		        maxHeight: 500,
+		        position: {
+		            my: "center top",
+		            at: "center top",
+		            of: "#canvas"
+		        }
+		    });
+			    $(event.target).attr('id', nextVideoInBranch);
+			    $('#thumbnailsForBranchSelection').removeClass('hidden')
+			    $('.ui-selectee').removeClass('ui-selected');
 	    }
+
+	    // select a video from the thumbnail list of available videos in order to set spots on it
+		if ($(event.target).hasClass('videoListThumbnail')) {
+			console.log('new video added to canvas');
+			// $('#canvas').append('ul-selected videoListThumbnail');
+			return false; 
+		}
 
 	    // begin drawing boxes for hotspots.
         if (e.target !== this) return; // if it's not over the canvas, don't do any of the following.
@@ -214,15 +216,8 @@ $(function(){
 	    $("div.send-video").remove();
 	    return false; 
 	});
-
 });
 
-
-//select a video from the thumbnail list of available videos in order to set spots on it
-// $('a.videoListThumbnail').click(function(){
-// 	console.log('new video added to canvas');
-// 	// $('#canvas').append('ul-selected videoListThumbnail');
-// });
 
 
 </script>
