@@ -176,7 +176,7 @@ $(function(){
 		console.log(imgSrc);
 		$('.highlight').removeClass('highlight');
 		$(event.target).parent().addClass('highlight');
-		$('#canvas').css('background-image', 'url('+ imgSrc +')');
+		$('#canvas').css('background', 'url('+ imgSrc +') no-repeat fixed center');
 		return false; 
 	});
  
