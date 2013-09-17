@@ -79,6 +79,11 @@ $(function(){
 // Draw hotspots on canvas to trace where the video should link to.
     var x1, y1;
     $("#canvas").mousedown(function (e) {
+    	console.log(e.target);
+        if ($(event.target).hasClass("close") ) {
+        	console.log('close');
+	    	}
+
         if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
         console.log('mousedown on canvas detected');
         $("#current").attr({
@@ -149,10 +154,18 @@ $(function(){
 		return false;
 	});
 
+	//delete individual spots
+	$('.close').click(function () {
+		console.log('close clicked');
+	    $(this).parent().remove();
+	    return false;
+	});
+
 	//clear all spots
 	$('#clear').click(function() {
 		console.log('clear clicked');
 	    $("div.send-video").remove();
+	    return false; 
 	});
 
 });
@@ -207,11 +220,7 @@ $(document).on('click', '.send-video', function(e) {
     $('.ui-selectee').removeClass('ui-selected');
 });
 
-//delete individual spots
-$(document).on('click', '.close', function () {
-	console.log('close clicked');
-    $(this).parent().remove();
-});
+
 
 
 
