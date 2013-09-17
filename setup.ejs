@@ -1,7 +1,7 @@
 <script src="/js/setup.js"></script>
 
 <!-- main app canvas page 1 -->
-<div id='canvas'>
+<div id='page 1'>
 
 	<!-- control panel -->
 	<div id="videoListBox">
@@ -35,8 +35,9 @@
 			</div>
 		</div>
 	</div> <!-- /videoListBox -->
-
-</div><!-- /canvas -->
+	<div id="canvas">
+	</div>
+</div><!-- /page 1 -->
 
 <!-- video selection dialog for linking hotspots -->
 <div title="Select Next Video" id="dialog">
@@ -130,7 +131,7 @@ $(function(){
 			console.log('new video added to canvas');
 			$('.highlight').removeClass('highlight');
 			$(event.target).parent().addClass('highlight');
-			$('#canvas').append('ul-selected videoListThumbnail');
+			$('#canvas').html('ul-selected videoListThumbnail');
 			return false; 
 		}
 
@@ -141,7 +142,7 @@ $(function(){
             id: ''
         });
 
-        var box = $('<div class="send-video" ><button class="close">X</button><div class="thumb">Click to set video.</div></div>');
+        var box = $('<div class="send-video" ><button class="close">X</button><div class="thumb">Click to set branch.</div></div>');
         $(this).append(box);
 
         var parentOffset = $(this).parent().offset();
