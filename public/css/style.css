@@ -535,7 +535,7 @@ height:10px;
 
 #availableVideosToBranch { list-style-type: none; margin: 0; padding: 0; display:block; width:100%;}
 #availableVideosToBranch .ui-selecting { background: #FECA40; }
-#availableVideosToBranch .ui-selected { background: #F39814; color: white; }
+#availableVideosToBranch .highlight { background: #F39814; color: white; }
 #availableVideosToBranch li { display:block; margin: 0.2em; padding:0.2em; font-size: 1.4em; height: 48px; float:left;position:relative;}
 #availableVideosToBranch li:hover {background:#F39814;} 
 

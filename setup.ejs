@@ -128,7 +128,7 @@ $(function(){
 	    // select a video from the thumbnail list of available videos in order to set spots on it
 		if ($(event.target).hasClass('videoListThumbnail')) {
 			console.log('new video added to canvas');
-			$(event.target).parent().addClass('ui-selected');
+			$(event.target).parent().addClass('highlight');
 			// $('#canvas').append('ul-selected videoListThumbnail');
 			return false; 
 		}
