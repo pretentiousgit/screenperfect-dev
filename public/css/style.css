@@ -471,6 +471,16 @@ img.fullscreen:empty {
   background:transparent;
   display:block;
   overflow:hidden;
+  padding: 2px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.send-video .thumb {
+  font-style: italic;
+  color:#888;
+  padding:8px;
 }
 
 .send-video img { margin:auto; display:block; position:relative;
@@ -520,6 +530,10 @@ height:10px;
 #thumbnailsForBranchSelection .ui-selected { background: #F39814; color: white; }
 #thumbnailsForBranchSelection li { display:block; margin: 0.2em; padding:0.2em; font-size: 1.4em; height: 48px; float:left;position:relative;}
 #thumbnailsForBranchSelection li:hover {background:#F39814;} 
+
+.videoListThumbnail { display:block; height: 75px; width:100%; }
+
+
 
 a.button {
 background:#CCC;

@@ -1,41 +1,42 @@
 <script src="/js/setup.js"></script>
-<!-- <script src="/js/chunkLoader.js"></script> -->
 
 <!-- main app canvas page 1 -->
 <div id='canvas'>
 
-<!-- control panel -->
+	<!-- control panel -->
 	<div id="videoListBox">
-<h3>Video List</h3>
-	<div>
-		<div class="buttonPanel">
-			<a href="#" class="button" id="uploadButton" >Add Video</a>
+		<h3>Video List</h3>
+		<div>
+			<div class="buttonPanel">
+				<button id="uploadButton" >Add Video</button>
+			</div>
+			<div class="imgGrid">
+		<ul class="selectable">
+		<%  
+			id=1;
+			app.locals.videoA.each(function(video){ 
+			 %>
+			 <li id="<%= id %>"> 
+			 	<a href="#" class="videoListThumbnail"><img src="/image/A/<%= id %>A.png" /></a>
+			 </li>
+			<% 
+			id++
+			 });
+		%>
+		</ul>
+			</div>
 		</div>
-		<div class="imgGrid">
-	<ul class="selectable">
-	<%  
-		id=1;
-		app.locals.videoA.each(function(video){ 
-		 %>
-		 <li id="<%= id %>"> 
-		 	<a href="#" class="videoListThumbnail"><img src="/image/A/<%= id %>A.png" /></a>
-		 </li>
-		<% 
-		id++
-		 });
-	%>
-</ul>
+
+		<h3>Hotspot Linking Tools</h3>
+		<div>
+			<div class="buttonPanel">		
+			<button id="save">Save Hotspots</button>
+			<button id="clear" >Clear Hotspots</button>
+			</div>
 		</div>
-	</div>
-<h3>Hotspot Linking Tools</h3>
-	<div>
-		<div class="buttonPanel">		
-		<a href="#" class="button" id="save" >Save Hotspots</a>
-		<a href="#" class="button" id="clear" >Clear Hotspots</a>
-		</div>
-	</div>
-</div>
-</div>
+	</div> <!-- /videoListBox -->
+
+</div><!-- /canvas -->
 
 <!-- video selection dialog for linking hotspots -->
 <div title="Select Next Video" id="dialog">
@@ -72,47 +73,103 @@ $(".selectable").selectable();
 $("#videoListBox").accordion();
 
 
-//select a video from the thumbnail list of available videos in order to set spots on it
-$(document).on('click','.videoListThumbnail', function (){
-	console.log('new video added to canvas');
-	// $('#canvas').append('ul-selected videoListThumbnail');
-});
 
-//clear all spots
-$(document).on('click', '#clear', function () {
-	console.log('clear clicked');
-    $("div.send-video").remove();
-});
+$(function(){
 
-//save spots to server json
-$(document).on('touchstart click', '#save',function(e){
-	var current = $(".fullscreen").attr("id");
-	var links = [current];
+// Draw hotspots on canvas to trace where the video should link to.
+    var x1, y1;
+    $("#canvas").mousedown(function (e) {
+        if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
+        console.log('mousedown on canvas detected');
+        $("#current").attr({
+            id: ''
+        });
 
-	$(".send-video").each(function (index) {
-		  var $video = $(this);
+        var box = $('<div class="send-video" ><button class="close">X</button><div class="thumb">Click to set video.</div></div>');
+        $(this).append(box);
+
+        var parentOffset = $(this).parent().offset();
+        x1 = e.pageX - parentOffset.left;
+        y1 = e.pageY - parentOffset.top;
+
+        box.attr({
+            id: 'current'
+        });
+
+        box.css({
+            top: y1, //offsets
+            left: x1, //offsets
+            background: '#FFF'
+        });
+    });
+
+// when the mouse moves, extend the box.
+    $("#canvas").mousemove(function (e) {
+        var w = e.pageX - x1;
+        var h = e.pageY - y1;
+        $("#current").css({
+            width: w, //offsets
+            height: h, //offsets
+        });
+    });
+
+// When the mouse stops moving, create the box
+    $("#canvas").mouseup(function () {
+        $("#current")
+            .attr({
+                id: ''
+            });
+
+    });
+ 
+	//save spots to server json
+	$('#save').click(function(e){
+		var current = $(".fullscreen").attr("id");
+		var links = [current];
+
+		$(".send-video").each(function (index) {
+			  var $video = $(this);
+			
+			  var obj = {
+				id: $video.attr("id"),
+				left: $video.offset().left,
+				top: $video.offset().top,
+				width: $video.width(),
+				height: $video.height(),
+				link: $video.attr("link")
+		  };
 		
-		  var obj = {
-			id: $video.attr("id"),
-			left: $video.offset().left,
-			top: $video.offset().top,
-			width: $video.width(),
-			height: $video.height(),
-			link: $video.attr("link")
-	  };
-	
-	  links.push(obj);
+		  links.push(obj);
 
+		});
+		
+		message('emitted \'' + JSON.stringify(links) + '\'');
+		socket.emit('setup event', links);
+		
+		return false;
 	});
-	
-	message('emitted \'' + JSON.stringify(links) + '\'');
-	socket.emit('setup event', links);
-	
-	return false;
+
+	//clear all spots
+	$('#clear').click(function() {
+		console.log('clear clicked');
+	    $("div.send-video").remove();
+	});
+
 });
+
+
+//select a video from the thumbnail list of available videos in order to set spots on it
+// $('a.videoListThumbnail').click(function(){
+// 	console.log('new video added to canvas');
+// 	// $('#canvas').append('ul-selected videoListThumbnail');
+// });
+
+
+
+
 
 // On clicking an existing video hotspot, make a modal of available branch videos appear.
-$(document).on('click', '.send-video', function (e) {
+$(document).on('click', '.send-video', function(e) {
     if (e.target !== this) return;
     
     var spot = $(this);
@@ -157,59 +214,11 @@ $(document).on('click', '.close', function () {
 });
 
 
-// $(document).on('click', '#canvas', function(){
-// // buggy, generates a multiple every time.
-// // Draw hotspots on canvas to trace where the video should link to.
-//     var x1, y1;
-//     $("#canvas").mousedown(function (e) {
-//         if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
-//         console.log('mousedown on canvas detected');
-//         $("#current").attr({
-//             id: ''
-//         });
-
-//         var box = $('<div class="send-video"><div class="close">X</div><div class="thumb">Click here to set a video link.</div></div>');
-//         $(this).append(box);
-
-//         var parentOffset = $(this).parent().offset();
-//         x1 = e.pageX - parentOffset.left;
-//         y1 = e.pageY - parentOffset.top;
-
-//         box.attr({
-//             id: 'current'
-//         });
-
-//         box.css({
-//             top: y1, //offsets
-//             left: x1, //offsets
-//             background: '#FFF'
-//         });
-//     });
-
-// // when the mouse moves, extend the box.
-//     $("#canvas").mousemove(function (e) {
-//         var w = e.pageX - x1;
-//         var h = e.pageY - y1;
-//         $("#current").css({
-//             width: w, //offsets
-//             height: h, //offsets
-//         });
-//     });
-
-// // When the mouse stops moving, create the box
-//     $("#canvas").mouseup(function () {
-//         $("#current")
-//             .attr({
-//                 id: ''
-//             });
-
-//     });
- 
-// });
 
 </script>
 
 <script>
+
 
 
 // //upload new video to server - this is a feature under development.
