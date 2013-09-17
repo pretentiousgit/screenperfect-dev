@@ -89,12 +89,13 @@ $(function(){
 	    }
 
 	    // On clicking an existing video hotspot, make a modal of available branch videos appear.
-	    if ($(event.target).hasClass('send-video') || $(event.target).hasClass('thumb')) {
+	    if ($(event.target).hasClass('send-video') ) {
+
 	    	console.log('add a video link here');
 	    	console.log('send-video clicked');
 	    // if (e.target !== this) return;
 	    
-	    var spot = $(this);
+	    var spot = $(event.target);
 	    var nextVideoInBranch;
 		console.log('send-video hotspot clicked');
 		
@@ -124,9 +125,9 @@ $(function(){
 	            of: "#canvas"
 	        }
 	    });
-	    $(this).attr('id', nextVideoInBranch);
-	    $('#thumbnailsForBranchSelection').removeClass('hidden')
-	    $('.ui-selectee').removeClass('ui-selected');
+		    $(event.target).attr('id', nextVideoInBranch);
+		    $('#thumbnailsForBranchSelection').removeClass('hidden')
+		    $('.ui-selectee').removeClass('ui-selected');
 	    }
 
 	    // begin drawing boxes for hotspots.
