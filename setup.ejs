@@ -80,13 +80,57 @@ $(function(){
     var x1, y1;
     $("#canvas").mousedown(function (e) {
     	console.log(e.target);
+        
+        //detect if the click is on a close, delete the send hotspot box, return the click.
         if ($(event.target).hasClass("close") ) {
         	console.log('close');
         	$(event.target).parent().remove();
         	return false;
-	    	}
+	    }
 
-        if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
+	    // On clicking an existing video hotspot, make a modal of available branch videos appear.
+	    if ($(event.target).hasClass('send-video') || $(event.target).hasClass('thumb')) {
+	    	console.log('add a video link here');
+	    	console.log('send-video clicked');
+	    // if (e.target !== this) return;
+	    
+	    var spot = $(this);
+	    var nextVideoInBranch;
+		console.log('send-video hotspot clicked');
+		
+		// Dialog of available videos
+	    $('#dialog').dialog({
+	        modal: true,
+	        buttons: [{
+	            text: "Save",
+	            click: function () {
+	                nextVideoInBranch = $('.ui-selected').attr('id');
+	                $(spot).attr('nextVid', nextVideoInBranch)
+	                $(".thumb", spot).html('<img src="/image/A/' + nextVideoInBranch +'A.png" />');
+	                $(this).dialog("destroy");
+	                $('#thumbnailsForBranchSelection').addClass('hidden');
+	            }
+	        }, {
+	            text: "Cancel",
+	            click: function () {
+	                $(this).dialog("destroy");
+	                $('#thumbnailsForBranchSelection').addClass('hidden');
+	            }
+	        }],
+	        maxHeight: 500,
+	        position: {
+	            my: "center top",
+	            at: "center top",
+	            of: "#canvas"
+	        }
+	    });
+	    $(this).attr('id', nextVideoInBranch);
+	    $('#thumbnailsForBranchSelection').removeClass('hidden')
+	    $('.ui-selectee').removeClass('ui-selected');
+	    }
+
+	    // begin drawing boxes for hotspots.
+        if (e.target !== this) return; // if it's not over the canvas, don't do any of the following.
         console.log('mousedown on canvas detected');
         $("#current").attr({
             id: ''
@@ -156,14 +200,14 @@ $(function(){
 		return false;
 	});
 
-	//delete individual spots
+	//delete individual spots - controlled in sidebar
 	$('.close').click(function () {
 		console.log('close clicked');
 	    $(this).parent().remove();
 	    return false;
 	});
 
-	//clear all spots
+	//clear all spots - controlled in sidebar
 	$('#clear').click(function() {
 		console.log('clear clicked');
 	    $("div.send-video").remove();
@@ -178,52 +222,6 @@ $(function(){
 // 	console.log('new video added to canvas');
 // 	// $('#canvas').append('ul-selected videoListThumbnail');
 // });
-
-
-
-
-
-// On clicking an existing video hotspot, make a modal of available branch videos appear.
-$(document).on('click', '.send-video', function(e) {
-    if (e.target !== this) return;
-    
-    var spot = $(this);
-    var nextVideoInBranch;
-	console.log('send-video hotspot clicked');
-	
-	// Dialog of available videos
-    $('#dialog').dialog({
-        modal: true,
-        buttons: [{
-            text: "Save",
-            click: function () {
-                nextVideoInBranch = $('.ui-selected').attr('id');
-                $(spot).attr('nextVid', nextVideoInBranch)
-                $(".thumb", spot).html('<img src="/image/A/' + nextVideoInBranch +'A.png" />');
-                $(this).dialog("destroy");
-                $('#thumbnailsForBranchSelection').addClass('hidden');
-            }
-        }, {
-            text: "Cancel",
-            click: function () {
-                $(this).dialog("destroy");
-                $('#thumbnailsForBranchSelection').addClass('hidden');
-            }
-        }],
-        maxHeight: 500,
-        position: {
-            my: "center top",
-            at: "center top",
-            of: "#canvas"
-        }
-    });
-    $(this).attr('id', nextVideoInBranch);
-    $('#thumbnailsForBranchSelection').removeClass('hidden')
-    $('.ui-selectee').removeClass('ui-selected');
-});
-
-
-
 
 
 </script>
