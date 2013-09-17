@@ -82,6 +82,8 @@ $(function(){
     	console.log(e.target);
         if ($(event.target).hasClass("close") ) {
         	console.log('close');
+        	$(event.target).parent().remove();
+        	return false;
 	    	}
 
         if (e.target !== this) return; // if it's over the sidebar, don't do any of the following.
