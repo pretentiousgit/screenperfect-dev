@@ -174,7 +174,11 @@ $(function(){
 		console.log(imgSrc);
 		$('.highlight').removeClass('highlight');
 		$(event.target).parent().addClass('highlight');
-		$('#canvas').css('background', 'url('+ imgSrc +') no-repeat fixed center').css('background-size','720px');
+		$('#canvas').css(
+				{
+				    'background': 'url('+ imgSrc +') no-repeat fixed center',
+					'background-size': '720px'
+    			});
 		return false; 
 	});
  
