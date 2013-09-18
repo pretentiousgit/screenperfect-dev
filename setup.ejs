@@ -131,7 +131,7 @@ $(function(){
             id: ''
         });
 
-        var box = $('<div class="send-video" ></div>');
+        var box = $('<div class="send-video box-setup" ></div>');
         $(this).append(box);
 
         var parentOffset = $(this).parent().offset();
@@ -145,7 +145,6 @@ $(function(){
         box.css({
             top: y1, //offsets
             left: x1, //offsets
-            background: '#FFF'
         });
     });
 
@@ -162,7 +161,9 @@ $(function(){
 // When the mouse stops moving, create the box
     $("#canvas").mouseup(function () {
     	$('#current').append('<button class="close">X</button><div class="thumb">Click to set branch.</div>');
+    	console.log($('#current').attr('style'));
         $("#current")
+        	.removeClass('box-setup')
             .attr({
                 id: ''
             });

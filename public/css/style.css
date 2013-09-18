@@ -468,7 +468,7 @@ img.fullscreen:empty {
 .send-video {
   z-index: 1;
   position: absolute;
-  background:transparent;
+  background:rgba(255,255,255,0.8);
   display:block;
   overflow:hidden;
   padding: 2px;
@@ -487,6 +487,10 @@ img.fullscreen:empty {
 -webkit-border-radius: 6px;
 -moz-border-radius: 6px;
 border-radius: 6px;}
+
+.box-setup {
+  background: rgba(255,255,255,0.5);
+}
 
 #controlSpots {
 z-index:1;
