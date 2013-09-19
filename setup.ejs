@@ -186,7 +186,7 @@ $(function(){
 					top: $video.offset().top,
 					width: $video.width(),
 					height: $video.height(),
-					link: $video.attr("link")
+					link: $video.attr("nextVid")
 			  };
 			
 			  links.push(obj);
@@ -215,11 +215,14 @@ $(function(){
 			$.getJSON('/tmp/'+vidId+'.json', function(data) {
 			    for (var i in data.spots) {
 					var skeleton = $('<div class="send-video"><button class="close">X</button><div class="thumb">Click to set branch.</div></div>');
-		        	$(skeleton).attr('nextvid', data.spots[i].link);
 		        	$(skeleton).css('top', data.spots[i].top);
 		        	$(skeleton).css('left', data.spots[i].left);
 		        	$(skeleton).css('width', data.spots[i].width);
 		        	$(skeleton).css('height', data.spots[i].height);
+		        	if (data.spots[i].link) {
+		        		$(skeleton).attr('nextvid', data.spots[i].link);
+			        	$(skeleton).html('<button class="close">X</button><div class="thumb"><img src="/image/A/' + data.spots[i].link +'A.png" /></div></div>');
+		        		}
 		        	$(skeleton).appendTo($('#canvas'));
 			    }
 			  });
@@ -229,22 +232,21 @@ $(function(){
 	//save spots to server json
 	$('#save').click(function(e){
 		var current = $("#canvas").attr('vidId');
-		var links = [current];
+			var links = [current];
 
-		$(".send-video").each(function (index) {
-			  var $video = $(this);
+			$(".send-video").each(function (index) {
+				  var $video = $(this);
+				
+				  var obj = {
+					id: $video.attr("nextVid"),
+					left: $video.offset().left,
+					top: $video.offset().top,
+					width: $video.width(),
+					height: $video.height(),
+					link: $video.attr("nextVid")
+			  };
 			
-			  var obj = {
-				id: $video.attr("nextVid"),
-				left: $video.offset().left,
-				top: $video.offset().top,
-				width: $video.width(),
-				height: $video.height(),
-				link: $video.attr("link")
-		  };
-		
-		  links.push(obj);
-
+			  links.push(obj);
 		});
 		
 		message('emitted \'' + JSON.stringify(links) + '\'');
