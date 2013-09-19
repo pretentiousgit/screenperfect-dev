@@ -112,12 +112,16 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             console.log(e);
             // has to be redone because the emit does not emit what string needs to be stored
             var nameOfFile = e[0]; // this needs to be stringified and parsed to get appropriate file id
-            var fileContents = JSON.stringify(e);
+            var shifted = e.shift(); // stores filename to "shifted" and spots to e
+                console.log("shifted "+ JSON.stringify(e));
+            
+            var fileContents = e;
+
             fs.writeFile(__dirname +'/public/tmp/' + nameOfFile + ".json", JSON.stringify(e), function (err) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log(nameOfFile + " Hotspots saved.");
+                    console.log("video "+nameOfFile + " Hotspots saved.");
                 }
             });
         });
