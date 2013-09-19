@@ -115,9 +115,9 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             var shifted = e.shift(); // stores filename to "shifted" and spots to e
                 console.log("shifted "+ JSON.stringify(e));
             
-            var fileContents = e;
+            var fileContents = '{"spots":'+JSON.stringify(e)+'}' ;
 
-            fs.writeFile(__dirname +'/public/tmp/' + nameOfFile + ".json", JSON.stringify(e), function (err) {
+            fs.writeFile(__dirname +'/public/tmp/' + nameOfFile + ".json", fileContents, function (err) {
                 if (err) {
                     console.log(err);
                 } else {
