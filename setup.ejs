@@ -173,7 +173,7 @@ $(function(){
     // select a video from the thumbnail list of available videos in order to set spots on it
 	$('.videoListThumbnail').click(function() {
 		// store any existing image links to their JSON
-		if ($('.send-video').length){
+		if ($('.send-video').length && $('.send-video').attr('nextVid') ){
 			var current = $("#canvas").attr('vidId');
 			var links = [current];
 
