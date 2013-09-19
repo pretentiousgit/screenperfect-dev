@@ -16,7 +16,7 @@
 			id=1;
 			app.locals.videoA.each(function(video){ 
 			 %>
-			 <li id="<%= id %>"> 
+			 <li vidId="<%= id %>"> 
 			 	<img class="videoListThumbnail" src="/image/A/<%= id %>A.png" />
 			 </li>
 			<% 
@@ -48,7 +48,7 @@
 			app.locals.videoA.each(function(video){ 
 		 %>
 		 <li id="<%= id %>" > 
-			<a href="#" class="linkButton"><img src="/image/A/<%= id %>A.png" /></a>
+			<a href="#" class="linkButton" ><img src="/image/A/<%= id %>A.png" /></a>
 		 </li>
 		<% 
 			id++
@@ -173,27 +173,27 @@ $(function(){
     // select a video from the thumbnail list of available videos in order to set spots on it
 	$('.videoListThumbnail').click(function() {
 		var imgSrc = $(this).attr('src');
-		console.log(imgSrc);
+		var vidId = $(this).parent().attr('vidId');
 		$('.highlight').removeClass('highlight');
 		$(event.target).parent().addClass('highlight');
 		$('#canvas').css(
 				{
 				    'background': 'url('+ imgSrc +') no-repeat fixed center',
 					'background-size': '720px'
-    			});
+    			}).attr('vidId', vidId);
 		return false; 
 	});
  
 	//save spots to server json
 	$('#save').click(function(e){
-		var current = $(".fullscreen").attr("id");
+		var current = $("#canvas").attr('vidId');
 		var links = [current];
 
 		$(".send-video").each(function (index) {
 			  var $video = $(this);
 			
 			  var obj = {
-				id: $video.attr("id"),
+				id: $video.attr("nextVid"),
 				left: $video.offset().left,
 				top: $video.offset().top,
 				width: $video.width(),
@@ -226,6 +226,12 @@ $(function(){
 	});
 });
 
+// if someone hits esc, escape from positioning boxes
+// $( document ).keypress( function( e ){
+//   if( e == 27 )
+//   	console.log('escape');
+//   	$(document).trigger( 'mouseup' );
+// } ) 
 
 
 </script>
