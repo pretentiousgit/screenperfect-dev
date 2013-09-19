@@ -173,41 +173,45 @@ $(function(){
     // select a video from the thumbnail list of available videos in order to set spots on it
 	$('.videoListThumbnail').click(function() {
 		// store any existing image links to their JSON
-		var current = $("#canvas").attr('vidId');
-		var links = [current];
+		if ($('.send-video').length){
+			var current = $("#canvas").attr('vidId');
+			var links = [current];
 
-		$(".send-video").each(function (index) {
-			  var $video = $(this);
+			$(".send-video").each(function (index) {
+				  var $video = $(this);
+				
+				  var obj = {
+					id: $video.attr("nextVid"),
+					left: $video.offset().left,
+					top: $video.offset().top,
+					width: $video.width(),
+					height: $video.height(),
+					link: $video.attr("link")
+			  };
 			
-			  var obj = {
-				id: $video.attr("nextVid"),
-				left: $video.offset().left,
-				top: $video.offset().top,
-				width: $video.width(),
-				height: $video.height(),
-				link: $video.attr("link")
-		  };
-		
-		  links.push(obj);
+			  links.push(obj);
 
-		});
-		
-		message('emitted \'' + JSON.stringify(links) + '\'');
-		socket.emit('setup event', links);
+			});
+			
+			message('emitted \'' + JSON.stringify(links) + '\'');
+			socket.emit('setup event', links);
+		}
 
 		// clear hotspots already drawn
-	    $("div.send-video").remove();
+		    $("div.send-video").remove();
 
 		// change the background image to a new background image
-		var imgSrc = $(this).attr('src');
-		var vidId = $(this).parent().attr('vidId');
-		$('.highlight').removeClass('highlight');
-		$(event.target).parent().addClass('highlight');
-		$('#canvas').css(
-				{
-				    'background': 'url('+ imgSrc +') no-repeat fixed center',
-					'background-size': '720px'
-    			}).attr('vidId', vidId);
+			var imgSrc = $(this).attr('src');
+			var vidId = $(this).parent().attr('vidId');
+			$('.highlight').removeClass('highlight');
+			$(event.target).parent().addClass('highlight');
+			$('#canvas').css(
+					{
+					    'background': 'url('+ imgSrc +') no-repeat fixed center',
+						'background-size': '720px'
+	    			}).attr('vidId', vidId);
+		
+		// Is there already a json for this? Then put those hotspots onscreen.
 
 		return false;
 	});
