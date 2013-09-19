@@ -212,7 +212,17 @@ $(function(){
 	    			}).attr('vidId', vidId);
 		
 		// Is there already a json for this? Then put those hotspots onscreen.
-
+			$.getJSON('/tmp/'+vidId+'.json', function(data) {
+			    for (var i in data.spots) {
+					var skeleton = $('<div class="send-video"><button class="close">X</button><div class="thumb">Click to set branch.</div></div>');
+		        	$(skeleton).attr('nextvid', data.spots[i].link);
+		        	$(skeleton).css('top', data.spots[i].top);
+		        	$(skeleton).css('left', data.spots[i].left);
+		        	$(skeleton).css('width', data.spots[i].width);
+		        	$(skeleton).css('height', data.spots[i].height);
+		        	$(skeleton).appendTo($('#canvas'));
+			    }
+			  });
 		return false;
 	});
  
