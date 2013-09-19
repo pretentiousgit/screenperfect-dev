@@ -110,13 +110,14 @@ io.sockets.on('connection', function (socket) { //send various events to connect
         socket.on('setup event', function (e) {
             socket.broadcast.emit('setup event', e);
             console.log(e);
-
+            // has to be redone because the emit does not emit what string needs to be stored
             var nameOfFile = e[0]; // this needs to be stringified and parsed to get appropriate file id
-            fs.writeFile('tmp/' + nameOfFile + ".json", JSON.stringify(e), function (err) {
+            var fileContents = JSON.stringify(e);
+            fs.writeFile(__dirname +'/public/tmp/' + nameOfFile + ".json", JSON.stringify(e), function (err) {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log(nameOfFile + " Divlist was saved!");
+                    console.log(nameOfFile + " Hotspots saved.");
                 }
             });
         });
