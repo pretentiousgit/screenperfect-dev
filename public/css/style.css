@@ -468,7 +468,7 @@ img.fullscreen:empty {
 .send-video {
   z-index: 1;
   position: absolute;
-  background:rgba(255,255,255,0.8);
+  /* background:rgba(255,255,255,0.8); */ 
   display:block;
   overflow:hidden;
   padding: 2px;
