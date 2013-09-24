@@ -24,7 +24,7 @@ socket.on('video list', function(e){
 
 socket.on('control event', function(e) {
 	// connection passes server's current video number to listener clients
-	if (e){
+	if (e){ // needs to be adjusted slightly, does not detect if video is 1
 		screenControl(e, videoQuant);
 		console.log(e);
 
