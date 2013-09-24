@@ -18,8 +18,8 @@ socket.on('play', function(e){
     console.log('time in other window '+ e);
     console.log('currentTime this window '+ clientTime);
     console.log('time difference '+ (e-clientTime));
-    document.getElementById('v0').currentTime = e + 0.0290245;
-    document.getElementById('v0').playbackRate = 1.00000000001;
+    document.getElementById('v0').currentTime = e - 0.0290245; // e + 0.0290245 is perfect on one machine. this adjusts client time to allow for lag.
+    document.getElementById('v0').playbackRate = 1.00000000001; // ClientB is the control window, Client is the mobile client
     document.getElementById('v0').play();
     $('#time').text(e - clientTime);
 });
