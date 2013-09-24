@@ -11,6 +11,7 @@ $(function(){
 
 // Draw hotspots on canvas to trace where the video should link to.
     var x1, y1;
+ 
     $("#canvas").mousedown(function (e) {
     	console.log(e.target);
         

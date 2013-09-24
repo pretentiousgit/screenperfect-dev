@@ -42,12 +42,6 @@ socket.on('control event', function(e) {
 	
 });
 
-// socket.on('timestamp_pass', function(stamp){
-// 	console.log('stamp passed '+stamp);
-// 	var vidObj = $('video.fullscreen')[0];
-// 	vidObj.currentTime=stamp;
-// });
-
 
 // Listener checks if it is on a mobile device.
 // If it is on a mobile device, it requests touch event to trigger video playthrough.
