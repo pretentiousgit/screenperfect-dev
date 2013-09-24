@@ -59,6 +59,10 @@ app.get('/setup', function (req, res, next) {
     res.render('setup');
 });
 
+app.get('/testclient', function (req, res, next) {
+    res.render('testclient');
+});
+
 // here i'd do something like replace below app.gets with app.get('/client/:id') and
 // res.render('client' + req.params.id). if you were to take it even further you could
 // res.render('client', {id: req.params.id, videos: videos[req.params.id]}) basically
