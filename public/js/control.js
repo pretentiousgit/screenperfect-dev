@@ -65,7 +65,7 @@ $(function() {
         	$(skeleton).css('left', data.spots[i].left);
         	$(skeleton).css('width', data.spots[i].width);
         	$(skeleton).css('height', data.spots[i].height);
-        	$(skeleton).appendTo($('#controlSpots'));
+        	$('#controlSpots').html(skeleton);
         }
 	 });
 
