@@ -2,7 +2,7 @@
 <script type="text/javascript" src="/js/client.js"></script>
 
 
-<video id="1" class="fullscreen" width="640" height="480" autoplay loop />
+<video id="1" class="fullscreen" width="640" height="480" loop />
 <source  src="/video/webm/B/1B.webm" type="video/webm">
 Your browser does not support the video tag.
 </video>
@@ -13,7 +13,7 @@ var videoList = app.locals.videoB.length-1;
 
 for (var i = videoList - 1; i >= 0; i--) {
  %>
-	<video class="hidden" id="<%= id %>" preload="none" muted="true"/>
+	<video class="hidden" id="<%= id %>" preload="true" muted="true"/>
 	<source src="/video/webm/B/<%= id %>B.webm" type="video/webm">
 	Your browser does not support the video tag.
 	</video>	
