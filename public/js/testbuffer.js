@@ -1,3 +1,7 @@
+// get within 50ms, try not to fry the platform. 29.6fps, 1440x HD Galaxy TAB2/Nexus10. High rez.
+// content at full HD
+
+
 var playTime,
     pauseTime,
     current,
