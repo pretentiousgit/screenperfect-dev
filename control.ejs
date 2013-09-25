@@ -1,16 +1,16 @@
 <script src="/js/control.js"></script>
 
 <div id="controlSpots"></div>
-<img src="/image/A/1A.gif" class="fullscreen swap" id="1" set="1"/>
+<!-- <img src="/image/A/1A.gif" class="fullscreen swap" id="1" set="1"/> -->
 
 
   <%
-var id=2;
+var id=1;
 var videoList = app.locals.videoA.length;
 
 for (var i = videoList -1 ; i >= 0; i--) {     
   %>
-    	<video  class="fullscreen" id="<%= id %>" autoplay muted="true" controls/>
+    	<video class="hidden" id="<%= id %>" autoplay muted="true" controls/>
       	<source src="/video/webm/A/<%= id %>A.webm" type='video/webm; codecs="vp8, vorbis"' />
       	Your browser does not support the video tag.
     	</video>	
@@ -31,7 +31,7 @@ $.getJSON('/tmp/1.json', function(data) {
         	$(skeleton).css('left', data.spots[i].left);
         	$(skeleton).css('width', data.spots[i].width);
         	$(skeleton).css('height', data.spots[i].height);
-        	$(skeleton).appendTo($('#controlSpots'));
+        	$("#controlSpots").html(skeleton);
     }
   });
 
