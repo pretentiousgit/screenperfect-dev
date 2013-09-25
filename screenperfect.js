@@ -51,16 +51,20 @@ var clientLength = clientList.length;
 app.locals.videoA  =  controlList;
 app.locals.videoB = clientList;
 
-app.get('/control', function (req, res, next) {
-    res.render('control');
-});
-
 app.get('/setup', function (req, res, next) {
     res.render('setup');
 });
 
+app.get('/control', function (req, res, next) {
+    res.render('control');
+});
+
 app.get('/testclient', function (req, res, next) {
     res.render('testclient');
+});
+
+app.get('/testcontrol', function (req, res, next) {
+    res.render('testcontrol');
 });
 
 // here i'd do something like replace below app.gets with app.get('/client/:id') and
@@ -74,9 +78,7 @@ app.get('/client', function (req, res, next) {
     res.render('client');
 });
 
-app.get('/clientb', function (req, res, next) {
-    res.render('clientB');
-});
+
 
 //socket stuff
 var io = sio.listen(app),
