@@ -56,6 +56,7 @@ function pauseVideos() {
 // }, 24);
 
 $('#v1').on('play', function(){
+  socket.emit('playNow', document.getElementById('v1').currentTime);
  //shows video frame while playing
   //   setInterval(function() {
   //       $('#timeB').html(vid1.currentTime);
