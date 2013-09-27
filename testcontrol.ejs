@@ -30,14 +30,20 @@ socket.on('connect', function () {
     console.log('passing connection');
 });
 
+socket.on('playController', e){
+  playVideos(e);
+}
+
 var gap,
 	runningTime=0,
 	playCount=0,
 	vid1 = document.getElementById('v1');
 
-function playVideos() {
+function playVideos(fromTime) {
    playCount++; // this was for testing when they fell out of synch.
+   document.getElementById('v1').currentTime = fromTime;
    document.getElementById('v1').play();
+
    socket.emit('playNow', document.getElementById('v1').currentTime);
    console.log('playNow', document.getElementById('v1').currentTime);
 }
@@ -56,7 +62,7 @@ function pauseVideos() {
 // }, 24);
 
 $('#v1').on('play', function(){
-  socket.emit('playNow', document.getElementById('v1').currentTime);
+  socket.emit('playNow', document.getElementById('v1').currentTime); // may or may not pass proper play command
  //shows video frame while playing
   //   setInterval(function() {
   //       $('#timeB').html(vid1.currentTime);

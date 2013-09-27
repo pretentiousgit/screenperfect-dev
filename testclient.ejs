@@ -31,14 +31,18 @@
 
 	socket.on('play', function(e){
 	    var clientTime = document.getElementById('v0').currentTime;
+	    var clientTimeShim =  e - 0.0290245;
+	    var clientRate = 1.00000000001
+		    
 		    console.log('time in other window '+ e);
 		    console.log('currentTime this window '+ clientTime);
 		    console.log('time difference '+ (e-clientTime));
 
-	    document.getElementById('v0').currentTime = e - 0.0290245; // e + 0.0290245 is perfect on one machine. this adjusts client time to allow for lag.
-	    document.getElementById('v0').playbackRate = 1.00000000001; // a slightly faster playback rate helps cover gaps
+	    document.getElementById('v0').currentTime = clientTimeShim; // e + 0.0290245 is perfect on one machine. this adjusts client time to allow for lag.
+	    document.getElementById('v0').playbackRate = clientRate; // a slightly faster playback rate helps cover gaps
 	    document.getElementById('v0').play();
 
+	    socket.emit('playControl', clientTime);
 	    $('#time').text(e - clientTime);
 	});
 
