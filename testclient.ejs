@@ -39,13 +39,14 @@
 		    console.log('currentTime this window '+ clientTime);
 		    console.log('time difference '+ (e-clientTime));
 
+		document.getElementById('v0').pause();
 	    document.getElementById('v0').currentTime = clientTimeShim; // e + 0.0290245 is perfect on one machine. this adjusts client time to allow for lag.
 	    document.getElementById('v0').playbackRate = clientRate; // a slightly faster playback rate helps cover gaps
 	    document.getElementById('v0').play();
 
-	    socket.emit('playControl', clientTime);
+	    socket.emit('playControl', document.getElementById('v0').currentTime);
 	    $('#time').text(clientTime); // intended to check time differences.
-	    $('#helloBox').text('play command sent');
+	    $('#helloBox').text('play command sent '+ document.getElementById('v0').currentTime);
 	});
 
 	socket.on('pause', function(e){

@@ -32,6 +32,8 @@ socket.on('playController', function(e){
   document.getElementById('v1').currentTime = e + shim;
   document.getElementById('v1').play();
   $('#timeDiff').text(e - document.getElementById('v1').currentTime);
+  $('#time').text(e);
+
 });
 
 var gap,
@@ -41,14 +43,12 @@ var gap,
 function playVideos() {
    socket.emit('playNow', document.getElementById('v1').currentTime);
    console.log('playNow', document.getElementById('v1').currentTime);
-   $('#time').text(document.getElementById('v1').currentTime);
 }
 
 function pauseVideos() {
 	document.getElementById('v1').pause();
 	socket.emit('pauseNow', document.getElementById('v1').currentTime);
 	console.log('pauseNow', document.getElementById('v1').currentTime);
-  $('#time').text(document.getElementById('v1').currentTime);
 }
 
 

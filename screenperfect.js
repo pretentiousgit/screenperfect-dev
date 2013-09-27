@@ -159,7 +159,7 @@ io.sockets.on('connection', function (socket) { //send various events to connect
         });
 
         socket.on('playControl', function(e){
-            console.log('playController emitted');
+            console.log('playController emitted '+ e);
             socket.broadcast.emit('playController', e);
         });
 
