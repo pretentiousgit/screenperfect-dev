@@ -1,4 +1,5 @@
 <p id="time" style="color:#000">time</p>
+<p id="helloBox">helloBox</p>
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
@@ -44,6 +45,7 @@
 
 	    socket.emit('playControl', clientTime);
 	    $('#time').text(e - clientTime);
+	    $('#helloBox').text('play command sent');
 	});
 
 	socket.on('pause', function(e){

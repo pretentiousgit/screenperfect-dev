@@ -144,10 +144,11 @@ io.sockets.on('connection', function (socket) { //send various events to connect
 		});
 
         socket.on('playNow', function(e){
+            var frameDifferenceOverWiFi = 0.02;
             socket.broadcast.emit('play', e);
             socket.broadcast.emit('socket play command passing '+ e);
             console.log('console play command passing '+ e);
-            playVal = e;
+            playVal = e + frameDifferenceOverWiFi;
         });
 
         socket.on('pauseNow', function(e){
@@ -157,7 +158,8 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             playVal = e;
         });
 
-        socket.on('playControl', function(e)){
+        socket.on('playControl', function(e){
+            console.log('playController emitted');
             socket.broadcast.emit('playController', e);
         });
 
