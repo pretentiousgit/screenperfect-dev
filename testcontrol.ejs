@@ -1,15 +1,12 @@
 <button type="button" id='playNow' onclick='playVideos()'>Play</button>
 <button type="button" id='pauseNow' onclick='pauseVideos()'>Pause</button>
 
-<p id='timeDif' style="color:#000">Difference</p>
-<p id='dur' style="color:#000">Runtime</p>
-<p id='playCount' style="color:#000">PlayCount</p>
+<p id='time' style="color:#000">Current Video Time</p>
+<p id='timeDiff' style="color:#000">Difference Between Client and Control</p>
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
 <div class="videoBox"style="width:49%; float:left; position:relative;">
-	<p id="timeB" style="color:#000">TimeB</p>
-	<p id="frameB"  style="color:#000">TimeA</p>
 	<video id="v1" width="100%" controls tabindex="1" loop>
 	    <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/A/1A.webm"></source>
 	    <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
@@ -31,41 +28,33 @@ socket.on('connect', function () {
 });
 
 socket.on('playController', function(e){
-  var shim = 0;
+  var shim = 0.2;
   document.getElementById('v1').currentTime = e + shim;
   document.getElementById('v1').play();
+  $('#timeDiff').text(e - document.getElementById('v1').currentTime);
 });
 
 var gap,
 	runningTime=0,
-	playCount=0,
 	vid1 = document.getElementById('v1');
 
-function playVideos(fromTime) {
-   playCount++; // this was for testing when they fell out of synch.
-   document.getElementById('v1').currentTime = fromTime;
-   // document.getElementById('v1').play();
-
+function playVideos() {
    socket.emit('playNow', document.getElementById('v1').currentTime);
    console.log('playNow', document.getElementById('v1').currentTime);
+   $('#time').text(document.getElementById('v1').currentTime);
 }
 
 function pauseVideos() {
 	document.getElementById('v1').pause();
 	socket.emit('pauseNow', document.getElementById('v1').currentTime);
 	console.log('pauseNow', document.getElementById('v1').currentTime);
+  $('#time').text(document.getElementById('v1').currentTime);
 }
 
 
-
-// setInterval(function() {
-// 	$('#dur').text(runningTime);
-// 	runningTime = runningTime + (24/1000);
-// }, 24);
-
-// $('#v1').on('play', function(){
-//   socket.emit('playNow', document.getElementById('v1').currentTime);
-// });
+$('#v1').on('play', function(){
+  socket.emit('playNow', document.getElementById('v1').currentTime);
+});
 
 $('#v1').on('pause', function(){
   socket.emit('pauseNow', document.getElementById('v1').currentTime);

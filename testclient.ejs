@@ -3,7 +3,7 @@
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
-<video id="v0" tabindex="0" preload width="720px">
+<video id="v0" tabindex="0" preload width="720px" controls>
     <source type="video/webm; codecs=&quot;vp8, vorbis&quot;" src="/video/webm/B/1B.webm"></source>
     <p>Sorry, your browser does not support the &lt;video&gt; element.</p>
 </video>
@@ -44,7 +44,7 @@
 	    document.getElementById('v0').play();
 
 	    socket.emit('playControl', clientTime);
-	    $('#time').text(e - clientTime);
+	    $('#time').text(clientTime); // intended to check time differences.
 	    $('#helloBox').text('play command sent');
 	});
 
@@ -55,7 +55,8 @@
 		    console.log('time difference '+ (e-clientTime));
 
 	    document.getElementById('v0').pause();
-	    $('#time').text(e - clientTime);
+	    $('#time').text(clientTime); // intended to check time differences.
+	    document.getElementById('v0').currentTime = e;
 	});
 	
 	// On the arrival of a timestamp, log the difference between that time and the current one.
