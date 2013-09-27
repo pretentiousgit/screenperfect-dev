@@ -30,7 +30,9 @@ socket.on('connect', function () {
     console.log('passing connection');
 });
 
-socket.on('playController', function(){
+socket.on('playController', function(e){
+  var shim = 0;
+  document.getElementById('v1').currentTime = e + shim;
   document.getElementById('v1').play();
 });
 
