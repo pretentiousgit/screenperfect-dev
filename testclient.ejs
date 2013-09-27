@@ -31,33 +31,23 @@
 	});
 
 	socket.on('play', function(e){
-	    var clientTime = document.getElementById('v0').currentTime;
-	    var clientTimeShim =  e - 0.0290245;
-	    var clientRate = 1.00000000001
+	    var clientTimeShim =  e + 0; // e is passed in by what time is on the controller.
+	    var clientRate = 1;
 		    
-		    console.log('time in other window '+ e);
-		    console.log('currentTime this window '+ clientTime);
-		    console.log('time difference '+ (e-clientTime));
-
-		document.getElementById('v0').pause();
-	    document.getElementById('v0').currentTime = clientTimeShim; // e + 0.0290245 is perfect on one machine. this adjusts client time to allow for lag.
-	    document.getElementById('v0').playbackRate = clientRate; // a slightly faster playback rate helps cover gaps
 	    document.getElementById('v0').play();
 
 	    socket.emit('playControl', document.getElementById('v0').currentTime);
+
 	    $('#time').text(clientTime); // intended to check time differences.
 	    $('#helloBox').text('play command sent '+ document.getElementById('v0').currentTime);
 	});
 
 	socket.on('pause', function(e){
-	    var clientTime = document.getElementById('v0').currentTime;
-		    console.log('time in other window '+ e);
-		    console.log('this window '+ clientTime);
-		    console.log('time difference '+ (e-clientTime));
-
 	    document.getElementById('v0').pause();
-	    $('#time').text(clientTime); // intended to check time differences.
-	    document.getElementById('v0').currentTime = e;
+	    
+	    $('#time').text(document.getElementById('v0').currentTime); // intended to check time differences.
+	    
+	    // document.getElementById('v0').currentTime = e; // sets current time to time in other window
 	});
 	
 	// On the arrival of a timestamp, log the difference between that time and the current one.
