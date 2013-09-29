@@ -113,7 +113,7 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             return false;
         });
 
-        socket.on('setup event', function (e) {
+        socket.on('setup', function (e) {
             socket.broadcast.emit('setup event', e);
             console.log(e);
             // has to be redone because the emit does not emit what string needs to be stored

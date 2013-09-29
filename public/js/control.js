@@ -70,10 +70,10 @@ $(function() {
 	 });
 
 	ts.css('color','#FFF');
-	updater.on('timeupdate', function() {
-		ts.text(vidObj.currentTime);
-		socket.emit('timestamp', vidObj.currentTime);
-	});
+	// updater.on('timeupdate', function() {
+	// 	ts.text(vidObj.currentTime);
+	// 	socket.emit('timestamp', vidObj.currentTime);
+	// });
 
 	return false;	
 

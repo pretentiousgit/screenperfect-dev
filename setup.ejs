@@ -208,7 +208,7 @@ $(function(){
 			});
 			
 			message('emitted \'' + JSON.stringify(links) + '\'');
-			socket.emit('setup event', links);
+			socket.emit('setup', links);
 		}
 
 		// clear hotspots already drawn
@@ -242,6 +242,7 @@ $(function(){
 			  });
 		return false;
 	});
+    
  
 	//save spots to server json
 	$('#save').click(function(e){
@@ -264,7 +265,7 @@ $(function(){
 		});
 		
 		message('emitted \'' + JSON.stringify(links) + '\'');
-		socket.broadcast.emit('setup event', links);
+		socket.emit('setup', links);
 		
 		return false;
 	});
