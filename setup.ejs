@@ -145,9 +145,17 @@ $(function(){
         });
 
         var box = $('<div class="send-video box-setup" ></div>');
+
         $(this).append(box);
 
         var parentOffset = $(this).parent().offset();
+        var canvasWidth = $('#canvas').width();
+        var canvasHeight = $('#canvas').height();
+
+        console.log (canvasWidth +' '+ canvasHeight);
+        console.log (e.pageX +' '+ e.pageY);
+        console.log ( Math.round((e.pageX/canvasWidth)*100) +' '+ Math.round((e.pageY/canvasHeight)*100));
+
         x1 = e.pageX - parentOffset.left;
         y1 = e.pageY - parentOffset.top;
 
@@ -174,7 +182,7 @@ $(function(){
 // When the mouse stops moving, create the box
     $("#canvas").mouseup(function () {
     	$('#current').append('<button class="close">X</button><div class="thumb">Click to set branch.</div>');
-    	console.log($('#current').attr('style'));
+    	console.log($('#current').attr('style')); // here is probz where math should go
         $("#current")
         	.removeClass('box-setup')
             .attr({
@@ -192,18 +200,18 @@ $(function(){
 			var links = [current];
 
 			$(".send-video").each(function (index) {
-				  var $video = $(this);
+				var $video = $(this);
 				
-				  var obj = {
+				var obj = {
 					id: $video.attr("nextVid"),
 					left: $video.offset().left,
 					top: $video.offset().top,
 					width: $video.width(),
 					height: $video.height(),
 					link: $video.attr("nextVid")
-			  };
-			
-			  links.push(obj);
+			  		};
+				
+				links.push(obj);
 
 			});
 			

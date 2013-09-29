@@ -59,12 +59,14 @@ $(function() {
   	// hotspot reader
 	$.getJSON('/tmp/'+videoNext+'.json', function(data) {
 		 for (var i in data.spots) {
+		 	// these need to be dynamically recalculated by percentages.
 			var skeleton = $('<a class="send-video">&nbsp;</a>');
         	$(skeleton).attr('nextvid', data.spots[i].link);
+        	$(skeleton).attr('topSize', data.spots[i].top);
         	$(skeleton).css('top', data.spots[i].top);
         	$(skeleton).css('left', data.spots[i].left);
-        	$(skeleton).css('width', data.spots[i].width);
-        	$(skeleton).css('height', data.spots[i].height);
+        	$(skeleton).css('width',  (data.spots[i].width/720)*100+'%' ); //video-width should be adjustable
+        	$(skeleton).css('height', (data.spots[i].height/540)*100+'%'); //video-height should be adjustable
         	$('#controlSpots').html(skeleton);
         }
 	 });

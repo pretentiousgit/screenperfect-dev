@@ -1,10 +1,1 @@
-{"spots":[
-	{
-		"left": "0",
-		"top": "0",
-		"width":"100%",
-		"height":"100%",
-		"link":"8"
-		
-	}
-]}
+{"spots":[{"id":"9","left":336,"top":168,"width":124,"height":255,"link":"9"},{"id":"10","left":731,"top":167,"width":149,"height":265,"link":"10"}]}
