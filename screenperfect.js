@@ -163,9 +163,9 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             socket.broadcast.emit('playController', e);
         });
 
-        socket.on('role', function (role, func) { // uses boolean gate to set controller.
-            console.log('socket assuming role ' + role); // role passes the var from incoming socket
-            if (control){ // if control is true, the function just returns.
+        socket.on('role', function (role, func) {
+            console.log('socket assuming role ' + role);
+            if (control){ // if control variable is set, the function just returns. else flips gate.
              	func(true);
             }
 			else {
@@ -174,10 +174,6 @@ io.sockets.on('connection', function (socket) { //send various events to connect
                 func(false);
             }
             
-        });
-
-        socket.on('timestamp', function (timestamp, e){
-            socket.broadcast.emit('time', timestamp);
         });
 
         //if the control disconnects then tell the clients.

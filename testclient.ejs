@@ -1,5 +1,5 @@
 <p id="time" style="color:#000">time</p>
-<p id="helloBox">helloBox</p>
+<p id="helloBox">send a play command</p>
 
 <div class="videoHolder" style="width:100%; float:left; clear:right;">
 
@@ -38,24 +38,13 @@
 
 	    socket.emit('playControl', document.getElementById('v0').currentTime);
 
-	    $('#time').text(clientTime); // intended to check time differences.
+	    $('#time').text(clientTime); // record time difference for check.
 	    $('#helloBox').text('play command sent '+ document.getElementById('v0').currentTime);
 	});
 
 	socket.on('pause', function(e){
 	    document.getElementById('v0').pause();
-	    
-	    $('#time').text(document.getElementById('v0').currentTime); // intended to check time differences.
-	    
-	    // document.getElementById('v0').currentTime = e; // sets current time to time in other window
+		$('#time').text(document.getElementById('v0').currentTime); // record time difference for check.	    
 	});
-	
-	// On the arrival of a timestamp, log the difference between that time and the current one.
-	// socket.on('time', function(e){
-	//     var curtime = document.getElementById('v0').currentTime;
-	//     curtime = e - curtime;
-	//     console.log('difference '+ curtime);
-	//     timeFromControl = e;
-	// });
 
 </script>
