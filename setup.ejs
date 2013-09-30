@@ -87,7 +87,7 @@ $("#videoListBox").accordion();
 $(function(){
 
 // Draw hotspots on canvas to trace where the video should link to.
-    var x1, y1;
+    var x1, y1,x2,y2;
  
     $("#canvas").mousedown(function (e) {
     	console.log(e.target);
@@ -159,20 +159,23 @@ $(function(){
         x1 = e.pageX - parentOffset.left;
         y1 = e.pageY - parentOffset.top;
 
+        x2 = Math.round((e.pageX/canvasWidth)*100);
+        y2 = Math.round((e.pageY/canvasHeight)*100);
+
         box.attr({
             id: 'current'
         });
 
         box.css({
-            top: y1, //offsets
-            left: x1, //offsets
+            top: y2 + '%', //offsets
+            left: x2  + '%', //offsets
         });
     });
 
 // when the mouse moves, extend the box.
     $("#canvas").mousemove(function (e) {
-        var w = e.pageX - x1;
-        var h = e.pageY - y1;
+        var w = Math.round(((e.pageX - x1)/$('#canvas').width())*100)+'%';
+        var h =  Math.round(((e.pageY - y1)/$('#canvas').height())*100)+'%';
         $("#current").css({
             width: w, //offsets
             height: h, //offsets
@@ -202,14 +205,11 @@ $(function(){
 			$(".send-video").each(function (index) {
 				var $video = $(this);
 				
-				var obj = {
+				  var obj = {
 					id: $video.attr("nextVid"),
-					left: $video.offset().left,
-					top: $video.offset().top,
-					width: $video.width(),
-					height: $video.height(),
+					css: $video.attr("style"),
 					link: $video.attr("nextVid")
-			  		};
+			  };
 				
 				links.push(obj);
 
@@ -237,10 +237,7 @@ $(function(){
 			$.getJSON('/tmp/'+vidId+'.json', function(data) {
 			    for (var i in data.spots) {
 					var skeleton = $('<div class="send-video"><button class="close">X</button><div class="thumb">Click to set branch.</div></div>');
-		        	$(skeleton).css('top', data.spots[i].top);
-		        	$(skeleton).css('left', data.spots[i].left);
-		        	$(skeleton).css('width', data.spots[i].width);
-		        	$(skeleton).css('height', data.spots[i].height);
+		        	$(skeleton).attr('style', data.spots[i].css);
 		        	if (data.spots[i].link) {
 		        		$(skeleton).attr('nextvid', data.spots[i].link);
 			        	$(skeleton).html('<button class="close">X</button><div class="thumb"><img src="/image/A/' + data.spots[i].link +'A.png" /></div></div>');
@@ -262,10 +259,7 @@ $(function(){
 				
 				  var obj = {
 					id: $video.attr("nextVid"),
-					left: $video.offset().left,
-					top: $video.offset().top,
-					width: $video.width(),
-					height: $video.height(),
+					css: $video.attr("style"),
 					link: $video.attr("nextVid")
 			  };
 			

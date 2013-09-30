@@ -27,10 +27,7 @@ $.getJSON('/tmp/1.json', function(data) {
     for (var i in data.spots) {
 			var skeleton = $('<a class="send-video">&nbsp;</a>');
         	$(skeleton).attr('nextvid', data.spots[i].link);
-        	$(skeleton).css('top', data.spots[i].top); // needs to get current height of #controlSpots
-        	$(skeleton).css('left', data.spots[i].left);
-        	$(skeleton).css('width',  (data.spots[i].width/720)*100+'%' ); //video-width should be adjustable
-        	$(skeleton).css('height', (data.spots[i].height/540)*100+'%'); //video-height should be adjustable
+        	$(skeleton).attr('style', data.spots[i].css);
         	$("#controlSpots").html(skeleton);
     }
   });
