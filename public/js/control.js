@@ -32,8 +32,7 @@ $(function() {
 
 	$('#'+ videoCurrent)
 		.removeClass("fullscreen")
-		.removeAttr("autoplay")
-		.attr('preload','none')
+		.removeAttr('loop')
 		.addClass("hidden")
   	
   	$('#'+ videoNext)
@@ -57,49 +56,15 @@ $(function() {
 	var ts = $('#timestamp');
 
   	// hotspot reader
-	$.getJSON('/tmp/1.json', function(data) {
-    for (var i in data.spots) {
+	$.getJSON('/tmp/'+videoNext+'.json', function(data) {
+		for (var i in data.spots) {
 			var skeleton = $('<a class="send-video">&nbsp;</a>');
         	$(skeleton).attr('nextvid', data.spots[i].link);
         	$(skeleton).attr('style', data.spots[i].css);
         	$("#controlSpots").html(skeleton);
-    }
-
+	    }
 	 });
 
-	ts.css('color','#FFF');
-	// updater.on('timeupdate', function() {
-	// 	ts.text(vidObj.currentTime);
-	// 	socket.emit('timestamp', vidObj.currentTime);
-	// });
-
-	return false;	
-
-});  // end of send-video	
-
-// socket.on('playController', function(e){
-//   var shim = 7.006; // shim is needed on first video load but not after
-//   document.getElementById('v1').currentTime = e + shim;
-//   document.getElementById('v1').play();
-//   $('#timeDiff').text(e - document.getElementById('v1').currentTime);
-//   $('#time').text(e);
-
-// });
-
-
-// $('#v1').on('play', function(){
-//   socket.emit('playNow', document.getElementById('v1').currentTime);
-// });
-
-// $('#v1').on('pause', function(){
-//   socket.emit('pauseNow', document.getElementById('v1').currentTime);
-//   $('#time').text(document.getElementById('v1').currentTime);
-// });
-
-/* 
-Idea File ToDo
-// hide the quicktime logo via transforms on load
-// add a crossfade effect to the video load over 1/3 second
-
-*/    
+	return false;
+	});   
 });

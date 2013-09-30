@@ -79,7 +79,7 @@
 <script type="text/javascript" >
 $(".selectable").selectable();
 $("#videoListBox").accordion();
-
+$(".send-video").draggable();
 </script>
 
 <script>
@@ -101,7 +101,7 @@ $(function(){
 
 	    // On clicking an existing video hotspot, make a modal of available branch videos appear.
 	    // this needs to be functionified to make it pop on clicking Thumb, too.
-		    if ($(event.target).hasClass('send-video')) {
+		    if ($(event.target).hasClass('send-video') && !$('.thumb').children('img')[0] ) {
 		    var spot = $(event.target);
 		    var nextVideoInBranch;
 			console.log('send-video hotspot clicked');
@@ -230,7 +230,7 @@ $(function(){
 			$('#canvas').css(
 					{
 					    'background': 'url('+ imgSrc +') no-repeat fixed center',
-						'background-size': '720px'
+						'background-size': '720px 540px'
 	    			}).attr('vidId', vidId);
 		
 		// Is there already a json for this? Then put those hotspots onscreen.

@@ -1,16 +1,19 @@
 <script src="/js/control.js"></script>
 
 <div id="controlSpots"></div>
-<!-- <img src="/image/A/1A.gif" class="fullscreen swap" id="1" set="1"/> -->
+<img src="/image/A/1A.gif" class="fullscreen swap" id="1" set="1"/>
+<!-- <video class="fullscreen" id="1" muted="true"/>
+        <source src="/video/webm/A/1A.webm" type='video/webm; codecs="vp8, vorbis"'/>
+        Your browser does not support the video tag.
+</video> -->
 
-
-  <%
-var id=1;
+<%
+var id=2;
 var videoList = app.locals.videoA.length;
 
 for (var i = videoList -1 ; i >= 0; i--) {     
   %>
-    	<video class="hidden" id="<%= id %>" autoplay muted="true"/>
+    	<video class="hidden" id="<%= id %>" preload='auto' muted="true" controls="true"/>
       	<source src="/video/webm/A/<%= id %>A.webm" type='video/webm; codecs="vp8, vorbis"'/>
       	Your browser does not support the video tag.
     	</video>	
