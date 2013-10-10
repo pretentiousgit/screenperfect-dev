@@ -117,6 +117,7 @@ io.sockets.on('connection', function (socket) { //send various events to connect
             socket.broadcast.emit('setup event', e);
             console.log(e);
             // has to be redone because the emit does not emit what string needs to be stored
+            
             var nameOfFile = e[0]; // this needs to be stringified and parsed to get appropriate file id
             var shifted = e.shift(); // stores filename to "shifted" and spots to e
                 console.log("shifted "+ JSON.stringify(e));
