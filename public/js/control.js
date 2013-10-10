@@ -51,9 +51,6 @@ $(function() {
 		videoB.play();
 	}
 	
-	var updater = $('video.fullscreen');
-	var vidObj = $('video.fullscreen')[0];
-	var ts = $('#timestamp');
 
   	// hotspot reader
 	$.getJSON('/tmp/'+videoNext+'.json', function(data) {
