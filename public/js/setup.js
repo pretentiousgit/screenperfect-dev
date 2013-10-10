@@ -6,3 +6,4 @@ socket.on('connect', function () {
 	message('setup connected, please do not connect a server just now.');
   });
  });
+

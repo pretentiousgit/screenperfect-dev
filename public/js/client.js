@@ -27,17 +27,6 @@ socket.on('control event', function(e) {
 	if (e){ // needs to be adjusted slightly, does not detect if video is 1
 		screenControl(e, videoQuant);
 		console.log(e);
-
-		//  provide currentTime from playing video
-		var updater = $('video.fullscreen');
-		var vidObj = $('video.fullscreen')[0];
-		var ts = $('#timestamp');
-
-		ts.css('color','#FFF');
-		updater.on('timeupdate', function() {
-			ts.text(vidObj.currentTime);
-			
-		});
 	}
 	
 });
