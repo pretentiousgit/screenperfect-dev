@@ -1,8 +1,12 @@
 <script src="/js/setup.js"></script>
 
 <div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Video Setup</a></li>
+    <li><a href="#tabs-2">Current Branch Structure</a></li>
+  </ul>
 	<!-- main app canvas page 1 -->
-	<div id='videoSetup'>
+	<div id='tabs-1'>
 
 		<!-- control panel -->
 		<div id="videoListBox">
@@ -36,39 +40,37 @@
 				</div>
 			</div>
 		</div> <!-- /videoListBox -->
-		<div id="canvas">
+		
+		<!-- video selection dialog for linking hotspots -->
+		<div title="Select Next Video" id="dialog">
+			<div class="imgGrid">
+				<ul id="thumbnailsForBranchSelection" class="selectable hidden">
+				<%  
+					id=1;
+					app.locals.videoA.each(function(video){ 
+				 %>
+				 <li id="<%= id %>" > 
+					<a href="#" class="linkButton" ><img src="/image/A/<%= id %>A.png" /></a>
+				 </li>
+				<% 
+					id++
+					 });
+				%>
+				</ul>
+			</div>
 		</div>
-	</div>
 
-	<!-- video selection dialog for linking hotspots -->
-	<div title="Select Next Video" id="dialog">
-		<div class="imgGrid">
-			<ul id="thumbnailsForBranchSelection" class="selectable hidden">
-			<%  
-				id=1;
-				app.locals.videoA.each(function(video){ 
-			 %>
-			 <li id="<%= id %>" > 
-				<a href="#" class="linkButton" ><img src="/image/A/<%= id %>A.png" /></a>
-			 </li>
-			<% 
-				id++
-				 });
-			%>
-			</ul>
+		<!-- new media upload box -->
+		<div title="Upload New Media" id="uploadPanel" class="hidden" >
+			<div id="uploadBox">
+					<label for="fileBox">Browse... </label>
+					<input type="file" id="FileBox">
+					<br />
+					<label for="nameBox">Name: </label><input type="text" id="nameBox">
+			</div>
 		</div>
 	</div>
-
-	<!-- new media upload box -->
-	<div title="Upload New Media" id="uploadPanel" class="hidden" >
-		<div id="uploadBox">
-				<label for="fileBox">Browse... </label>
-				<input type="file" id="FileBox">
-				<br />
-				<label for="nameBox">Name: </label><input type="text" id="nameBox">
-		</div>
-	</div>
-	<div id="videoNodeChart">
+	<div id="tabs-2">
 		<!-- // draw a branching chart of existing videos and their links, 
 		// based on the number of existing json entries in public/tmp/
 		// make it pretty and rounded and animated where possible. -->
@@ -79,7 +81,9 @@
 <script src="/js/setupMain.js"></script>
 
 <script>
-
+$(function() {
+    $( "#tabs" ).tabs();
+  });
 // //upload new video to server - this is a feature under development.
 // $(document).on('click','#uploadButton', function (e) {
 // 	console.log('upload clicked');
