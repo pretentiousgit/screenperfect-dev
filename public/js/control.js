@@ -11,11 +11,6 @@ $(document).on('click', '.send-video', function(e){
 	var curVid = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxtVid = parseInt($(this).attr('nextVid'));
 
-	console.log(e.target +' clicked');
-	console.log(this);
-	console.log(curVid + " this is curVid");
-	
-
 	video_swap(curVid, nxtVid);
 
 	$.getJSON('/tmp/'+nxtVid+'.json', function(data) {
@@ -48,25 +43,3 @@ function video_swap(from_id, to_id){
 	cur.pause();
 	nxt.play();
 };
- 
-
-	/*
-		function change_video(from_id, to_id) {
-			// NOTE: try to avoid id arthimetic like from_id+1
-
-		}
-
-		call it like this:
-
-		var videoNext = parseInt($(this).attr('nextVid')),
-    	videoCurrent = $('.fullscreen').attr('id'),
-    
-    	message('emitted \'' + videoNext + '\'');
-    	socket.emit('control event', videoNext);
-
-		change_video(videoCurrent, videoNext)
-
-		// hotspot reader
-		...
-
-	*/

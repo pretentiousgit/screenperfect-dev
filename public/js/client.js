@@ -11,7 +11,6 @@ socket.on('connect', function(e) {
 	});
 });
 
-
 socket.on('video quant',function(e) {
 	videoQuant = e;
 	console.log('number of videos '+ videoQuant);
@@ -25,103 +24,28 @@ socket.on('video list', function(e){
 socket.on('control event', function(e) {
 	// connection passes server's current video number to listener clients
 	if (e){ // needs to be adjusted slightly, does not detect if video is 1
-		screenControl(e, videoQuant);
+		var curVid = document.getElementsByClassName('visible')[0].getAttribute("id");
+		var nxtVid = e;
+
+		video_swap(curVid, nxtVid);
+		
 		console.log(e);
 	}
 	
 });
 
-
-// Listener checks if it is on a mobile device.
-// If it is on a mobile device, it requests touch event to trigger video playthrough.
-// Then plays through videos accordingly (?).
-// This could be a big gotcha; it works on main screen but has not been tested cross-device.
-// 
-// if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-//  $('#clientActivator').removeClass('.hidden').addClass('fullscreen');
-//  $(document).on('click','#clientActivator', function(){
-//  }
-//  }
-
-
-function screenControl(video, finalVid) {
+function video_swap(from_id, to_id){
+	var cur = document.getElementById(from_id);
+	var nxt = document.getElementById(to_id);
 	
-	/*
-		var videoNext = parseInt($(this).attr('nextVid')),
-    	videoCurrent = $('.fullscreen').attr('id'),
-    
-		change_video(videoCurrent, videoNext)
+	console.log(cur+' this is cur within video_swap');
 
-	*/
+	cur.classList.toggle('hidden');
+	cur.classList.toggle('visible'); // for use with selectors
 
-	// video container variables
-     var videoNext = video,
-    	 videoLast = video-1,
-    	 videoLoad = video+1;
+	nxt.classList.toggle('hidden'); 
+	nxt.classList.toggle('visible');
 
-    // video object variables
-    var videoA= $('#' + videoLast)[0],
-		videoB= $('#' + videoNext)[0],
-		videoC= $('#' + videoLoad)[0];
-
-    $(this).attr('nextVid', videoNext);
-
-	$('#'+ videoLast)
-		.removeClass("fullscreen")
-		.removeAttr("autoplay")
-		.addClass("hidden")
-		.removeAttr('loop')
-	;
-
-  	$('#'+ videoNext)
-  		.removeClass("hidden")
-  		.addClass("fullscreen")
-  		.attr('loop',true)
-  	;
-	
-	if (video > 1) {
-		console.log('video '+video);
-		videoA.pause();
-	}
-	else{
-		console.log('final video '+finalVid);
-		
-		$('#'+ finalVid)
-			.removeClass("fullscreen")
-			.removeAttr("autoplay")
-			.addClass("hidden")
-			.removeAttr('loop')
-		;
-
-		$('#'+finalVid)[0].pause();
-	}
-  	
-  	videoB.play();
-
-
-// debug notes - using these to test video performance and check for sameframe display.
-
-	// $('#' + videoLast)[0].addEventListener('stalled',currentStall,false);
-	// 	function currentStall(e) {
-	// 		if(!e) { e = window.event; }
-	// 		// What you want to do after the event
-	// 		console.log("'\033[90m:Whoops, I'm stalled out: "+ e);
-	// 		var buffer = $('#'+videoLast).get(0).buffered.end(0);
-	// 		var end = $('#'+videoLast).get(0).duration;
-	// 		var progressRatio = buffer/end;
-	// 		if (progressRatio > 0.01){
-	// 			$('.swap')
-	// 			.addClass("hidden");
-	// 		};
-	// 		console.log("video "+ videoLast +" ratio: "+progressRatio);
-
-	// 	}
-    
- //    $('#' + videoNext)[0].addEventListener('canplay',playThrough,false);
-	// 	function playThrough(e) {
-	// 		if(!e) { e = window.event; }
-	// 		// What you want to do after the event
-	// 		console.log("'\033[90m:I can totally play!: "+ e);
-	// 	}
-    
-}
+	cur.pause();
+	nxt.play();
+};

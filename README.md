@@ -10,3 +10,13 @@ ToDo
 // Send-video should be linked to the video playback time using Popcorn. 
 // it should only link up after the video appears and is loaded appropriately.
 
+// Listener checks if it is on a mobile device.
+// If it is on a mobile device, it requests touch event to trigger video playthrough.
+// Then plays through videos accordingly (?).
+// This could be a big gotcha; it works on main screen but has not been tested cross-device.
+// 
+// if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+//  $('#clientActivator').removeClass('.hidden').addClass('fullscreen');
+//  $(document).on('click','#clientActivator', function(){
+//  }
+//  }
