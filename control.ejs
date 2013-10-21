@@ -13,7 +13,7 @@ var videoList = app.locals.videoA.length;
 
 for (var i = videoList -1 ; i >= 0; i--) {     
   %>
-    	<video class="hidden" id="<%= id %>" preload='auto' muted="true" controls="true"/>
+    	<video class="hidden fullscreen" id="<%= id %>" />
       	<source src="/video/webm/A/<%= id %>A.webm" type='video/webm; codecs="vp8, vorbis"'/>
       	Your browser does not support the video tag.
     	</video>	

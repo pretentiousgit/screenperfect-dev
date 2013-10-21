@@ -29,16 +29,13 @@ $('#controlSpots').on('click', '.send-video', function(e){
 	return false;
 });   	
 
-function video_swap (from_id, to_id){
+function video_swap(from_id, to_id){
 	var cur = document.getElementById(from_id);
 	var nxt = document.getElementById(to_id);
-	var videoA = cur[0];
+	var videoA = cur[0]; //gets <video> element itself
 	var videoB = nxt[0];
 
-	cur.classList.toggle('fullscreen'); // may not be necessary. previously used to find current video.
 	cur.classList.toggle('hidden');
-
-	nxt.classList.toggle('fullscreen');
 	nxt.classList.toggle('hidden');
 
 	videoA.pause();
