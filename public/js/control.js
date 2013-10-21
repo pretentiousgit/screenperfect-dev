@@ -5,63 +5,75 @@ socket.on('connect', function () {
 		  $('#connection').trigger('disconnected');
 		  message('There is already a control connected');
 		});
-
 });
- 
-// Send-video should be linked to the video playback time using Popcorn. 
-// it should only link up after the video appears and is loaded appropriately.
 
-$(function() {
+$('#controlSpots').on('click', '.send-video', function(e){
 
-  $('#controlSpots').on('click', '.send-video', function(e){
+	var curVid = $('.fullscreen').attr('id');
+	var nxtVid = parseInt($(this).attr('nextVid'));
 
-  	//  video container variables
-    var videoNext = parseInt($(this).attr('nextVid')),
-    	videoCurrent = $('.fullscreen').attr('id'),
-    	videoLoad = videoNext+1;
-    
-    // video object variables
-    var videoA= $('#' + videoCurrent)[0],
-		videoB= $('#' + videoNext)[0],
-		videoC= $('#' + videoLoad)[0];	
+	video_swap(curVid, nxtVid);
 
-    message('emitted \'' + videoNext + '\'');
-    socket.emit('control event', videoNext);
-
-    $(this).attr('nextVid', videoNext);
-
-	$('#'+ videoCurrent)
-		.removeClass("fullscreen")
-		.removeAttr('loop')
-		.addClass("hidden")
-  	
-  	$('#'+ videoNext)
-  		.removeClass("hidden")
-  		.addClass("fullscreen")
-  		.attr('loop',true);
-	
-	// image swapper
-	$('.swap[set="'+videoNext+'"]')
-		.removeClass("hidden");
-	
-	if (videoCurrent != 1){ // video 1 is a gif on android.
-		videoA.pause();
-	}
-	if (videoNext != 1){
-		videoB.play();
-	}
-	
-
-  	// hotspot reader
 	$.getJSON('/tmp/'+videoNext+'.json', function(data) {
 		for (var i in data.spots) {
 			var skeleton = $('<a class="send-video">&nbsp;</a>');
         	$(skeleton).attr('nextvid', data.spots[i].link);
         	$(skeleton).attr('style', data.spots[i].css);
         	$("#controlSpots").html(skeleton);
-	    }
-	 });
+	 }
+	});
+
+	message('emitted \'' + nxtVid + '\'');
+    socket.emit('control event', nxtVid);
 
 	return false;
-	});   
-});
+});   	
+
+function video_swap (from_id, to_id){
+	var cur = document.getElementById(from_id);
+	var nxt = document.getElementById(to_id);
+	var videoA = cur[0];
+	var videoB = nxt[0];
+
+	cur.classList.toggle('fullscreen'); // may not be necessary. previously used to find current video.
+	cur.classList.toggle('hidden');
+
+	nxt.classList.toggle('fullscreen');
+	nxt.classList.toggle('hidden');
+
+	videoA.pause();
+	videoB.play();
+};
+ 
+
+// Send-video should be linked to the video playback time using Popcorn. 
+// it should only link up after the video appears and is loaded appropriately.
+
+
+	// Notes from Dann
+	// This needs to be cleaned up so that there are almost no
+	// messages to the server so that this function and screenControl in the client are 
+	// interchangeable.
+	// Therefore, we need to pass current client and get next video values and load them without
+	// touching anything outside the function
+
+	/*
+		function change_video(from_id, to_id) {
+			// NOTE: try to avoid id arthimetic like from_id+1
+
+		}
+
+		call it like this:
+
+		var videoNext = parseInt($(this).attr('nextVid')),
+    	videoCurrent = $('.fullscreen').attr('id'),
+    
+    	message('emitted \'' + videoNext + '\'');
+    	socket.emit('control event', videoNext);
+
+		change_video(videoCurrent, videoNext)
+
+		// hotspot reader
+		...
+
+	*/

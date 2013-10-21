@@ -46,6 +46,14 @@ socket.on('control event', function(e) {
 
 function screenControl(video, finalVid) {
 	
+	/*
+		var videoNext = parseInt($(this).attr('nextVid')),
+    	videoCurrent = $('.fullscreen').attr('id'),
+    
+		change_video(videoCurrent, videoNext)
+
+	*/
+
 	// video container variables
      var videoNext = video,
     	 videoLast = video-1,
