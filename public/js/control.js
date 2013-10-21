@@ -46,17 +46,6 @@ function video_swap (from_id, to_id){
 };
  
 
-// Send-video should be linked to the video playback time using Popcorn. 
-// it should only link up after the video appears and is loaded appropriately.
-
-
-	// Notes from Dann
-	// This needs to be cleaned up so that there are almost no
-	// messages to the server so that this function and screenControl in the client are 
-	// interchangeable.
-	// Therefore, we need to pass current client and get next video values and load them without
-	// touching anything outside the function
-
 	/*
 		function change_video(from_id, to_id) {
 			// NOTE: try to avoid id arthimetic like from_id+1
