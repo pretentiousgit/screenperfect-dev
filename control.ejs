@@ -21,7 +21,7 @@ for (var i = videoList -1 ; i >= 0; i--) {
     <%
   id++
    };
-  %>
+%>
 
 </div>
 
@@ -35,11 +35,7 @@ for (var i = videoList -1 ; i >= 0; i--) {
 //         	$("#controlSpots").html(skeleton);
 //     }
 //   });
-
-$(function() {
-
-    $(document).click(function(e){console.log(e.target);});
-
-});
+// $(document).click(function(e) { alert(e.target +' clicked'); });
+    $(document).click(function(e){console.log(e.target +' clicked');});
 
 </script>
