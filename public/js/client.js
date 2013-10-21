@@ -1,6 +1,3 @@
-var videoQuant;
-var videoList;
-
 socket.on('connect', function(e) {
 	//on connection, tell the server what kind of client you are. This is a listener.
 	socket.emit('listener', function (error) {
@@ -10,16 +7,6 @@ socket.on('connect', function(e) {
 		message('Server thinks only one listener can be connected'); // debug message
 	});
 });
-
-socket.on('video quant',function(e) {
-	videoQuant = e;
-	console.log('number of videos '+ videoQuant);
-});
-
-socket.on('video list', function(e){
-	videoList = e;
-	console.log('videoList var '+ videoList);
-})
 
 socket.on('control event', function(e) {
 	// connection passes server's current video number to listener clients
