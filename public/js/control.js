@@ -8,15 +8,17 @@ socket.on('connect', function () {
 });
 
 $(document).on('click', '.send-video', function(e){
+	var curVid = document.getElementsByClassName('visible')[0].getAttribute("id");
+	var nxtVid = parseInt($(this).attr('nextVid'));
+
 	console.log(e.target +' clicked');
 	console.log(this);
+	console.log(curVid + " this is curVid");
 	
-	var curVid = $('.fullscreen').attr('id');
-	var nxtVid = parseInt($(this).attr('nextVid'));
 
 	video_swap(curVid, nxtVid);
 
-	$.getJSON('/tmp/'+videoNext+'.json', function(data) {
+	$.getJSON('/tmp/'+nxtVid+'.json', function(data) {
 		for (var i in data.spots) {
 			var skeleton = $('<a class="send-video">&nbsp;</a>');
         	$(skeleton).attr('nextvid', data.spots[i].link);
@@ -34,14 +36,17 @@ $(document).on('click', '.send-video', function(e){
 function video_swap(from_id, to_id){
 	var cur = document.getElementById(from_id);
 	var nxt = document.getElementById(to_id);
-	var videoA = cur[0]; //gets <video> element itself
-	var videoB = nxt[0];
+	
+	console.log(cur+' this is cur within video_swap');
 
 	cur.classList.toggle('hidden');
-	nxt.classList.toggle('hidden');
+	cur.classList.toggle('visible'); // for use with selectors
 
-	videoA.pause();
-	videoB.play();
+	nxt.classList.toggle('hidden'); 
+	nxt.classList.toggle('visible');
+
+	cur.pause();
+	nxt.play();
 };
  
 
