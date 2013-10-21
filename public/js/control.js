@@ -7,8 +7,10 @@ socket.on('connect', function () {
 		});
 });
 
-$('#controlSpots').on('click', '.send-video', function(e){
-
+$(document).on('click', '.send-video', function(e){
+	console.log(e.target +' clicked');
+	console.log(this);
+	
 	var curVid = $('.fullscreen').attr('id');
 	var nxtVid = parseInt($(this).attr('nextVid'));
 

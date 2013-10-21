@@ -27,15 +27,13 @@ for (var i = videoList -1 ; i >= 0; i--) {
 
 <script>
 
-// $.getJSON('/tmp/1.json', function(data) {
-//     for (var i in data.spots) {
-// 			var skeleton = $('<a class="send-video">&nbsp;</a>');
-//         	$(skeleton).attr('nextvid', data.spots[i].link);
-//         	$(skeleton).attr('style', data.spots[i].css);
-//         	$("#controlSpots").html(skeleton);
-//     }
-//   });
-// $(document).click(function(e) { alert(e.target +' clicked'); });
-    $(document).click(function(e){console.log(e.target +' clicked');});
+$.getJSON('/tmp/1.json', function(data) {
+    for (var i in data.spots) {
+			var skeleton = $('<a class="send-video">&nbsp;</a>');
+        	$(skeleton).attr('nextvid', data.spots[i].link);
+        	$(skeleton).attr('style', data.spots[i].css);
+        	$("#controlSpots").html(skeleton);
+    }
+  });
 
 </script>
