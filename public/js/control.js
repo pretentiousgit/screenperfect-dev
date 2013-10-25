@@ -28,6 +28,13 @@ $(document).on('click', '.send-video', function(e){
 	return false;
 });   	
 
+/*
+Notes from Dann
+Make video_swap into video_play, which takes curVid internally
+
+Jennie wants to jump in when we have layout HTML for her to get her hands on
+*/
+
 function video_swap(from_id, to_id){
 	var cur = document.getElementById(from_id);
 	var nxt = document.getElementById(to_id);
@@ -43,3 +50,7 @@ function video_swap(from_id, to_id){
 	cur.pause();
 	nxt.play();
 };
+
+
+
+
