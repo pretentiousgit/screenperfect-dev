@@ -12,14 +12,14 @@ socket.on('control event', function(e) {
 	// connection passes server's current video number to listener clients
 	if (e){ // needs to be adjusted slightly, does not detect if video is 1
 		
-		video_swap(e);
+		video_play(e);
 		console.log(e);
 	}
 	
 });
 
 
-function video_swap(to_id){
+function video_play(to_id){
 	var cur = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxt = document.getElementById(to_id);
 	

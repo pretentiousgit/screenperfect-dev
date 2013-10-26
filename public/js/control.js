@@ -10,7 +10,7 @@ socket.on('connect', function () {
 $(document).on('click', '.send-video', function(e){
 	var nxtVid = parseInt($(this).attr('nextVid'));
 
-	video_swap(nxtVid);
+	video_play(nxtVid);
 
 	$.getJSON('/tmp/'+nxtVid+'.json', function(data) {
 		for (var i in data.spots) {
@@ -36,7 +36,7 @@ Go through http://daimio.org/demos/seqs/ and work on how control sequences work 
 */
 
 
-function video_swap(to_id){
+function video_play(to_id){
 	var cur = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxt = document.getElementById(to_id);
 	
