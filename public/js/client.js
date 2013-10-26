@@ -11,18 +11,16 @@ socket.on('connect', function(e) {
 socket.on('control event', function(e) {
 	// connection passes server's current video number to listener clients
 	if (e){ // needs to be adjusted slightly, does not detect if video is 1
-		var curVid = document.getElementsByClassName('visible')[0].getAttribute("id");
-		var nxtVid = e;
-
-		video_swap(curVid, nxtVid);
 		
+		video_swap(e);
 		console.log(e);
 	}
 	
 });
 
-function video_swap(from_id, to_id){
-	var cur = document.getElementById(from_id);
+
+function video_swap(to_id){
+	var cur = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxt = document.getElementById(to_id);
 	
 	console.log(cur+' this is cur within video_swap');
@@ -36,3 +34,4 @@ function video_swap(from_id, to_id){
 	cur.pause();
 	nxt.play();
 };
+

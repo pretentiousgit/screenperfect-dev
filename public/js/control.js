@@ -8,10 +8,9 @@ socket.on('connect', function () {
 });
 
 $(document).on('click', '.send-video', function(e){
-	var curVid = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxtVid = parseInt($(this).attr('nextVid'));
 
-	video_swap(curVid, nxtVid);
+	video_swap(nxtVid);
 
 	$.getJSON('/tmp/'+nxtVid+'.json', function(data) {
 		for (var i in data.spots) {
@@ -30,13 +29,15 @@ $(document).on('click', '.send-video', function(e){
 
 /*
 Notes from Dann
-Make video_swap into video_play, which takes curVid internally
 
-Jennie wants to jump in when we have layout HTML for her to get her hands on
+Look at how to blob out thumbnails from video as part of an uploading function
+
+Go through http://daimio.org/demos/seqs/ and work on how control sequences work - add functionality, see how to make it work.
 */
 
-function video_swap(from_id, to_id){
-	var cur = document.getElementById(from_id);
+
+function video_swap(to_id){
+	var cur = document.getElementsByClassName('visible')[0].getAttribute("id");
 	var nxt = document.getElementById(to_id);
 	
 	console.log(cur+' this is cur within video_swap');
