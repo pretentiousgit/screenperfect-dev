@@ -1,0 +1,3 @@
+[submodule "vendor/fluent-ffmpeg"]
+	path = vendor/fluent-ffmpeg
+	url = git://github.com/schaermu/node-fluent-ffmpeg.git

@@ -1,4 +1,5 @@
 var express = require('express'),
+    ffmpeg = require('fluent-ffmpeg'),
     sio = require('socket.io'),
     path = require('path'),
     wrench = require('wrench'),
@@ -77,7 +78,6 @@ app.get('/testcontrol', function (req, res, next) {
 app.get('/client', function (req, res, next) {
     res.render('client');
 });
-
 
 
 //socket stuff
