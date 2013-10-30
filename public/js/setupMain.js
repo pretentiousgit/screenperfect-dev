@@ -21,7 +21,7 @@ $(function(){
 
 	    // On clicking an existing video hotspot, make a modal of available branch videos appear.
 	    // this needs to be functionified to make it pop on clicking Thumb, too.
-		    if ($(event.target).hasClass('send-video') && !$('.thumb').children('img')[0] ) {
+		    if ($(event.target).hasClass('send-video') ) {
 		    var spot = $(event.target);
 		    var nextVideoInBranch;
 			console.log('send-video hotspot clicked');
