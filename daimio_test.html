@@ -1,0 +1,51 @@
+<!doctype html> 
+<html> 
+<head> 
+  <meta charset="utf-8">
+  <title>Screen Perfect Daimio Prototype</title>
+  <script type="text/javascript" src="daimio_composite.js"></script>
+</head>
+<body>
+
+  <script type="text/daml" class="spaceseeds">
+    outer
+      
+      @data-in from-js
+      
+      chomp
+        { __in.products | >$products
+        | __in.profiles | >$profiles
+        | __in.promos   | >$promos
+        | __in.subs     | >$subs }
+         
+      @data-in -> chomp
+      
+      filter-by-product
+        {$subs   | filter block "{__.product | is like $current-product}" | >$current-subs}
+        {$promos | filter block "{__.product | is like $current-product}" | >$current-promos}
+          
+      reload {__}
+      
+      filter-by-product -> reload
+      
+  </script>
+
+
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+      var seedlikes = Array.prototype.slice.call(
+                        document.getElementsByClassName('spaceseeds')
+                      ).map(function(node) {
+                        return node.text
+                      }).join("\n")
+      
+      var outerseed = D.make_some_space(seedlikes)
+      OuterSpace = new D.Space(outerseed) // published for debug
+      
+      // activate init port
+      D.send_value_to_js_port(outerseed, 'init', data)
+    })
+  </script>
+
+</body>
+</html>
