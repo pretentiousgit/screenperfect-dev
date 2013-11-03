@@ -3,36 +3,60 @@
 <head> 
   <meta charset="utf-8">
   <title>Screen Perfect Daimio Prototype</title>
-  <script type="text/javascript" src="daimio_composite.js"></script>
+<!--  <script type="text/javascript" src="http://sherpa.local/~dann/screenperfect/daimio_composite.js"></script> -->
+  <script type="text/javascript" src="http://sherpa.local/~dann/daimio/get.php?file=daimio"></script>
 </head>
 <body>
+  
+  <div id="main"></div>
 
-  <script type="text/daml" class="spaceseeds">
+  <script id="control" type="text/daml" class="spaceseeds">
     outer
       
-      @data-in from-js
+      $videos {}
+      $active-video {}
       
-      chomp
-        { __in.products | >$products
-        | __in.profiles | >$profiles
-        | __in.promos   | >$promos
-        | __in.subs     | >$subs }
-         
-      @data-in -> chomp
+      // NETWORK
+      @game-data  socket-in  game-data
+      @get-data   socket-out get-data
+      @set-active socket-out
+      @get-active socket-in
       
-      filter-by-product
-        {$subs   | filter block "{__.product | is like $current-product}" | >$current-subs}
-        {$promos | filter block "{__.product | is like $current-product}" | >$current-promos}
-          
-      reload {__}
+      @init from-js
+      @init -> { __ | tap } -> @get-data
       
-      filter-by-product -> reload
+      changed {__}
+      set-active {__ | >id | $videos.{_id} | >$active-video}
+      @game-data -> { __.videos | >$videos | list keys | __.#1} -> set-active -> changed
+      
+      // DISPLAY 
+      show-active 
+        <img id="clicky" src="{$active-video.urls.client_thumb}">
+      
+      @set-main dom-set-html main
+      changed -> show-active -> @set-main
+      
+      // CLICKS
+      @clicky dom-on-click
+      @clicky -> {$active-video.spots.#1.link} -> @set-active
+      
+      @get-active -> set-active
       
   </script>
 
 
+  <script src="/socket.io/socket.io.js"></script>
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
+      
+      // TODO: client vs control (read url)
+      // TODO: multiple spots (clickable divs)
+      // TODO: show videos
+      // TODO: editable data
+      // TODO: hide socket connection
+      
+      socket = io.connect('http://sherpa.local:8888/') // published for demo (icky)
+      
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
                       ).map(function(node) {
@@ -43,7 +67,8 @@
       OuterSpace = new D.Space(outerseed) // published for debug
       
       // activate init port
-      D.send_value_to_js_port(outerseed, 'init', data)
+      var data = {}
+      D.send_value_to_js_port(outerseed, 'init', data)      
     })
   </script>
 
