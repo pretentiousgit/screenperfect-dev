@@ -2,20 +2,35 @@
 <html> 
 <head> 
   <meta charset="utf-8">
-  <title>Screen Perfect Daimio Prototype</title>
+  <title>Screen Perfect Daimio Prototype Admin</title>
 <!--  <script type="text/javascript" src="http://sherpa.local/~dann/screenperfect/daimio_composite.js"></script> -->
   <script type="text/javascript" src="http://sherpa.local/~dann/daimio/get.php?file=daimio"></script>
 </head>
 <body>
+  ADMINADMINADMIN!!!!
   
+  <form id="new-video">
+    <label for="name">Name</label>
+      <input type="text" name="name" value="" id="name">
+    <label for="client">Client Video URL</label>
+      <input type="text" name="client" value="" id="client">
+    <label for="control">Control Video URL</label>
+      <input type="text" name="control" value="" id="control">
+    <label for="client_thumb">Client Thumbnail URL</label>
+      <input type="text" name="client_thumb" value="" id="client_thumb">
+    <label for="control_thumb">Control Thumbnail URL</label>
+      <input type="text" name="control_thumb" value="" id="control_thumb">
+    <p><input type="submit" value="add"></p>
+  </form>
+  
+  <div id="video-list"></div>
   <div id="main"></div>
-
+  
   <script id="control" type="text/daml" class="spaceseeds">
     outer
       
-      $videos {}
+      $game {}
       $active-video {}
-      $control-mode
       
       // NETWORK
       @game-data  socket-in  game-data
@@ -30,27 +45,42 @@
       @mode -> { __ | >$control-mode }
       
       changed {__}
-      set-active {__ | >id | $videos.{_id} | >$active-video}
-      @game-data -> {__.videos | >$videos | list keys | __.#1} -> set-active -> changed
+      set-active {__ | >id | $game.videos.{_id} | >$active-video}
+      @game-data -> {__ | >$game | 0} -> set-active -> changed
       
-      // DISPLAY 
+      // DISPLAY
+      show-all-videos
+        {begin list | merge data $game.videos}
+          <li>
+            <p><strong>{_name}</strong></p>
+            <p>{_urls}</p>
+            <p>{_spots}</p>
+          </li>
+        {end list}
+      
       show-active 
         <img id="video" src="{$active-video.urls.client_thumb}">
         {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
           <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
         {end divs}
       
-      @set-main dom-set-html main
+      @set-video-list dom-set-html video-list
+      @set-main       dom-set-html main
+      
       changed -> show-active -> @set-main
+      changed -> show-all-videos -> @set-video-list
       
-      // CLICKS
-      @clicky dom-on-click .clickable
-      click-jack
-        {__ | >id | $control-mode | then "{_id | >@control}" | run with {* (:id _id)}}
-      @clicky -> {__| tap} -> click-jack
-      click-jack.control -> @set-active
+      // ADD VIDEO
       
-      @get-active -> set-active
+      @new-video dom-on-submit
+      @save-game socket-out save-game
+      eat-new-video
+        { __ | >raw-info
+        | {* (:name _raw-info.name :urls {_raw-info | list remove by_key :name} :spots () )}
+        | list poke data $game path (:videos {$game.videos | count}) | >$game}
+        
+      @new-video -> eat-new-video -> changed
+                    eat-new-video -> {__ | tap} -> @save-game
       
   </script>
 
@@ -59,7 +89,7 @@
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
-      // TODO: show videos
+      // TODO: editable data
       
       D.Etc.socket = io.connect('http://sherpa.local:8888/')
       
@@ -77,7 +107,7 @@
       D.send_value_to_js_port(outerseed, 'init', data)
       
       // activate control mode
-      if(window.location.pathname.replace(/\/$/, '').split('/').slice(-1)[0] == 'control')
+      if(window.location.pathname.split('/').slice(-1)[0] == 'control')
         D.send_value_to_js_port(outerseed, 'mode', 'control')
         
     })

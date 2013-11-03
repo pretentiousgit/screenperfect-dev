@@ -7,7 +7,8 @@ var app = require('http').createServer(handler)
 
 D.Etc.db = db // expose DB connection to Daimio
 
-var html = fs.readFileSync(__dirname+'/daimio_test.html', 'utf8')
+var client_html = fs.readFileSync(__dirname+'/daimio_test.html', 'utf8')
+  , admin_html  = fs.readFileSync(__dirname+'/daimio_test_admin.html', 'utf8')
 
 function handler (req, res) {
   if(req.url === '/favicon.ico') {
@@ -16,8 +17,14 @@ function handler (req, res) {
     return
   }
   
+  if(req.url.replace(/\/$/, '').split('/').slice(-1)[0] == 'admin') {
+    res.writeHead(200, {"Content-Type": "text/html"})
+    res.end(admin_html)
+    return
+  }
+  
   res.writeHead(200, {"Content-Type": "text/html"})
-  res.end(html)
+  res.end(client_html)
 }
 
 
@@ -25,32 +32,34 @@ io.on('connection', function (socket) {
   socket.on('get-data', function (data) {
     var game = data.game
       , session = data.session || 1 // TODO: randomize
+      , query = game ? {_id: new mongo.ObjectID(game)} : {}
     
-    socket.emit('game-data', {
-      videos: 
-        { 1: { urls: { client: "http://sherpa.local/~dann/screenperfect/public/video/webm/A/1A.webm"
-                     , control: "http://sherpa.local/~dann/screenperfect/public/video/webm/B/1B.webm"
-                     , client_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/1A.png"
-                     , control_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/1A.png"}
-             , spots: [ {"css":"top: 37%; left: 40%; width: 30%; height: 25%;","link":"2"}
-                      , {"css":"top: 0%; left: 0%; width: 30%; height: 25%;","link":"3"}] }
-        , 2: { urls: { client: "http://sherpa.local/~dann/screenperfect/public/video/webm/A/2A.webm"
-                     , control: "http://sherpa.local/~dann/screenperfect/public/video/webm/B/2B.webm"
-                     , client_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/2A.png"
-                     , control_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/2A.png"}
-             , spots: [{"css":"top: 37%; left: 40%; width: 30%; height: 25%;","link":"3"}] }
-        , 3: { urls: { client: "http://sherpa.local/~dann/screenperfect/public/video/webm/A/3A.webm"
-                     , control: "http://sherpa.local/~dann/screenperfect/public/video/webm/B/3B.webm"
-                     , client_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/3A.png"
-                     , control_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/3A.png"}
-             , spots: [{"css":"top: 37%; left: 40%; width: 30%; height: 25%;","link":"1"}] }
-        }
+    console.log(query, data)
+    
+    D.Etc.db.collection('games', function(err, c) {
+      c.find(query).limit(1).toArray(function(err, games) {
+        socket.emit('game-data', games[0])
+      })
     })
   })
   
   // TODO: track active video and bounce it to new clients on connection
-  // TODO: save/load from mongo
   // TODO: multiple games and sessions
+  
+  socket.on('save-game', function (game) {
+    db.collection('games', function(err, c) {
+      if(game._id)
+        game._id = mongo.ObjectID(game._id)
+      
+      c.save(game) // sync-style is ok here, because we're not waiting for confirmation
+
+      db.collection('history', function(err, c) {
+        c.insert({cron: new Date(), game: game}) 
+      })
+
+      io.sockets.emit('game-data', game)
+    })
+  })
   
   socket.on('bounce', function (data) {
     io.sockets.emit('bounced', data)
@@ -63,3 +72,4 @@ db.open(function(err, db) {
   if(err) return onerror('DB refused to open: ', err)
   app.listen(8888)
 })
+
