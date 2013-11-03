@@ -15,6 +15,7 @@
       
       $videos {}
       $active-video {}
+      $control-mode
       
       // NETWORK
       @game-data  socket-in  game-data
@@ -25,9 +26,12 @@
       @init from-js
       @init -> { __ | tap } -> @get-data
       
+      @mode from-js
+      @mode -> { __ | >$control-mode }
+      
       changed {__}
       set-active {__ | >id | $videos.{_id} | >$active-video}
-      @game-data -> { __.videos | >$videos | list keys | __.#1} -> set-active -> changed
+      @game-data -> {__.videos | >$videos | list keys | __.#1} -> set-active -> changed
       
       // DISPLAY 
       show-active 
@@ -38,7 +42,10 @@
       
       // CLICKS
       @clicky dom-on-click
-      @clicky -> {$active-video.spots.#1.link} -> @set-active
+      click-jack
+        {$control-mode | then "{$active-video.spots.#1.link | >@control}" | run}
+      @clicky -> click-jack
+      click-jack.control -> @set-active
       
       @get-active -> set-active
       
@@ -49,13 +56,11 @@
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
-      // TODO: client vs control (read url)
       // TODO: multiple spots (clickable divs)
       // TODO: show videos
       // TODO: editable data
-      // TODO: hide socket connection
       
-      socket = io.connect('http://sherpa.local:8888/') // published for demo (icky)
+      D.Etc.socket = io.connect('http://sherpa.local:8888/')
       
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
@@ -68,7 +73,12 @@
       
       // activate init port
       var data = {}
-      D.send_value_to_js_port(outerseed, 'init', data)      
+      D.send_value_to_js_port(outerseed, 'init', data)
+      
+      // activate control mode
+      if(window.location.pathname.split('/').slice(-1)[0] == 'control')
+        D.send_value_to_js_port(outerseed, 'mode', 'control')
+        
     })
   </script>
 
