@@ -35,16 +35,19 @@
       
       // DISPLAY 
       show-active 
-        <img id="clicky" src="{$active-video.urls.client_thumb}">
+        <img id="video" src="{$active-video.urls.client_thumb}">
+        {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
+          <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
+        {end divs}
       
       @set-main dom-set-html main
       changed -> show-active -> @set-main
       
       // CLICKS
-      @clicky dom-on-click
+      @clicky dom-on-click .clickable
       click-jack
-        {$control-mode | then "{$active-video.spots.#1.link | >@control}" | run}
-      @clicky -> click-jack
+        {__ | >id | $control-mode | then "{_id | >@control}" | run with {* (:id _id)}}
+      @clicky -> {__| tap} -> click-jack
       click-jack.control -> @set-active
       
       @get-active -> set-active
@@ -56,7 +59,6 @@
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
-      // TODO: multiple spots (clickable divs)
       // TODO: show videos
       // TODO: editable data
       

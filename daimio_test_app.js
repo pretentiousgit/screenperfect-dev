@@ -32,7 +32,8 @@ io.on('connection', function (socket) {
                      , control: "http://sherpa.local/~dann/screenperfect/public/video/webm/B/1B.webm"
                      , client_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/1A.png"
                      , control_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/1A.png"}
-             , spots: [{"css":"top: 37%; left: 40%; width: 30%; height: 25%;","link":"2"}] }
+             , spots: [ {"css":"top: 37%; left: 40%; width: 30%; height: 25%;","link":"2"}
+                      , {"css":"top: 0%; left: 0%; width: 30%; height: 25%;","link":"3"}] }
         , 2: { urls: { client: "http://sherpa.local/~dann/screenperfect/public/video/webm/A/2A.webm"
                      , control: "http://sherpa.local/~dann/screenperfect/public/video/webm/B/2B.webm"
                      , client_thumb: "http://sherpa.local/~dann/screenperfect/public/image/A/2A.png"
