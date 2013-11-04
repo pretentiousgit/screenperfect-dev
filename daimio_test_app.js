@@ -44,7 +44,7 @@ io.on('connection', function (socket) {
   })
   
   // TODO: track active video and bounce it to new clients on connection
-  // TODO: multiple games and sessions
+  // TODO: multiple sessions
   
   socket.on('save-game', function (game) {
     db.collection('games', function(err, c) {
