@@ -4,10 +4,17 @@
   <meta charset="utf-8">
   <title>Screen Perfect Daimio Prototype</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
+  <style>
+    .hidden {
+      display: none !important;
+      visibility: hidden;
+    }
+  </style>
 </head>
 <body>
   
-  <div id="main"></div>
+  <div id="videos"></div>
+  <div id="divs"></div>
 
   <script id="control" type="text/daml" class="spaceseeds">
     outer
@@ -29,18 +36,34 @@
       @mode -> { __ | >$control-mode }
       
       changed {__}
-      set-active {__ | >id | $videos.{_id} | >$active-video}
-      @game-data -> {__.videos | >$videos | list keys | __.#1} -> set-active -> changed
-      
+      changed-id {__}
+      set-video-list 
+        {__.videos | >$videos | list keys | __.#1}
+      set-active 
+        {__ | >id | $videos.{_id} | >$active-video}
+
+      @video-play
+      @game-data -> set-video-list -> changed-id -> set-active -> changed
+                                      changed-id -> @video-play
+
       // DISPLAY 
-      show-active 
-        <img id="video" src="{$active-video.urls.client_thumb}">
+      build-video-display 
+        {begin videos | each data $videos}
+          <video id="{_key}" class="fullscreen hidden" width="640" height="480" loop="true">
+            <source  src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}" type="video/webm">
+            Your browser does not support the video tag.
+          </video>
+        {end videos}
+
+      show-divs
         {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
           <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
         {end divs}
       
-      @set-main dom-set-html main
-      changed -> show-active -> @set-main
+      @set-divs  dom-set-html divs
+      @set-video dom-set-html videos
+      changed -> show-divs -> @set-divs
+      set-video-list -> build-video-display -> @set-video
       
       // CLICKS
       @clicky dom-on-click .clickable
@@ -49,17 +72,39 @@
       @clicky -> {__| tap} -> click-jack
       click-jack.control -> @set-active
       
-      @get-active -> set-active
+      @get-active -> changed-id
       
   </script>
 
 
   <script src="/socket.io/socket.io.js"></script>
   <script type="text/javascript">
+    D.import_port_flavour('video-play', {
+      dir: 'out',
+      outside_exit: function(ship) {
+        var cur = document.getElementsByClassName('visible')[0];
+        var nxt = document.getElementById(ship);
+        
+        console.log(cur+' this is cur within video_swap');
+
+        if(cur && cur.classList) {
+          cur.classList.add('hidden');
+          cur.classList.remove('visible'); // for use with selectors
+          cur.pause();
+        }
+
+        nxt.classList.add('visible');
+        nxt.classList.remove('hidden'); 
+        if(nxt.currentTime)
+          nxt.currentTime = 0;
+        nxt.play();
+      }
+    })
+
     document.addEventListener('DOMContentLoaded', function() {
       
       // TODO: show videos
-      
+
       D.Etc.socket = io.connect('/')
       
       var seedlikes = Array.prototype.slice.call(
