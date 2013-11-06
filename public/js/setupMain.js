@@ -4,7 +4,7 @@ $("#videoListBox").accordion();
 
 $(function(){
 
-// Draw hotspots on canvas to trace where the video should link to.
+// Draw hotspots on main box to trace where the video should link to.
     var x1, y1,x2,y2;
  
     $("#canvas").mousedown(function (e) {
@@ -114,6 +114,7 @@ $(function(){
 
     // select a video from the thumbnail list of available videos in order to set spots on it
 	$('.videoListThumbnail').click(function() {
+		
 		// store any existing image links to their JSON
 		if ($('.send-video').length && $('.send-video').attr('nextVid') ){
 			
