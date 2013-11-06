@@ -37,7 +37,7 @@ Go through http://daimio.org/demos/seqs/ and work on how control sequences work 
 
 
 function video_play(to_id){
-	var cur = document.getElementsByClassName('visible')[0].getAttribute("id");
+	var cur = document.getElementsByClassName('visible')[0];
 	var nxt = document.getElementById(to_id);
 	
 	console.log(cur+' this is cur within video_swap');

@@ -2,8 +2,6 @@
 $(".selectable").selectable();
 $("#videoListBox").accordion();
 
-
-
 $(function(){
 
 // Draw hotspots on canvas to trace where the video should link to.
