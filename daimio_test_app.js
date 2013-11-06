@@ -12,10 +12,17 @@ function handler (req, res) {
   // move these lines outside the handler so the html is cached over the lifetime of the server.
   var client_html = fs.readFileSync(__dirname+'/daimio_test.html', 'utf8')
     , admin_html  = fs.readFileSync(__dirname+'/daimio_test_admin.html', 'utf8')
+    , daimio_js  = fs.readFileSync(__dirname+'/daimio_composite.js', 'utf8')
 
   if(req.url === '/favicon.ico') {
     res.writeHead(200, {'Content-Type': 'image/x-icon'})
     res.end()
+    return
+  }
+  
+  if(req.url === '/daimio_composite.js') {
+    res.writeHead(200, {"Content-Type": "text/html"})
+    res.end(daimio_js)
     return
   }
   

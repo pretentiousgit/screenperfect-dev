@@ -3,8 +3,7 @@
 <head> 
   <meta charset="utf-8">
   <title>Screen Perfect Daimio Prototype Admin</title>
-<!--  <script type="text/javascript" src="http://sherpa.local/~dann/screenperfect/daimio_composite.js"></script> -->
-  <script type="text/javascript" src="http://sherpa.local/~dann/daimio/get.php?file=daimio"></script>
+  <script type="text/javascript" src="/daimio_composite.js"></script>
 </head>
 <body>
   <h3>ADMINADMINADMIN!!!!</h3>
@@ -119,7 +118,7 @@
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
       
-      D.Etc.socket = io.connect('http://sherpa.local:8888/')
+      D.Etc.socket = io.connect('/')
       
       var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
         , templates    = template_els.reduce(function(acc, template) {

@@ -3,8 +3,7 @@
 <head> 
   <meta charset="utf-8">
   <title>Screen Perfect Daimio Prototype</title>
-<!--  <script type="text/javascript" src="http://sherpa.local/~dann/screenperfect/daimio_composite.js"></script> -->
-  <script type="text/javascript" src="http://sherpa.local/~dann/daimio/get.php?file=daimio"></script>
+  <script type="text/javascript" src="/daimio_composite.js"></script>
 </head>
 <body>
   
@@ -61,7 +60,7 @@
       
       // TODO: show videos
       
-      D.Etc.socket = io.connect('http://sherpa.local:8888/')
+      D.Etc.socket = io.connect('/')
       
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
