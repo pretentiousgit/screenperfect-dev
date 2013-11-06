@@ -7,10 +7,12 @@ var app = require('http').createServer(handler)
 
 D.Etc.db = db // expose DB connection to Daimio
 
-var client_html = fs.readFileSync(__dirname+'/daimio_test.html', 'utf8')
-  , admin_html  = fs.readFileSync(__dirname+'/daimio_test_admin.html', 'utf8')
-
 function handler (req, res) {
+  // NOTE: we're grabbing these fresh in response to each request for development. DO NOT DO THIS IN PRODUCTION.
+  // move these lines outside the handler so the html is cached over the lifetime of the server.
+  var client_html = fs.readFileSync(__dirname+'/daimio_test.html', 'utf8')
+    , admin_html  = fs.readFileSync(__dirname+'/daimio_test_admin.html', 'utf8')
+
   if(req.url === '/favicon.ico') {
     res.writeHead(200, {'Content-Type': 'image/x-icon'})
     res.end()

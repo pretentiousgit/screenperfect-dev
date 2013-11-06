@@ -7,11 +7,47 @@
   <script type="text/javascript" src="http://sherpa.local/~dann/daimio/get.php?file=daimio"></script>
 </head>
 <body>
-  ADMINADMINADMIN!!!!
+  <h3>ADMINADMINADMIN!!!!</h3>
   
-  <form id="video-form" style="float:right;position:relative;"></form>
+  <form id="video-form" data-daimio-template="show-video-form" style="float:right;position:relative;">
+    <div style="position:relative">
+      <img id="video" src="{__.urls.client_thumb}">
+      {begin divs | merge data __in.spots}
+        <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
+      {end divs}
+    </div>
+    
+    <p>
+      <label for="name">Name</label>
+      <input type="text" name="name" value="{__.name}" id="name">
+    </p>
+    <p>
+      <label for="client">Client Video URL</label>
+      <input type="text" name="client" value="{__.urls.client}" id="client" size="100">
+    </p>
+    <p>
+      <label for="control">Control Video URL</label>
+      <input type="text" name="control" value="{__.urls.control}" id="control" size="100">
+    </p>
+    <p>
+      <label for="client_thumb">Client Thumbnail URL</label>
+      <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" size="100">
+    </p>
+    <p>
+      <label for="control_thumb">Control Thumbnail URL</label>
+      <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
+    </p>
+    <p>
+      <label for="spots">Spots</label>
+      <textarea id="spots" name="spots" width="60" height="3">{__.spots}</textarea>
+    </p>
+    <p>
+      <input type="hidden" name="index" value="{__.key}" id="video_index">
+      <input type="submit" value="add">
+    </p>
+  </form>
   
-  <ul id="video-list" data-daimio="grabme" style="float:left;position:relative;">
+  <ul id="video-list" data-daimio-template="show-all-videos" style="float:left;position:relative;">
     {begin list | merge data $game.videos}
        <li>
          <img src="{_urls.client_thumb}" width="100" height="100">
@@ -46,14 +82,6 @@
       
       // DISPLAY
       show-all-videos
-        {begin list | merge data $game.videos}
-          <li>
-            <img src="{_urls.client_thumb}" width="100" height="100">
-            <strong><a href="" class="video-label" data-value="{_key}">
-              {_name}
-            </a></strong>
-          </li>
-        {end list}
       
       @set-video-list dom-set-html video-list
       changed -> show-all-videos -> @set-video-list
@@ -74,42 +102,7 @@
       
       // EDIT VIDEO
       show-video-form
-        <div style="position:relative">
-          <img id="video" src="{__.urls.client_thumb}">
-          {begin divs | merge data __in.spots}
-            <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
-          {end divs}
-        </div>
         
-        <p>
-          <label for="name">Name</label>
-          <input type="text" name="name" value="{__.name}" id="name">
-        </p>
-        <p>
-          <label for="client">Client Video URL</label>
-          <input type="text" name="client" value="{__.urls.client}" id="client" size="100">
-        </p>
-        <p>
-          <label for="control">Control Video URL</label>
-          <input type="text" name="control" value="{__.urls.control}" id="control" size="100">
-        </p>
-        <p>
-          <label for="client_thumb">Client Thumbnail URL</label>
-          <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" size="100">
-        </p>
-        <p>
-          <label for="control_thumb">Control Thumbnail URL</label>
-          <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
-        </p>
-        <p>
-          <label for="spots">Spots</label>
-          <textarea id="spots" name="spots" width="60" height="3">{__.spots}</textarea>
-        </p>
-        <p>
-          <input type="hidden" name="index" value="{__.key}" id="video_index">
-          <input type="submit" value="add">
-        </p>
-      
       @set-video-form dom-set-html video-form
       @video-label    dom-on-click .video-label
 
@@ -117,7 +110,7 @@
       @video-label -> { __ | >key | $game.videos.{_key} | poke _key path :key } -> show-video-form
       
       // TODO: add / remove spots
-      // TODO: alex (jennie on repo); whitespace; node eat html dynamically; html/daimio mixed; track_events walk up the chain
+      // TODO: alex (jennie on repo); whitespace; node eat html dynamically; html/daimio mixed; track_events walk up the chain; local machine
       
   </script>
 
@@ -128,13 +121,20 @@
       
       D.Etc.socket = io.connect('http://sherpa.local:8888/')
       
+      var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
+        , templates    = template_els.reduce(function(acc, template) {
+                           var name = template.attributes.getNamedItem('data-daimio-template').value
+                           acc[name] = template.innerHTML
+                           return acc
+                         }, {})
+                       
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
                       ).map(function(node) {
                         return node.text
                       }).join("\n")
       
-      var outerseed = D.make_some_space(seedlikes)
+      var outerseed = D.make_some_space(seedlikes, templates)
       OuterSpace = new D.Space(outerseed) // published for debug
       
       // activate init port
