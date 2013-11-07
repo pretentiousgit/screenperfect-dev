@@ -49,10 +49,12 @@
   <ul id="video-list" data-daimio-template="show-all-videos" style="float:left;position:relative;">
     {begin list | merge data $game.videos}
        <li>
-         <img src="{_urls.client_thumb}" width="100" height="100">
-         <strong><a href="" class="video-label" data-value="{_key}">
-           {_name}
-         </a></strong>
+         <a href="" class="video-label" data-value="{_key}">
+           <img src="{_urls.client_thumb}" width="100" height="100">
+           <strong>
+             {_name}
+           </strong>
+         </a>
        </li>
     {end list}
   </ul>
@@ -109,7 +111,11 @@
       @video-label -> { __ | >key | $game.videos.{_key} | poke _key path :key } -> show-video-form
       
       // TODO: add / remove spots
-      // TODO: alex (jennie on repo); whitespace; node eat html dynamically; html/daimio mixed; track_events walk up the chain; local machine
+      // TODO: alex (jennie on repo); 
+      // TODO: whitespace
+      // TODO: node eat html dynamically
+      // TODO: html/daimio mixed
+      // TODO: local machine
       
   </script>
 

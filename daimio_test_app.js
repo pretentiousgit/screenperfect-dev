@@ -21,7 +21,7 @@ function handler (req, res) {
   }
   
   if(req.url === '/daimio_composite.js') {
-    res.writeHead(200, {"Content-Type": "text/html"})
+    res.writeHead(200, {"Content-Type": "application/javascript"})
     res.end(daimio_js)
     return
   }
@@ -53,7 +53,10 @@ io.on('connection', function (socket) {
   })
   
   // TODO: track active video and bounce it to new clients on connection
-  // TODO: multiple sessions
+  // TODO: allow local video paths to punch through, then change the mongo urls
+  // TODO: game id in url
+  // TODO: game list in "home screen"
+  // YAGNI: multiple sessions
   
   socket.on('save-game', function (game) {
     db.collection('games', function(err, c) {
