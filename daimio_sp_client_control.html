@@ -13,8 +13,39 @@
 </head>
 <body>
   
-  <div id="videos"></div>
-  <div id="divs"></div>
+  <div id="videos" data-daimio-template="build-video-display">
+    {begin video_template | >$video-template | ""}
+      <video id="{_key}" class="fullscreen hidden" width="640" height="480" loop="true">
+        <source  src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+    {end video_template}
+    
+    {begin image_template | >$image-template | ""}
+      <img src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}"
+            id="{_key}" class="fullscreen hidden" width="640" height="480">
+    {end image_template}
+    
+    {begin selection | each data $videos}
+      { $control-mode 
+      | then $videos.{_key}.urls.control 
+        else $videos.{_key}.urls.client
+        with $false
+      | string slice start -3 
+      | is in (:ebm :m4v :mov) 
+      | if __
+        then $video-template 
+        else $image-template
+        with $false
+      | run with {* (:key _key :value _value)} }
+    {end selection}
+  </div>
+  
+  <div id="divs" data-daimio-template="show-divs">
+    {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
+      <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
+    {end divs}
+  </div>
 
   <script id="control" type="text/daml" class="spaceseeds">
     outer
@@ -50,17 +81,8 @@
 
       // DISPLAY 
       build-video-display 
-        {begin videos | each data $videos}
-          <video id="{_key}" class="fullscreen hidden" width="640" height="480" loop="true">
-            <source  src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}" type="video/webm">
-            Your browser does not support the video tag.
-          </video>
-        {end videos}
 
       show-divs
-        {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
-          <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
-        {end divs}
       
       @set-divs  dom-set-html divs
       @set-video dom-set-html videos
@@ -91,22 +113,29 @@
         if(cur && cur.classList) {
           cur.classList.add('hidden');
           cur.classList.remove('visible'); // for use with selectors
-          cur.pause();
+          if(cur.pause)
+            cur.pause();
         }
 
         nxt.classList.add('visible');
         nxt.classList.remove('hidden'); 
         if(nxt.currentTime)
           nxt.currentTime = 0;
-        nxt.play();
+        if(nxt.play)
+          nxt.play();
       }
     })
 
     document.addEventListener('DOMContentLoaded', function() {
-      
-      // TODO: show videos
-
+            
       D.Etc.socket = io.connect('/')
+
+      var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
+        , templates    = template_els.reduce(function(acc, template) {
+                           var name = template.attributes.getNamedItem('data-daimio-template').value
+                           acc[name] = template.innerHTML.replace(/ \| &gt;/g, ' | >') // dumb dumb dumb
+                           return acc
+                         }, {})
       
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
@@ -114,7 +143,7 @@
                         return node.text
                       }).join("\n")
       
-      var outerseed = D.make_some_space(seedlikes)
+      var outerseed = D.make_some_space(seedlikes, templates)
       OuterSpace = new D.Space(outerseed) // published for debug
       
       // activate init port
