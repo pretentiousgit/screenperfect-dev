@@ -6,7 +6,9 @@
   <script type="text/javascript" src="/daimio_composite.js"></script>
 </head>
 <body>
-  <h3>ADMINADMINADMIN!!!!</h3>
+  <h3 id="header" data-daimio-template="header">
+    {$game.name}
+  </h3>
   
   <form id="video-form" data-daimio-template="show-video-form" style="float:right;position:relative;">
     <div style="position:relative">
@@ -63,29 +65,26 @@
     outer
       
       $game {}
-      $active-video {}
       
       // NETWORK
       @game-data  socket-in  game-data
       @get-data   socket-out get-data
-      @set-active socket-out
-      @get-active socket-in
       
       @init from-js
-      @init -> { __ | tap } -> @get-data
-      
-      @mode from-js
-      @mode -> { __ | >$control-mode }
+      @init -> @get-data
       
       changed {__}
-      set-active {__ | >id | $game.videos.{_id} | >$active-video}
-      @game-data -> {__ | >$game | 0} -> set-active -> changed
+      @game-data -> {__ | >$game | 0} -> changed
       
       // DISPLAY
       show-all-videos
+      header
       
       @set-video-list dom-set-html video-list
+      @set-header     dom-set-html header
+      
       changed -> show-all-videos -> @set-video-list
+      changed -> header -> @set-header
       
       // SAVE A VIDEO
       @save-game socket-out save-game
@@ -110,10 +109,11 @@
       @init -> show-video-form -> @set-video-form
       @video-label -> { __ | >key | $game.videos.{_key} | poke _key path :key } -> show-video-form
       
-      // TODO: add / remove spots
       // TODO: local machine refs
+      // TODO: add / remove spots
       // TODO: munge html and daimio code in html templates separately (like {3 | >$x} -> {3 | &gt;x})
       // TODO: make run default to all local named scoped params (ORLY?) [could work for injected but not pipeline]
+      // TODO: only run with not if with but maybe merge with stupid state stupid alias stupid pipes
       // YAGNI: whitespace chomping
       
   </script>
@@ -145,10 +145,6 @@
       var data = {game: '5275ec64388d57ccb2f87d0e'}
       D.send_value_to_js_port(outerseed, 'init', data)
       
-      // activate control mode
-      if(window.location.pathname.split('/').slice(-1)[0] == 'control')
-        D.send_value_to_js_port(outerseed, 'mode', 'control')
-        
     })
   </script>
 

@@ -10,7 +10,8 @@ D.Etc.db = db // expose DB connection to Daimio
 function handler (req, res) {
   // NOTE: we're grabbing these fresh in response to each request for development. DO NOT DO THIS IN PRODUCTION.
   // move these lines outside the handler so the html is cached over the lifetime of the server.
-  var client_html = fs.readFileSync(__dirname+'/daimio_sp_client_control.html', 'utf8')
+  var menu_html = fs.readFileSync(__dirname+'/daimio_sp_menu.html', 'utf8')
+    , client_html = fs.readFileSync(__dirname+'/daimio_sp_client_control.html', 'utf8')
     , admin_html  = fs.readFileSync(__dirname+'/daimio_sp_admin.html', 'utf8')
     , daimio_js  = fs.readFileSync(__dirname+'/daimio_composite.js', 'utf8')
 
@@ -32,17 +33,44 @@ function handler (req, res) {
     return
   }
   
+  if(req.url.match(/(client|control)\/?$/)) {
+    res.writeHead(200, {"Content-Type": "text/html"})
+    res.end(client_html)
+    return
+  }
+  
   res.writeHead(200, {"Content-Type": "text/html"})
-  res.end(client_html)
+  res.end(menu_html)
 }
 
 
 io.on('connection', function (socket) {
-  socket.on('get-data', function (data) {
-    var game = data.game
-      , session = data.session || 1 // TODO: randomize
-      , query = game ? {_id: new mongo.ObjectID(game)} : {}
+  socket.on('get-games', function (data) {
+    var query = {}
     
+    console.log(query, data)
+    
+    D.Etc.db.collection('games', function(err, c) {
+      c.find(query).toArray(function(err, games) {
+        socket.emit('games-data', games)
+      })
+    })
+  })
+  
+  socket.on('get-data', function (data) {
+    var game_id = data.game
+      , session = data.session || 1 // TODO: randomize
+      , query = {}
+      
+    if(!game_id || game_id.length != 24)
+      return false
+    
+    try {
+      query = {_id: new mongo.ObjectID(game_id)}      
+    } catch (e) {
+      return false
+    }
+
     console.log(query, data)
     
     D.Etc.db.collection('games', function(err, c) {

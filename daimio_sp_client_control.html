@@ -2,7 +2,7 @@
 <html> 
 <head> 
   <meta charset="utf-8">
-  <title>Screen Perfect Daimio Prototype</title>
+  <title>Screen Perfect Loves You</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
   <style>
     .hidden {
@@ -147,7 +147,8 @@
       OuterSpace = new D.Space(outerseed) // published for debug
       
       // activate init port
-      var data = {game: '5275ec64388d57ccb2f87d0e'}
+      var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
+      var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
       D.send_value_to_js_port(outerseed, 'init', data)
       
       // activate control mode
