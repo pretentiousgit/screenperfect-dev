@@ -24,27 +24,29 @@
       $control-mode
       
       // NETWORK
-      @game-data  socket-in  game-data
-      @get-data   socket-out get-data
-      @set-active socket-out
-      @get-active socket-in
-      
+      @receive-data   socket-in  game-data
+      @request-data   socket-out get-data
+      @send-active    socket-out
+      @receive-active socket-in
+
       @init from-js
-      @init -> { __ | tap } -> @get-data
+      @init -> @request-data
       
       @mode from-js
       @mode -> { __ | >$control-mode }
       
       changed {__}
       changed-id {__}
-      set-video-list 
-        {__.videos | >$videos | list keys | __.#1}
-      set-active 
+      store-video-list 
+        {__.videos | >$videos | list keys | __.#1 | tap}
+      store-active-video 
         {__ | >id | $videos.{_id} | >$active-video}
 
       @video-play
-      @game-data -> set-video-list -> changed-id -> set-active -> changed
-                                      changed-id -> @video-play
+      // @receive-data -> {__ | 12341234}
+      // TODO: check out this weird bug i made dude
+      @receive-data -> store-video-list -> changed-id -> store-active-video -> changed
+                                           changed-id -> @video-play
 
       // DISPLAY 
       build-video-display 
@@ -63,16 +65,17 @@
       @set-divs  dom-set-html divs
       @set-video dom-set-html videos
       changed -> show-divs -> @set-divs
-      set-video-list -> build-video-display -> @set-video
+      store-video-list -> build-video-display -> @set-video
       
       // CLICKS
       @clicky dom-on-click .clickable
       click-jack
         {__ | >id | $control-mode | then "{_id | >@control}" | run with {* (:id _id)}}
-      @clicky -> {__| tap} -> click-jack
-      click-jack.control -> @set-active
+      @clicky -> click-jack
+      click-jack.control -> @send-active
       
-      @get-active -> changed-id
+      @receive-active -> changed-id
+      @receive-active -> {__ | log (__ :ohhi)}
       
   </script>
 
@@ -85,8 +88,6 @@
         var cur = document.getElementsByClassName('visible')[0];
         var nxt = document.getElementById(ship);
         
-        console.log(cur+' this is cur within video_swap');
-
         if(cur && cur.classList) {
           cur.classList.add('hidden');
           cur.classList.remove('visible'); // for use with selectors
