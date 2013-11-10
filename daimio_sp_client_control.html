@@ -50,21 +50,23 @@
   <script id="control" type="text/daml" class="spaceseeds">
     outer
       
-      $videos {}
+      $game-id 0
+      $videos  {}
       $active-video {}
       $control-mode
       
       // NETWORK
       @receive-data   socket-in  game-data
-      @request-data   socket-out get-data
+      @request-data   socket-out request-data
       @send-active    socket-out
       @receive-active socket-in
 
       @init from-js
       @init -> @request-data
+      @init -> {__.game | >$game-id}
       
       @mode from-js
-      @mode -> { __ | >$control-mode }
+      @mode -> {__ | >$control-mode }
       
       changed {__}
       changed-id {__}
@@ -91,13 +93,9 @@
       
       // CLICKS
       @clicky dom-on-click .clickable
-      click-jack
-        {__ | >id | $control-mode | then "{_id | >@control}" | run with {* (:id _id)}}
-      @clicky -> click-jack
-      click-jack.control -> @send-active
-      
-      @receive-active -> changed-id
-      @receive-active -> {__ | log (__ :ohhi)}
+
+      @clicky -> { __ | >in | * (:video _in :game $game-id) } -> @send-active
+      @receive-active -> {__ | tap} -> changed-id
       
   </script>
 
@@ -148,8 +146,7 @@
 
       // activate init port
       var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
-      var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
-      D.send_value_to_js_port(outerseed, 'init', data)
+      D.send_value_to_js_port(outerseed, 'init', {game: game_id, session: false})
 
       // activate control mode
       if(window.location.pathname.replace(/\/$/, '').split('/').slice(-1)[0] == 'control')

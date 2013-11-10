@@ -60,7 +60,7 @@ io.on('connection', function (socket) {
     
   })
   
-  socket.on('get-data', function (data) {
+  socket.on('request-data', function (data) {
     var game_id = data.game
       , session = data.session || 1 // TODO: randomize
       , query = {}
@@ -71,8 +71,7 @@ io.on('connection', function (socket) {
     try {
       query = {_id: new mongo.ObjectID(game_id)}      
 
-      console.log(query, data)
-    
+      console.log('joining: ', game_id, query, data)
       socket.join(game_id)
     
       D.Etc.db.collection('games', function(err, c) {
@@ -94,22 +93,23 @@ io.on('connection', function (socket) {
         if(game._id)
           game._id = mongo.ObjectID(game._id)
       
-        console.log(game)
-
         c.save(game) // sync-style is ok here, because we're not waiting for confirmation
 
         db.collection('history', function(err, c) {
           c.insert({cron: new Date(), game: game}) 
         })
 
+        console.log('saved: ', game)
+        console.log('save bounce: ', game._id)
         io.sockets.in(game._id).emit('game-data', game)
       })
     } catch (e) {return false}
   })
   
   socket.on('bounce', function (data) {
-    socket.broadcast.emit('bounced', data)
-    console.log(['bouncing', data])
+    io.sockets.in(data.game).emit('bounced', data.video)
+    // socket.broadcast.emit('bounced', data)
+    console.log('bouncing:', data)
   })
 })
 
