@@ -13,12 +13,22 @@
   <ul id="game-list" data-daimio-template="show-all-games">
     {begin list | each data $games}
        <li>
+         <img src="{_value.videos.#1.urls.client_thumb}" height="100" width="100">
          {_value.name}
          <a href="/{_value._id}/client">client</a>
          <a href="/{_value._id}/control">control</a>
        </li>
     {end list}
   </ul>
+  
+  <form id="add-game-form">
+    <p>
+      <label for="name">Name</label>
+      <input type="text" name="name" value="" id="name">
+    </p>
+    <p><input type="submit" name="submit" value="add"></p>
+  </form>
+  
   
   
   <script id="control" type="text/daml" class="spaceseeds">
@@ -37,6 +47,17 @@
       @set-game-list dom-set-html game-list
       @games-data -> {__ | >$games} -> show-all-games -> @set-game-list
       
+      // ADD GAME
+      @save-game     socket-out     save-game
+      @add-game-form dom-on-submit
+      @set-name-val  dom-set-value  name
+      
+      // make sure we have time to save the new game
+      add-game-channel {process sleep for 100 | ""}
+      
+      @add-game-form -> @save-game
+      @add-game-form -> add-game-channel -> @set-name-val
+                        add-game-channel -> @get-games
   </script>
 
 
@@ -54,7 +75,7 @@
                            return acc
                          }, {})
       
-      var seedlikes = Array.prototype.slice.call(
+      var seedlikes = [].slice.call(
                         document.getElementsByClassName('spaceseeds')
                       ).map(function(node) {
                         return node.text

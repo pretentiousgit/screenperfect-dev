@@ -109,7 +109,7 @@
       outside_exit: function(ship) {
         var cur = document.getElementsByClassName('visible')[0];
         var nxt = document.getElementById(ship);
-        
+
         if(cur && cur.classList) {
           cur.classList.add('hidden');
           cur.classList.remove('visible'); // for use with selectors
@@ -127,34 +127,34 @@
     })
 
     document.addEventListener('DOMContentLoaded', function() {
-            
+
       D.Etc.socket = io.connect('/')
 
       var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
         , templates    = template_els.reduce(function(acc, template) {
-                           var name = template.attributes.getNamedItem('data-daimio-template').value
-                           acc[name] = template.innerHTML.replace(/ \| &gt;/g, ' | >') // dumb dumb dumb
+                           var name  = template.attributes.getNamedItem('data-daimio-template').value
+                           acc[name] = template.innerHTML .replace(/ \| &gt;/g, ' | >') // dumb dumb dumb
                            return acc
                          }, {})
-      
+
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
                       ).map(function(node) {
                         return node.text
                       }).join("\n")
-      
+
       var outerseed = D.make_some_space(seedlikes, templates)
       OuterSpace = new D.Space(outerseed) // published for debug
-      
+
       // activate init port
       var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
       var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
       D.send_value_to_js_port(outerseed, 'init', data)
-      
+
       // activate control mode
       if(window.location.pathname.replace(/\/$/, '').split('/').slice(-1)[0] == 'control')
         D.send_value_to_js_port(outerseed, 'mode', 'control')
-        
+
     })
   </script>
 

@@ -50,11 +50,14 @@ io.on('connection', function (socket) {
     
     console.log(query, data)
     
-    D.Etc.db.collection('games', function(err, c) {
-      c.find(query).toArray(function(err, games) {
-        socket.emit('games-data', games)
+    try {
+      D.Etc.db.collection('games', function(err, c) {
+        c.find(query).toArray(function(err, games) {
+          socket.emit('games-data', games)
+        })
       })
-    })
+    } catch (e) {return false}
+    
   })
   
   socket.on('get-data', function (data) {
@@ -67,42 +70,45 @@ io.on('connection', function (socket) {
     
     try {
       query = {_id: new mongo.ObjectID(game_id)}      
-    } catch (e) {
-      return false
-    }
 
-    console.log(query, data)
+      console.log(query, data)
     
-    D.Etc.db.collection('games', function(err, c) {
-      c.find(query).limit(1).toArray(function(err, games) {
-        socket.emit('game-data', games[0])
+      socket.join(game_id)
+    
+      D.Etc.db.collection('games', function(err, c) {
+        c.find(query).limit(1).toArray(function(err, games) {
+          io.sockets.in(game_id).emit('game-data', games[0])
+        })
       })
-    })
+    } catch (e) {return false}
   })
   
   // TODO: track active video and bounce it to new clients on connection
   // TODO: allow local video paths to punch through, then change the mongo urls
-  // TODO: game id in url
-  // TODO: game list in "home screen"
+  // TODO: move to joyent
   // YAGNI: multiple sessions
-  
+    
   socket.on('save-game', function (game) {
-    db.collection('games', function(err, c) {
-      if(game._id)
-        game._id = mongo.ObjectID(game._id)
+    try {
+      db.collection('games', function(err, c) {
+        if(game._id)
+          game._id = mongo.ObjectID(game._id)
       
-      c.save(game) // sync-style is ok here, because we're not waiting for confirmation
+        console.log(game)
 
-      db.collection('history', function(err, c) {
-        c.insert({cron: new Date(), game: game}) 
+        c.save(game) // sync-style is ok here, because we're not waiting for confirmation
+
+        db.collection('history', function(err, c) {
+          c.insert({cron: new Date(), game: game}) 
+        })
+
+        io.sockets.in(game._id).emit('game-data', game)
       })
-
-      io.sockets.emit('game-data', game)
-    })
+    } catch (e) {return false}
   })
   
   socket.on('bounce', function (data) {
-    io.sockets.emit('bounced', data)
+    socket.broadcast.emit('bounced', data)
     console.log(['bouncing', data])
   })
 })
