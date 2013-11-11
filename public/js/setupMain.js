@@ -1,6 +1,8 @@
 //jQueryUI schmutz
 $(".selectable").selectable();
 $("#videoListBox").accordion();
+$("sliderIn").slider();
+$("sliderOut").slider();
 
 $(function(){
 
@@ -102,6 +104,7 @@ $(function(){
 
 // When the mouse stops moving, create the box
     $("#canvas").mouseup(function () {
+    	//TODO: add a popup box that asks when the touchpoint should start and end.
     	$('#current').append('<button class="close">X</button><div class="thumb">Click to set branch.</div>');
     	console.log($('#current').attr('style')); // here is probz where math should go
         $("#current")
@@ -127,7 +130,9 @@ $(function(){
 				  var obj = {
 					id: $video.attr("nextVid"),
 					css: $video.attr("style"),
-					link: $video.attr("nextVid")
+					link: $video.attr("nextVid"),
+					start: $video.attr("start"),
+					end: $video.attr("end")
 			  };
 				
 				links.push(obj);
@@ -159,6 +164,8 @@ $(function(){
 		        	$(skeleton).attr('style', data.spots[i].css);
 		        	if (data.spots[i].link) {
 		        		$(skeleton).attr('nextvid', data.spots[i].link);
+		        		$(skeleton).attr('start', data.spots[i].start);
+		        		$(skeleton).attr('end', data.spots[i].end);
 			        	$(skeleton).html('<button class="close">X</button><div class="thumb"><img src="/image/A/' + data.spots[i].link +'A.png" /></div></div>');
 		        		}
 		        	$(skeleton).appendTo($('#canvas'));
@@ -179,7 +186,10 @@ $(function(){
 				  var obj = {
 					id: $video.attr("nextVid"),
 					css: $video.attr("style"),
-					link: $video.attr("nextVid")
+					link: $video.attr("nextVid"),
+					start: $video.attr("start"),
+					end: $video.attr("end"),
+					
 			  };
 			
 			  links.push(obj);
