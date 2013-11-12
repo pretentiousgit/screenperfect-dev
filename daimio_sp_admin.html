@@ -23,7 +23,7 @@
     <div style="position:relative">
       <img id="room" src="{__.urls.client_thumb}">
       {begin divs | merge data __in.spots}
-        <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
+        <div id="exit-{_key}" class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
       {end divs}
     </div>
     
@@ -48,7 +48,14 @@
       <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
     </p>
     <p>
-      <label for="spots">Spots</label>
+      <label for="spots">Exits</label>
+      <ul>
+        {begin exists | each data {__in.spots | list from-json}}
+          <li class="exit-listing" data-value="{_key}">
+            <p>{_key}: {_value}</p>
+          </li>
+        {end exists}
+      </ul>
       <textarea id="spots" name="spots" width="60" height="3">{__.spots}</textarea>
     </p>
     <p>
@@ -125,26 +132,48 @@
       show-room-form
       room-changer
         { __ | >$selected-room-id}
+      selected-room-only
+        {$selected-room-id | eq -1 | else "{1 | >@good}" | run}
       
       @change-room   dom-on-click .room-label
       @set-room-form dom-set-html  room-form
 
       @init -> {"<p>Select a room from the list</p>"} -> @set-room-form
       @change-room -> room-changer -> changed
-      changed -> {$game.rooms.{$selected-room-id}} -> show-room-form  -> @set-room-form
+      changed -> selected-room-only
+      selected-room-only.good -> {$game.rooms.{$selected-room-id}} -> show-room-form  -> @set-room-form
       
       // ADD A ROOM
       @add-room-form    dom-on-submit
       @add-room-form -> eat-room-form
       @add-room-form -> {$game.rooms | count} -> room-changer
-                         
+
+      // LIST EXISTS
+      
+      @over-exit dom-on-mouseover .exit-listing
+      @out-exit  dom-on-mouseout  .exit-listing
+      @tweak-style
+      @over-exit -> {* (:id {("exit-" __in) | join} :attr "background-color" :value :yellow)} -> @tweak-style
+      @out-exit  -> {* (:id {("exit-" __in) | join} :attr "background-color" :value :green)}  -> @tweak-style
+    
+      // ADD AN EXIT
       
       
-      // TODO: local machine refs
-      // TODO: add / remove spots
+      
+      // EDIT AN EXIT
+
+      // REMOVE AN EXIT
+      
+      
+      
+      
+      
+      // TODO: spots GUI
+      // TODO: add 'parent' to history
       // TODO: munge html and daimio code in html templates separately (like {3 | >$x} -> {3 | &gt;x})
       // TODO: make run default to all local named scoped params (ORLY?) [could work for injected but not pipeline]
       // TODO: only run with not if with but maybe merge with stupid state stupid alias stupid pipes
+      // YAGNI: local machine refs
       // YAGNI: whitespace chomping
       
   </script>
@@ -152,6 +181,19 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script type="text/javascript">
+    D.import_port_flavour('tweak-style', {
+      dir: 'out',
+      outside_exit: function(ship) {
+        try {
+          var el = document.getElementById(ship.id)
+          if(!el) return false
+
+          el.style[ship.attr] = ship.value        
+        } catch(e) {}
+      }
+    })
+  
+  
     document.addEventListener('DOMContentLoaded', function() {
       
       D.Etc.socket = io.connect('/')
