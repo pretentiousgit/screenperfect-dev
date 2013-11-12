@@ -4,15 +4,24 @@
   <meta charset="utf-8">
   <title>Screen Perfect Daimio Prototype Admin</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
+  <style>
+    .selected {
+      background-color: pink;
+    }
+  </style>
 </head>
-<body>
-  <h3 id="header" data-daimio-template="header">
-    {$game.name}
-  </h3>
+<body style="display:none">
+  <h1 id="header" data-daimio-template="poopoo">
+    {$game.name}alsdkjflasdkjfa;lsdjkf
+  </h1>
   
-  <form id="video-form" data-daimio-template="show-video-form" style="float:right;position:relative;">
+  <h1 id="header" data-daimio-template="header">
+    {$game.name}
+  </h1>
+  
+  <form id="room-form" data-daimio-template="show-room-form" style="float:right;position:relative;">
     <div style="position:relative">
-      <img id="video" src="{__.urls.client_thumb}">
+      <img id="room" src="{__.urls.client_thumb}">
       {begin divs | merge data __in.spots}
         <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
       {end divs}
@@ -43,15 +52,17 @@
       <textarea id="spots" name="spots" width="60" height="3">{__.spots}</textarea>
     </p>
     <p>
-      <input type="hidden" name="index" value="{__.key}" id="video_index">
-      <input type="submit" value="add">
+      <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
+      <input type="submit" value="Edit room">
     </p>
   </form>
   
-  <ul id="video-list" data-daimio-template="show-all-videos" style="float:left;position:relative;">
-    {begin list | merge data $game.videos}
-       <li>
-         <a href="" class="video-label" data-value="{_key}">
+  <ul id="room-list" data-daimio-template="show-all-rooms" style="float:left;position:relative;">
+    <h2>Rooms</h2>
+
+    {begin list | merge data $game.rooms}
+       <li class="{_key | is like $selected-room-id | then :selected else ""}">
+         <a href="" class="room-label" data-value="{_key}">
            <img src="{_urls.client_thumb}" width="100" height="100">
            <strong>
              {_name}
@@ -59,55 +70,75 @@
          </a>
        </li>
     {end list}
+    
+    <form id="add-room-form">
+      <p>
+        <label for="name">Name</label>
+        <input type="text" name="name" value="" id="name">
+      </p>
+      <p><input type="submit" name="submit" value="Add room"></p>
+    </form>
+    
   </ul>
   
   <script id="control" type="text/daml" class="spaceseeds">
     outer
       
       $game {}
+      $selected-room-id -1
       
       // NETWORK
-      @game-data  socket-in  game-data
-      @get-data   socket-out get-data
+      @game-data    socket-in  game-data
+      @request-data socket-out request-data
       
       @init from-js
-      @init -> @get-data
+      @init -> @request-data
       
       changed {__}
       @game-data -> {__ | >$game | 0} -> changed
       
       // DISPLAY
-      show-all-videos
+      show-all-rooms
       header
       
-      @set-video-list dom-set-html video-list
-      @set-header     dom-set-html header
+      @set-room-list dom-set-html room-list
+      @set-header    dom-set-html header
       
-      changed -> show-all-videos -> @set-video-list
-      changed -> header -> @set-header
+      changed -> show-all-rooms -> @set-room-list
+      changed -> header         -> @set-header
       
-      // SAVE A VIDEO
+      // SAVE A ROOM
       @save-game socket-out save-game
-      @video-form dom-on-submit
+      @room-form dom-on-submit
 
-      eat-video-form
-        { __ | >raw-info
-        | {* (:name  _raw-info.name 
-              :spots {_raw-info.spots | list from_json} 
-              :urls  {_raw-info | list remove by_key (:name :spots)} )}
-        | list poke data $game path (:videos {_raw-info.index | else {$game.videos | count}}) | >$game}
+      eat-room-form
+        { __ | tap | >raw-info
+        | * (:name  _raw-info.name 
+             :spots {_raw-info.spots | list from_json} 
+             :urls  {_raw-info | list remove by_key (:name :spots)} )
+        | list poke data $game path (:rooms {_raw-info.index | else {$game.rooms | count}}) | >$game}
         
-      @video-form -> eat-video-form -> changed
-                     eat-video-form -> @save-game
+      @room-form -> eat-room-form -> changed
+                    eat-room-form -> @save-game
       
-      // EDIT VIDEO
-      show-video-form
-        
-      @set-video-form dom-set-html video-form
-      @video-label    dom-on-click .video-label
+      // SELECT A ROOM
+      show-room-form
+      room-changer
+        { __ | >$selected-room-id}
+      
+      @change-room   dom-on-click .room-label
+      @set-room-form dom-set-html  room-form
 
-      @init -> show-video-form -> @set-video-form
-      @video-label -> { __ | >key | $game.videos.{_key} | poke _key path :key } -> show-video-form
+      @init -> {"<p>Select a room from the list</p>"} -> @set-room-form
+      @change-room -> room-changer -> changed
+      changed -> {$game.rooms.{$selected-room-id}} -> show-room-form  -> @set-room-form
+      
+      // ADD A ROOM
+      @add-room-form    dom-on-submit
+      @add-room-form -> eat-room-form
+      @add-room-form -> {$game.rooms | count} -> room-changer
+                         
+      
       
       // TODO: local machine refs
       // TODO: add / remove spots
@@ -129,8 +160,11 @@
         , templates    = template_els.reduce(function(acc, template) {
                            var name = template.attributes.getNamedItem('data-daimio-template').value
                            acc[name] = template.innerHTML
+                           template.innerHTML = ""
                            return acc
                          }, {})
+
+      document.getElementsByTagName('body')[0].style.display = ''
                        
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')

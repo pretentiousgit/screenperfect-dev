@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
     } catch (e) {return false}
   })
   
-  // TODO: track active video and bounce it to new clients on connection
+  // TODO: track active room and bounce it to new clients on connection
   // TODO: allow local video paths to punch through, then change the mongo urls
   // TODO: move to joyent
   // YAGNI: multiple sessions
@@ -107,7 +107,7 @@ io.on('connection', function (socket) {
   })
   
   socket.on('bounce', function (data) {
-    io.sockets.in(data.game).emit('bounced', data.video)
+    io.sockets.in(data.game).emit('bounced', data.room)
     // socket.broadcast.emit('bounced', data)
     console.log('bouncing:', data)
   })

@@ -13,23 +13,23 @@
 </head>
 <body>
   
-  <div id="videos" data-daimio-template="build-video-display">
+  <div id="rooms" data-daimio-template="build-room-display">
     {begin video_template | >$video-template | ""}
       <video id="{_key}" class="fullscreen hidden" width="640" height="480" loop="true">
-        <source  src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}" type="video/webm">
+        <source  src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}" type="video/webm">
         Your browser does not support the video tag.
       </video>
     {end video_template}
     
     {begin image_template | >$image-template | ""}
-      <img src="{$control-mode | then $videos.{_key}.urls.control else $videos.{_key}.urls.client}"
+      <img src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}"
             id="{_key}" class="fullscreen hidden" width="640" height="480">
     {end image_template}
     
-    {begin selection | each data $videos}
+    {begin selection | each data $rooms}
       { $control-mode 
-      | then $videos.{_key}.urls.control 
-        else $videos.{_key}.urls.client
+      | then $rooms.{_key}.urls.control 
+        else $rooms.{_key}.urls.client
         with $false
       | string slice start -3 
       | is in (:ebm :m4v :mov) 
@@ -42,7 +42,7 @@
   </div>
   
   <div id="divs" data-daimio-template="show-divs">
-    {begin divs | merge data $active-video.spots | if $control-mode then __ else ""}
+    {begin divs | merge data $active-room.spots | if $control-mode then __ else ""}
       <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
     {end divs}
   </div>
@@ -51,8 +51,8 @@
     outer
       
       $game-id 0
-      $videos  {}
-      $active-video {}
+      $rooms  {}
+      $active-room {}
       $control-mode
       
       // NETWORK
@@ -70,31 +70,31 @@
       
       changed {__}
       changed-id {__}
-      store-video-list 
-        {__.videos | >$videos | list keys | __.#1 | tap}
-      store-active-video 
-        {__ | >id | $videos.{_id} | >$active-video}
+      store-room-list 
+        {__.rooms | >$rooms | list keys | __.#1 | tap}
+      store-active-room 
+        {__ | >id | $rooms.{_id} | >$active-room}
 
-      @video-play
+      @room-play
       // @receive-data -> {__ | 12341234}
       // TODO: check out this weird bug i made dude
-      @receive-data -> store-video-list -> changed-id -> store-active-video -> changed
-                                           changed-id -> @video-play
+      @receive-data -> store-room-list -> changed-id -> store-active-room -> changed
+                                          changed-id -> @room-play
 
       // DISPLAY 
-      build-video-display 
+      build-room-display 
 
       show-divs
       
       @set-divs  dom-set-html divs
-      @set-video dom-set-html videos
+      @set-room dom-set-html rooms
       changed -> show-divs -> @set-divs
-      store-video-list -> build-video-display -> @set-video
+      store-room-list -> build-room-display -> @set-room
       
       // CLICKS
       @clicky dom-on-click .clickable
 
-      @clicky -> { __ | >in | * (:video _in :game $game-id) } -> @send-active
+      @clicky -> { __ | >in | * (:room _in :game $game-id) } -> @send-active
       @receive-active -> {__ | tap} -> changed-id
       
   </script>
@@ -102,25 +102,27 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script type="text/javascript">
-    D.import_port_flavour('video-play', {
+    D.import_port_flavour('room-play', {
       dir: 'out',
       outside_exit: function(ship) {
-        var cur = document.getElementsByClassName('visible')[0];
-        var nxt = document.getElementById(ship);
+        try {
+          var cur = document.getElementsByClassName('visible')[0];
+          var nxt = document.getElementById(ship);
 
-        if(cur && cur.classList) {
-          cur.classList.add('hidden');
-          cur.classList.remove('visible'); // for use with selectors
-          if(cur.pause)
-            cur.pause();
-        }
+          if(cur && cur.classList) {
+            cur.classList.add('hidden');
+            cur.classList.remove('visible'); // for use with selectors
+            if(cur.pause)
+              cur.pause();
+          }
 
-        nxt.classList.add('visible');
-        nxt.classList.remove('hidden'); 
-        if(nxt.currentTime)
-          nxt.currentTime = 0;
-        if(nxt.play)
-          nxt.play();
+          nxt.classList.add('visible');
+          nxt.classList.remove('hidden'); 
+          if(nxt.currentTime)
+            nxt.currentTime = 0;
+          if(nxt.play)
+            nxt.play();          
+        } catch(e) {}
       }
     })
 

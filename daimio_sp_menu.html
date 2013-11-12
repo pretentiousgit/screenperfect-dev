@@ -13,7 +13,7 @@
   <ul id="game-list" data-daimio-template="show-all-games">
     {begin list | each data $games}
        <li>
-         <img src="{_value.videos.#1.urls.client_thumb}" height="100" width="100">
+         <img src="{_value.rooms.#1.urls.client_thumb}" height="100" width="100">
          {_value.name}
          <a href="/{_value._id}/client">client</a>
          <a href="/{_value._id}/control">control</a>
