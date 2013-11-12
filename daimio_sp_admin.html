@@ -22,10 +22,26 @@
   <form id="room-form" data-daimio-template="show-room-form" style="float:right;position:relative;">
     <div style="position:relative">
       <img id="room" src="{__.urls.client_thumb}">
-      {begin divs | merge data __in.spots}
+      {begin divs | merge data __in.exits}
         <div id="exit-{_key}" class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
       {end divs}
     </div>
+    
+    <h3>Exits</h3>
+    
+    <ul>
+      {begin exists | each data {__in.exits | list from-json}}
+        <li class="exit-listing" data-value="{_key}">
+          <img src="{$game.rooms.{_value.link}.urls.client_thumb}" width="40" height="40">
+          {$game.rooms.{_value.link}.name}
+          <a href="" class="remove-exit" data-value="{_key}">Remove</a>
+        </li>
+      {end exists}
+    </ul>
+    
+    <textarea id="exits" name="exits" width="60" height="3">{__.exits}</textarea>
+    
+    <h3>Assets</h3>
     
     <p>
       <label for="name">Name</label>
@@ -46,17 +62,6 @@
     <p>
       <label for="control_thumb">Control Thumbnail URL</label>
       <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
-    </p>
-    <p>
-      <label for="spots">Exits</label>
-      <ul>
-        {begin exists | each data {__in.spots | list from-json}}
-          <li class="exit-listing" data-value="{_key}">
-            <p>{_key}: {_value}</p>
-          </li>
-        {end exists}
-      </ul>
-      <textarea id="spots" name="spots" width="60" height="3">{__.spots}</textarea>
     </p>
     <p>
       <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
@@ -121,8 +126,8 @@
       eat-room-form
         { __ | tap | >raw-info
         | * (:name  _raw-info.name 
-             :spots {_raw-info.spots | list from_json} 
-             :urls  {_raw-info | list remove by_key (:name :spots)} )
+             :exits {_raw-info.exits | list from-json} 
+             :urls  {_raw-info | list remove by_key (:name :exits)} )
         | list poke data $game path (:rooms {_raw-info.index | else {$game.rooms | count}}) | >$game}
         
       @room-form -> eat-room-form -> changed
@@ -164,11 +169,18 @@
 
       // REMOVE AN EXIT
       
+      remove-an-exit
+        { $game.rooms.{$selected-room-id}.exits 
+        | list remove by_key __in
+        | >$game.rooms.{$selected-room-id}.exits}
+      
+      @remove-exit dom-on-click .remove-exit
+      @remove-exit -> remove-an-exit -> @save-game
       
       
       
       
-      // TODO: spots GUI
+      // TODO: exits GUI
       // TODO: add 'parent' to history
       // TODO: munge html and daimio code in html templates separately (like {3 | >$x} -> {3 | &gt;x})
       // TODO: make run default to all local named scoped params (ORLY?) [could work for injected but not pipeline]

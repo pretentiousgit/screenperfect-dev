@@ -42,7 +42,7 @@
   </div>
   
   <div id="divs" data-daimio-template="show-divs">
-    {begin divs | merge data $active-room.spots | if $control-mode then __ else ""}
+    {begin divs | merge data $active-room.exits | if $control-mode then __ else ""}
       <div class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
     {end divs}
   </div>
