@@ -19,7 +19,7 @@
     {$game.name}
   </h1>
   
-  <form id="room-form" data-daimio-template="show-room-form" style="float:right;position:relative;">
+  <div id="room-div" data-daimio-template="show-room-div" style="float:right;position:relative;">
     <div style="position:relative">
       <img id="room" src="{__.urls.client_thumb}">
       {begin divs | merge data __in.exits}
@@ -39,35 +39,47 @@
       {end exists}
     </ul>
     
-    <textarea id="exits" name="exits" width="60" height="3">{__.exits}</textarea>
+    <form id="add-exit-form">
+      <select name="exit-id" id="add-an-exit">
+        {begin rooms | each data $game.rooms}
+          <option value="{_key}">{_value.name}</option>
+        {end rooms}
+      </select>
+      <input type="submit" value="Add an exit">
+    </form>
     
-    <h3>Assets</h3>
     
-    <p>
-      <label for="name">Name</label>
-      <input type="text" name="name" value="{__.name}" id="name">
-    </p>
-    <p>
-      <label for="client">Client Video URL</label>
-      <input type="text" name="client" value="{__.urls.client}" id="client" size="100">
-    </p>
-    <p>
-      <label for="control">Control Video URL</label>
-      <input type="text" name="control" value="{__.urls.control}" id="control" size="100">
-    </p>
-    <p>
-      <label for="client_thumb">Client Thumbnail URL</label>
-      <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" size="100">
-    </p>
-    <p>
-      <label for="control_thumb">Control Thumbnail URL</label>
-      <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
-    </p>
-    <p>
-      <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
-      <input type="submit" value="Edit room">
-    </p>
-  </form>
+    <form id="room-form">
+      <textarea id="exits" name="exits" width="60" height="3">{__.exits}</textarea>
+    
+      <h3>Assets</h3>
+    
+      <p>
+        <label for="name">Name</label>
+        <input type="text" name="name" value="{__.name}" id="name">
+      </p>
+      <p>
+        <label for="client">Client Video URL</label>
+        <input type="text" name="client" value="{__.urls.client}" id="client" size="100">
+      </p>
+      <p>
+        <label for="control">Control Video URL</label>
+        <input type="text" name="control" value="{__.urls.control}" id="control" size="100">
+      </p>
+      <p>
+        <label for="client_thumb">Client Thumbnail URL</label>
+        <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" size="100">
+      </p>
+      <p>
+        <label for="control_thumb">Control Thumbnail URL</label>
+        <input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb" size="100">
+      </p>
+      <p>
+        <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
+        <input type="submit" value="Edit room">
+      </p>
+    </form>
+  </div>
   
   <ul id="room-list" data-daimio-template="show-all-rooms" style="float:left;position:relative;">
     <h2>Rooms</h2>
@@ -124,7 +136,7 @@
       @room-form dom-on-submit
 
       eat-room-form
-        { __ | tap | >raw-info
+        { __ | >raw-info
         | * (:name  _raw-info.name 
              :exits {_raw-info.exits | list from-json} 
              :urls  {_raw-info | list remove by_key (:name :exits)} )
@@ -134,19 +146,19 @@
                     eat-room-form -> @save-game
       
       // SELECT A ROOM
-      show-room-form
+      show-room-div
       room-changer
         { __ | >$selected-room-id}
       selected-room-only
         {$selected-room-id | eq -1 | else "{1 | >@good}" | run}
       
       @change-room   dom-on-click .room-label
-      @set-room-form dom-set-html  room-form
+      @set-room-div  dom-set-html  room-div
 
-      @init -> {"<p>Select a room from the list</p>"} -> @set-room-form
+      @init -> {"<p>Select a room from the list</p>"} -> @set-room-div
       @change-room -> room-changer -> changed
       changed -> selected-room-only
-      selected-room-only.good -> {$game.rooms.{$selected-room-id}} -> show-room-form  -> @set-room-form
+      selected-room-only.good -> {$game.rooms.{$selected-room-id}} -> show-room-div  -> @set-room-div
       
       // ADD A ROOM
       @add-room-form    dom-on-submit
@@ -162,13 +174,16 @@
       @out-exit  -> {* (:id {("exit-" __in) | join} :attr "background-color" :value :green)}  -> @tweak-style
     
       // ADD AN EXIT
-      
-      
-      
-      // EDIT AN EXIT
+      add-an-exit
+        { $game.rooms.{$selected-room-id}.exits 
+        | poke {* (:link __in.exit-id 
+                   :css  "top: 40%; left: 40%; width: 20%; height: 20%;")}
+        | >$game.rooms.{$selected-room-id}.exits}
 
-      // REMOVE AN EXIT
+      @add-exit-form dom-on-submit
+      @add-exit-form -> add-an-exit -> @save-game
       
+      // REMOVE AN EXIT      
       remove-an-exit
         { $game.rooms.{$selected-room-id}.exits 
         | list remove by_key __in
@@ -177,6 +192,9 @@
       @remove-exit dom-on-click .remove-exit
       @remove-exit -> remove-an-exit -> @save-game
       
+      
+      // EDIT AN EXIT
+
       
       
       
