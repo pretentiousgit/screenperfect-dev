@@ -11,7 +11,7 @@
     }
   </style>
 </head>
-<body>
+<body style="display:none">
   
   <div id="rooms" data-daimio-template="build-room-display">
     {begin video_template | >$video-template | ""}
@@ -134,8 +134,11 @@
         , templates    = template_els.reduce(function(acc, template) {
                            var name  = template.attributes.getNamedItem('data-daimio-template').value
                            acc[name] = template.innerHTML .replace(/ \| &gt;/g, ' | >') // dumb dumb dumb
+                           template.innerHTML = ""
                            return acc
                          }, {})
+
+      document.getElementsByTagName('body')[0].style.display = ''
 
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
