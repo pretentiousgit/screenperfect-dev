@@ -21,7 +21,7 @@
   
   <div id="room-div" data-daimio-template="show-room-div" style="float:right;position:relative;">
     <div style="position:relative">
-      <img id="room" src="{__.urls.client_thumb}">
+      <img id="room" src="{__.urls.control_thumb}">
       {begin divs | merge data __in.exits}
         <div id="exit-{_key}" class="clickable" data-value="{_link}" style="{_css}; position: absolute; background-color:green; opacity: 0.4"></div>
       {end divs}
@@ -32,7 +32,7 @@
     <ul>
       {begin exists | each data {__in.exits | list from-json}}
         <li class="exit-listing" data-value="{_key}">
-          <img src="{$game.rooms.{_value.link}.urls.client_thumb}" width="40" height="40">
+          <img src="{$game.rooms.{_value.link}.urls.control_thumb}" width="40" height="40">
           {$game.rooms.{_value.link}.name}
           <a href="" class="remove-exit" data-value="{_key}">Remove</a>
         </li>
@@ -87,7 +87,7 @@
     {begin list | merge data $game.rooms}
        <li class="{_key | is like $selected-room-id | then :selected else ""}">
          <a href="" class="room-label" data-value="{_key}">
-           <img src="{_urls.client_thumb}" width="100" height="100">
+           <img src="{_urls.control_thumb}" width="100" height="100">
            <strong>
              {_name}
            </strong>
