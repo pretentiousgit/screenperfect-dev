@@ -5,7 +5,7 @@
   <title>Screen Perfect Menu</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
 </head>
-<body>
+<body style="display:none">
 
   <h1>Screen Perfect</h1>
   <h2>Perfection is Magic</h2>
@@ -72,8 +72,11 @@
         , templates    = template_els.reduce(function(acc, template) {
                            var name = template.attributes.getNamedItem('data-daimio-template').value
                            acc[name] = template.innerHTML.replace(/ \| &gt;/g, ' | >') // dumb dumb dumb
+                           template.innerHTML = ""
                            return acc
                          }, {})
+      
+      document.getElementsByTagName('body')[0].style.display = ''
       
       var seedlikes = [].slice.call(
                         document.getElementsByClassName('spaceseeds')
