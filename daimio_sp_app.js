@@ -15,6 +15,12 @@ function handler (req, res) {
     , admin_html  = fs.readFileSync(__dirname+'/daimio_sp_admin.html', 'utf8')
     , daimio_js  = fs.readFileSync(__dirname+'/daimio_composite.js', 'utf8')
 
+  if(req.url.match(/^\/public\//)) {
+    res.writeHead(200)
+    res.end(fs.readFileSync('.' + req.url, 'utf8')) // TODO: async this
+    return
+  }
+
   if(req.url === '/favicon.ico') {
     res.writeHead(200, {'Content-Type': 'image/x-icon'})
     res.end()
@@ -48,8 +54,6 @@ io.on('connection', function (socket) {
   socket.on('get-games', function (data) {
     var query = {}
     
-    console.log(query, data)
-    
     try {
       D.Etc.db.collection('games', function(err, c) {
         c.find(query).toArray(function(err, games) {
@@ -80,14 +84,15 @@ io.on('connection', function (socket) {
         })
       })
     } catch (e) {return false}
+    
   })
   
   // TODO: track active room and bounce it to new clients on connection
   // TODO: allow local video paths to punch through, then change the mongo urls
-  // TODO: move to joyent
   // YAGNI: multiple sessions
     
   socket.on('save-game', function (game) {
+    
     try {
       db.collection('games', function(err, c) {
         if(game._id)
@@ -104,18 +109,18 @@ io.on('connection', function (socket) {
         io.sockets.in(game._id).emit('game-data', game)
       })
     } catch (e) {return false}
+    
   })
   
   socket.on('bounce', function (data) {
     io.sockets.in(data.game).emit('bounced', data.room)
-    // socket.broadcast.emit('bounced', data)
-    console.log('bouncing:', data)
   })
 })
 
 
 db.open(function(err, db) {
-  if(err) return onerror('DB refused to open: ', err)
+  if(err) 
+    return console.log('DB refused to open: ', err)
   app.listen(8888)
 })
 
