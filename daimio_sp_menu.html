@@ -1,35 +1,57 @@
-<!doctype html> 
-<html> 
-<head> 
-  <meta charset="utf-8">
-  <title>Screen Perfect Menu</title>
+<!DOCTYPE html>
+<html>
+  <head>
+  <title>Screen Perfect Daimio Prototype Admin</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
-</head>
-<body style="display:none">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/public/css/bootstrap.css" rel="stylesheet">
+  </head>
 
-  <h1>Screen Perfect</h1>
-  <h2>Perfection is Magic</h2>
-  
-  <ul id="game-list" data-daimio-template="show-all-games">
-    {begin list | each data $games}
-       <li>
-         <img src="{_value.rooms.#1.urls.control_thumb}" height="100" width="100">
-         {_value.name}
-         <a href="/{_value._id}/client">client</a>
-         <a href="/{_value._id}/control">control</a>
-       </li>
-    {end list}
-  </ul>
-  
-  <form id="add-game-form">
-    <p>
-      <label for="name">Name</label>
-      <input type="text" name="name" value="" id="name">
-    </p>
-    <p><input type="submit" name="submit" value="add"></p>
-  </form>
-  
-  
+  <body style="display:none">
+    <div class="container">
+      <div data-daimio-template="header" id="header">
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">{$game.name}</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li><a target="_blank" href="/{$game._id}/client">Client</a></li>
+              <li><a target="_blank" href="/{$game._id}/control">Control</a></li>      
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </nav>
+      </div>
+      <div class="page-header">
+        <div class="pull-right">
+          <form id="add-game-form" class="form-inline">
+            <div class="form-group">
+              <input type="text" name="name" value="" id="name" class="form-control" placeholder="Game Name">
+            </div>
+            <input type="submit" name="submit" value="Add" class="btn btn-success">
+          </form>
+        </div>
+        <h1>ScreenPerfect</h1>
+      </div>
+      <ul id="game-list" data-daimio-template="show-all-games" class="media-list">
+        {begin list | each data $games}
+          <li class="media">
+            <a class="pull-left" href="#">
+              <img src="{_value.rooms.#1.urls.control_thumb}" height="100" width="100" class="media-object" >
+            </a>         
+            <div class="media-body">
+              <h4 class="media-heading">{_value.name}</h4>
+              <div class="btn-group">
+                <a href="/{_value._id}/client" class="btn btn-default">Client</a>
+                <a href="/{_value._id}/control" class="btn btn-default">Control</a>
+                <a href="/{_value._id}/admin" class="btn btn-default">Edit</a>
+              </div>
+            </div>
+          </li>
+          <hr>
+        {end list}
+      </ul>
   
   <script id="control" type="text/daml" class="spaceseeds">
     outer
