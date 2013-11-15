@@ -13,7 +13,7 @@
     <div data-daimio-template="header" id="header">
       <nav class="navbar navbar-default" role="navigation">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">{$game.name}</a>
+          <span class="navbar-brand">{$game.name}</span>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -21,6 +21,10 @@
             <li><a target="_blank" href="/{$game._id}/client">Client</a></li>
             <li><a target="_blank" href="/{$game._id}/control">Control</a></li>      
           </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Back to game list</a></li>
+          </ul>
+          
         </div><!-- /.navbar-collapse -->
       </nav>
     </div>
@@ -36,21 +40,22 @@
         </form>
         
         <hr />
-        <div id="room-list" data-daimio-template="show-all-rooms" class="list-unstyled">
-          {begin list | merge data $game.rooms}
-            <div class="media" class="{_key | is like $selected-room-id | then :selected else ""}">
-              <a class="pull-left room-label" data-value="{_key}">
-                <img src="{_urls.control_thumb}" class="media-object" width="100" height="100">
-              </a>
-              <div class="media-body">
-                <h4 class="media-heading">{_name}</h4>
-              </div>
-            </div>
+        
 
+        
+        <div id="room-list" data-daimio-template="show-all-rooms" class="row">
+          {begin list | merge data $game.rooms}
+            <div class="col-sm-6 col-md-4">              
+              <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
+                <img src="{_urls.control_thumb}" class="media-object img-responsive">
+                <h5>{_name}</h5>
+              </a>
+            </div>
           {end list}
         </div>
-        
       </div>
+      
+      
       <div class="col-md-8">
         <div id="room-div" data-daimio-template="show-room-div">
           <div style="position:relative">
@@ -198,7 +203,7 @@
       @change-room   dom-on-click .room-label
       @set-room-div  dom-set-html  room-div
 
-      @init -> {"<p>Select a room from the list</p>"} -> @set-room-div
+      @init -> {"<div class='alert alert-info'>Select a room from the list.</div>"} -> @set-room-div
       @change-room -> room-changer -> changed
       changed -> selected-room-only
       selected-room-only.good -> {$game.rooms.{$selected-room-id}} -> show-room-div  -> @set-room-div
