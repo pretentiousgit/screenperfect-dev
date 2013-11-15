@@ -13,6 +13,7 @@ function handler (req, res) {
   var menu_html = fs.readFileSync(__dirname+'/daimio_sp_menu.html', 'utf8')
     , client_html = fs.readFileSync(__dirname+'/daimio_sp_client_control.html', 'utf8')
     , admin_html  = fs.readFileSync(__dirname+'/daimio_sp_admin.html', 'utf8')
+    , viz_html  = fs.readFileSync(__dirname+'/daimio_sp_viz.html', 'utf8')
     , daimio_js  = fs.readFileSync(__dirname+'/daimio_composite.js', 'utf8')
 
   if(req.url.match(/^\/public\//)) {
@@ -36,6 +37,12 @@ function handler (req, res) {
   if(req.url.replace(/\/$/, '').split('/').slice(-1)[0] == 'admin') {
     res.writeHead(200, {"Content-Type": "text/html"})
     res.end(admin_html)
+    return
+  }
+  
+  if(req.url.replace(/\/$/, '').split('/').slice(-1)[0] == 'viz') {
+    res.writeHead(200, {"Content-Type": "text/html"})
+    res.end(viz_html)
     return
   }
   
