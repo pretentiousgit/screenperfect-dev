@@ -17,7 +17,7 @@
   
   <div id="room-div" data-daimio-template="show-room-div" style="float:right;position:relative;">
     <div style="position:relative">
-      <img id="room" src="{__.urls.control_thumb}">
+      <img id="room" src="{__.urls.control_thumb}" style="max-width:1000px; max-height:1000px">
       {begin divs | merge data __in.exits}
         <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
              style="top: {_top | or 0}px; left: {_left | or 0}px; 
@@ -171,6 +171,8 @@
       @add-room-form -> {$game.rooms | count} -> room-changer
 
       // LIST EXISTS
+      highlight-exit {__}
+      
       @tweak-style
       @over-exit dom-on-mouseover .exit-listing
       @out-exit  dom-on-mouseout  .exit-listing
@@ -247,7 +249,6 @@
           event.value = value
           self.enter(D.scrub_var(event))
         }
-        
         
         D.track_event('dragend', this.settings.thing, fun)
       }

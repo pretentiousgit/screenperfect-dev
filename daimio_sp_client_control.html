@@ -16,7 +16,7 @@
   <div style="position :relative;">
     <div id="rooms" data-daimio-template="build-room-display">
       {begin video_template | >$video-template | ""}
-        <video id="{_key}" class="fullscreen hidden" width="640" height="480" loop="true">
+        <video id="{_key}" class="fullscreen hidden" style="max-width:1000px; max-height:1000px" loop="true">
           <source  src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}" type="video/webm">
           Your browser does not support the video tag.
         </video>
@@ -24,7 +24,7 @@
     
       {begin image_template | >$image-template | ""}
         <img src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}"
-              id="{_key}" class="fullscreen hidden" width="640" height="480">
+              id="{_key}" class="fullscreen hidden" style="max-width:1000; max-height:1000">
       {end image_template}
     
       {begin selection | each data $rooms}
