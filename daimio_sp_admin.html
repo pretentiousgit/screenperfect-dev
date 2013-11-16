@@ -77,15 +77,17 @@
         
         <hr />
         
-        <div id="room-list" data-daimio-template="show-all-rooms" class="row">
+        <div id="room-list" class="row">
+          <script data-daimio-template="show-all-rooms">
           {begin list | merge data $game.rooms}
             <div class="col-md-4">              
               <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
-                <img src="{_urls.control_thumb}" class="media-object img-responsive">
+                <img src="{_urls.control_thumb | else "http://placehold.it/640x480"}" class="media-object img-responsive">
                 <h5>{_name}</h5>
               </a>
             </div>
           {end list}
+          </script>
         </div>
       </div>
       
@@ -95,7 +97,8 @@
           <script data-daimio-template="show-room-div">
           <p>1 - {__.urls.control_thumb | then :active}</p>
           <p>2 - {__.urls.control_thumb | not | then :active}</p>
-              <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
+          
+              <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/640x480"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
