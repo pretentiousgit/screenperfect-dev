@@ -17,11 +17,9 @@ function handler (req, res) {
     , daimio_js  = fs.readFileSync(__dirname+'/daimio_composite.js', 'utf8')
 
   if(req.url.match(/^\/public\//)) {
-    try {
-      res.writeHead(200)
-      res.end(fs.readFileSync('.' + req.url, 'utf8')) // TODO: async this
-      return
-    } catch(e) {}
+    res.writeHead(200)
+    res.end(fs.readFileSync('.' + req.url, 'utf8')) // TODO: async this
+    return
   }
 
   if(req.url === '/favicon.ico') {

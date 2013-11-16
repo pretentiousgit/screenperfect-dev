@@ -77,29 +77,29 @@
         
         <hr />
         
-        <div id="room-list" data-daimio-template="show-all-rooms" class="row">
+        <div id="room-list" class="row">
+          <script data-daimio-template="show-all-rooms" type="text/daimio">
           {begin list | merge data $game.rooms}
             <div class="col-md-4">              
               <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
-                <img src="{_urls.control_thumb}" class="media-object img-responsive">
+                <img src="{_urls.control_thumb | else "http://placehold.it/640x480"}" class="media-object img-responsive">
                 <h5>{_name}</h5>
               </a>
             </div>
           {end list}
+          </script>
         </div>
       </div>
-      
       <div class="col-md-8">
         <div id="room-div">
-
           <script data-daimio-template="show-room-div" type="text/daimio">
             <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
-                     height: {_height | or 100}px; width: {_width | or 100}px; 
-                     position: absolute; background-color:green; opacity: 0.4">
-              {$game.rooms.{_room}.name}
+                    height: {_height | or 100}px; width: {_width | or 100}px; 
+                    position: absolute; background-color:green; opacity: 0.4">
+              <p style="text-info">{$game.rooms.{_room}.name}</p>
 
               <div class="sizer" data-value="{_key}" draggable="true" 
                 style="position: absolute; bottom: 0%; right: 0%; height: 30px; width: 30px; background-color: blue"></div>
@@ -109,12 +109,12 @@
 
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
-              <li class="{__.urls.control_thumb | then :active}"><a href="#exits" data-toggle="tab">Exits</a></li>
-              <li class="{__.urls.control_thumb | not | then :active}"><a href="#assets" data-toggle="tab">Assets</a></li>
+              <li class="{__.urls.control_thumb | then :active}" data-toggle="tab"><a href="#exits" data-toggle="tab">Exits</a></li>
+              <li class="{__.urls.control_thumb | then "" else :active}" data-toggle="tab"><a href="#assets" data-toggle="tab">Assets</a></li>
             </ul>
              <!-- Tab panes -->
              <div class="tab-content">
-               <div class="tab-pane {__.urls.control_thumb | not | then :active}" id="assets">
+               <div class="tab-pane {__.urls.control_thumb | then "" else :active}" id="assets">
                 
                  <form id="room-form" class="form form-horizontal">
                    <textarea id="exits" name="exits" width="60" height="3" style="display:none;">{__.exits}</textarea>    
@@ -157,7 +157,7 @@
                          <li class="exit-listing list-group-item" data-value="{_key}">
                            <img src="{$game.rooms.{_value.room}.urls.control_thumb}" width="40" height="40">
                            {$game.rooms.{_value.room}.name}
-                           <a href="" class="remove-exit" data-value="{_key}"><span class="glyphicon glyphicon-ban-circle"></span></a>
+                           <span class="pull-right"><a href="" class="remove-exit" data-value="{_key}"><span class="glyphicon glyphicon-ban-circle" style="color: red;"></span></a></span>
                          </li>
                        {end exists}
                      </ul>
