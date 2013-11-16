@@ -25,7 +25,6 @@
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/">Back to game list</a></li>
           </ul>
-        
         </div><!-- /.navbar-collapse -->
       </nav>
     </div>
@@ -33,37 +32,38 @@
       <div class="col-md-4">
         <h2>Game</h2>
         
-        <form class="form-horizontal">
-
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> Show Hotspots in Game
-            </label>
-          </div>
-          <hr>
-          <div class="form-group">
-            <label for="" class="form-label col-md-4">Height</label>
-            <div class="col-md-8"><input type="text" class="form-control" /></div>
-          </div>
-          <div class="form-group">
-            <label for="" class="form-label col-md-4">Width</label>
-            <div class="col-md-8">
-              <input type="text" class="form-control" />
-              <hr />
-            <input type="submit" name="submit" value="Save" class="btn btn-large btn-default">
-            
+        <form id="game-data" class="form-horizontal">
+          <script data-daimio-template="game-data" type="text/daimio">
+            <!-- hide this whole thing? -->
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="debug" value="1" {$game.debug | then :checked else :foo}="checked"> Show Hotspots in Game
+              </label>
             </div>
-          </div>
-
-        </form>
-        
-        
-        <form id="game-data" data-daimio-template="game-data" class="form-vertical">
-          <div class="form-group">
-          <textarea id="roomjson" name="roomjson" class="form-control">{$game.rooms}</textarea>
-          </div>
-          <input type="submit" name="submit" value="Activate super advanced stuff" class="btn btn-large btn-default">
+            <hr>
+            <div class="form-group">
+              <label for="name" class="form-label col-md-4">Name</label>
+              <div class="col-md-8"><input type="text" name="name" class="form-control" value="{$game.name}" /></div>
+            </div>
+            <div class="form-group">
+              <label for="width" class="form-label col-md-4">Width</label>
+              <div class="col-md-8"><input type="text" name="width" class="form-control" value="{$game.width}" /></div>
+            </div>
+            <div class="form-group">
+              <label for="height" class="form-label col-md-4">Height</label>
+              <div class="col-md-8">
+                <input type="text" name="height" class="form-control" value="{$game.height}" />
+                <hr />
+                <input type="submit" name="submit" value="Save" class="btn btn-large btn-default">
+              </div>
+            </div>
           
+            <!-- hide this maybe also too -->
+            <div class="form-group">
+              <textarea id="rooms" name="rooms" class="form-control">{$game.rooms}</textarea>
+              <input type="hidden" name="_id" value="{$game._id}" id="_id">
+            </div>
+          </script>
         </form>
         
         <h2>Rooms</h2>
@@ -94,9 +94,9 @@
       <div class="col-md-8">
         <div id="room-div">
 
-          <script data-daimio-template="show-room-div">
-          <p>1 - {__.urls.control_thumb | then :active}</p>
-          <p>2 - {__.urls.control_thumb | not | then :active}</p>
+          <script data-daimio-template="show-room-div" type="text/daimio">
+            <p>1 - {__.urls.control_thumb | then :active}</p>
+            <p>2 - {__.urls.control_thumb | then "" else :active}</p>
           
               <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/640x480"}" >
             {begin divs | merge data __in.exits}
@@ -111,6 +111,7 @@
                 </div>
               {end divs}
             </div>
+
             <!-- Nav tabs -->
             <ul class="nav nav-tabs">
               <li class="{__.urls.control_thumb | then :active}"><a href="#exits" data-toggle="tab">Exits</a></li>
@@ -310,7 +311,7 @@
       
       changed -> game-data -> @set-game-data-form
       
-      @submit-game-data-form -> {__.roomjson | list from-json | >$game.rooms} -> save-game
+      @submit-game-data-form -> {__ | tap | >$game | __.rooms | list from-json | >$game.rooms} -> save-game
       
       // TODO: exits GUI
       // TODO: add 'parent' to history
