@@ -32,9 +32,37 @@
       <div class="col-md-4">
         <h2>Game</h2>
         
+        <form class="form-horizontal">
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"> Show Hotspots in Game
+            </label>
+          </div>
+          <hr>
+          <div class="form-group">
+            <label for="" class="form-label col-md-4">Height</label>
+            <div class="col-md-8"><input type="text" class="form-control" /></div>
+          </div>
+          <div class="form-group">
+            <label for="" class="form-label col-md-4">Width</label>
+            <div class="col-md-8">
+              <input type="text" class="form-control" />
+              <hr />
+            <input type="submit" name="submit" value="Save" class="btn btn-large btn-default">
+            
+            </div>
+          </div>
+
+        </form>
+        
+        
         <form id="game-data" data-daimio-template="game-data" class="form-vertical">
-          <textarea id="roomjson" name="roomjson" rows="1" cols="2">{$game.rooms}</textarea>
+          <div class="form-group">
+          <textarea id="roomjson" name="roomjson" class="form-control">{$game.rooms}</textarea>
+          </div>
           <input type="submit" name="submit" value="Activate super advanced stuff" class="btn btn-large btn-default">
+          
         </form>
         
         <h2>Rooms</h2>
@@ -64,8 +92,7 @@
         <div id="room-div" data-daimio-template="show-room-div">
 
           <div style="position:relative">
-              <img id="room" 
-                  src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" 
+              <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
