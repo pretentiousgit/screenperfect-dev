@@ -111,6 +111,11 @@
       dir: 'out',
       outside_exit: function(ship) {
         try {
+          // first just pause freaking everything
+          
+          [].slice.call(document.getElementsByTagName('video'))
+            .forEach(function(item) {item.pause()})
+          
           var cur = document.getElementsByClassName('visible')[0];
           var nxt = document.getElementById(ship);
 
