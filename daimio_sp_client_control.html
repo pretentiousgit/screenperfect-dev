@@ -24,7 +24,7 @@
     
       {begin image_template | >$image-template | ""}
         <img src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}"
-              id="{_key}" class="fullscreen hidden" style="max-width:1000; max-height:1000">
+              id="{_key}" class="fullscreen hidden" width="{$game.width}" height="{$game.height}">
       {end image_template}
     
       {begin selection | each data $rooms}
