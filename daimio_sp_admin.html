@@ -92,10 +92,10 @@
       <div class="col-md-8">
         <div id="room-div">
 
-          <script data-daimio-template="show-room-div">
-          <p>1 - {__.urls.control_thumb | then :active}</p>
-          <p>2 - {__.urls.control_thumb | not | then :active}</p>
-              <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
+          <script data-daimio-template="show-room-div" type="text/daimio">
+            <p>1 - {__.urls.control_thumb | then :active}</p>
+            <p>2 - {__.urls.control_thumb | then "" else :active}</p>
+            <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
