@@ -93,14 +93,12 @@
         <div id="room-div">
 
           <script data-daimio-template="show-room-div" type="text/daimio">
-            <p>1 - {__.urls.control_thumb | then :active}</p>
-            <p>2 - {__.urls.control_thumb | then "" else :active}</p>
             <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
-              height: {_height | or 100}px; width: {_width | or 100}px; 
-              position: absolute; background-color:green; opacity: 0.4">
+                     height: {_height | or 100}px; width: {_width | or 100}px; 
+                     position: absolute; background-color:green; opacity: 0.4">
               {$game.rooms.{_room}.name}
 
               <div class="sizer" data-value="{_key}" draggable="true" 
