@@ -30,7 +30,14 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <h2>Rooms</h2>  
+        <h2>Game</h2>
+        
+        <form id="game-data" data-daimio-template="game-data" class="form-vertical">
+          <textarea id="roomjson" name="roomjson" rows="1" cols="2">{$game.rooms}</textarea>
+          <input type="submit" name="submit" value="Activate super advanced stuff" class="btn btn-large btn-default">
+        </form>
+        
+        <h2>Rooms</h2>
         
         <form id="add-room-form" class="form-vertical">
           <div class="form-group">
@@ -260,7 +267,14 @@
       @sizer dom-on-dragend .sizer
       @sizer -> size-hot-spot -> save-game
       
+      // EDIT GAME DATA
+      game-data
+      @set-game-data-form     dom-set-html   game-data
+      @submit-game-data-form  dom-on-submit  game-data
       
+      changed -> game-data -> @set-game-data-form
+      
+      @submit-game-data-form -> {__.roomjson | list from-json | >$game.rooms} -> save-game
       
       // TODO: exits GUI
       // TODO: add 'parent' to history
