@@ -47,7 +47,7 @@
         <div class="clickable" data-value="{_room}"
              style="top: {_top | or 0}px; left: {_left | or 0}px; 
                     height: {_height | or 100}px; width: {_width | or 100}px; 
-                    position: absolute; background-color:green; opacity: 0.4"></div>
+                    position: absolute; background-color:green; opacity: 0"></div>
       {end divs}
     </div>
   </div>
@@ -112,7 +112,6 @@
       outside_exit: function(ship) {
         try {
           // first just pause freaking everything
-          
           [].slice.call(document.getElementsByTagName('video'))
             .forEach(function(item) {item.pause()})
           
