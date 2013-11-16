@@ -5,6 +5,7 @@
   <script type="text/javascript" src="/daimio_composite.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/public/css/bootstrap.css" rel="stylesheet">
+    <link href="/public/css/styles.css" rel="stylesheet">
   </head>
 
 <body style="display:none">
@@ -78,7 +79,7 @@
         
         <div id="room-list" data-daimio-template="show-all-rooms" class="row">
           {begin list | merge data $game.rooms}
-            <div class="col-sm-6 col-md-4">              
+            <div class="col-md-4">              
               <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
                 <img src="{_urls.control_thumb}" class="media-object img-responsive">
                 <h5>{_name}</h5>
@@ -89,9 +90,11 @@
       </div>
       
       <div class="col-md-8">
-        <div id="room-div" data-daimio-template="show-room-div">
+        <div id="room-div">
 
-          <div style="position:relative">
+          <script data-daimio-template="show-room-div">
+          <p>1 - {__.urls.control_thumb | then :active}</p>
+          <p>2 - {__.urls.control_thumb | not | then :active}</p>
               <img id="room" src="{__.urls.control_thumb | else "http://placehold.it/350x150"}" >
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
@@ -105,78 +108,79 @@
                 </div>
               {end divs}
             </div>
-    
-            <section id="exits">
-              <h3>Exits</h3>
-              <div class="row">      
-                <div class="col-md-6">
-                  <h4>Current Exits</h4>
-                  <ul class="list-group">
-                    {begin exists | each data {__in.exits | list from-json}}
-                      <li class="exit-listing list-group-item" data-value="{_key}">
-                        <img src="{$game.rooms.{_value.room}.urls.control_thumb}" width="40" height="40">
-                        {$game.rooms.{_value.room}.name}
-                        <a href="" class="remove-exit" data-value="{_key}">Remove</a>
-                      </li>
-                    {end exists}
-                  </ul>
-                </div>
-                <div class="col-md-6">
-                  <form id="add-exit-form" class="form form-vertical">
-                    <h4>Add an Exit To:</h4>
-                    <div class="form-group">
-
-                      <select name="exit-id" id="add-an-exit" class="form-control">
-                        {begin rooms | each data $game.rooms}
-                          <option value="{_key}">{_value.name}</option>
-                        {end rooms}
-                      </select>
-                    </div>
-
-                    <input type="submit" value="Add Exit" class="btn btn-large btn-default">
-                  </form>
-                </div>
-              </div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs">
+              <li class="{__.urls.control_thumb | then :active}"><a href="#exits" data-toggle="tab">Exits</a></li>
+              <li class="{__.urls.control_thumb | not | then :active}"><a href="#assets" data-toggle="tab">Assets</a></li>
+            </ul>
+             <!-- Tab panes -->
+             <div class="tab-content">
+               <div class="tab-pane {__.urls.control_thumb | not | then :active}" id="assets">
+                
+                 <form id="room-form" class="form form-horizontal">
+                   <textarea id="exits" name="exits" width="60" height="3" style="display:none;">{__.exits}</textarea>    
+                   <h3>Assets</h3>
+                   <input type="text" name="name" value="{__.name}" id="name" class="form-control input-lg" placeholder="Room Name">
+                   <hr />
+                   <div class="form-group">
+                     <label class="form-label col-md-4" for="control">Control Video URL</label>
+                     <div class="col-md-8"><input type="text" name="control" value="{__.urls.control}" id="control"  class="form-control"></div>
+                   </div>
+                   <div class="form-group">
+                     <label class="form-label col-md-4" for="control_thumb">Control Thumbnail URL</label>
+                     <div class="col-md-8"><input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb"  class="form-control"></div>
+                   </div>
           
-            </section>
-    
-            <section id="assets">
-              <form id="room-form" class="form form-horizontal">
-                <textarea id="exits" name="exits" width="60" height="3" style="display:none;">{__.exits}</textarea>    
-                <h3>Assets</h3>
-                <input type="text" name="name" value="{__.name}" id="name" class="form-control input-lg" placeholder="Room Name">
-                <hr />
-                <div class="form-group">
-                  <label class="form-label col-md-4" for="control">Control Video URL</label>
-                  <div class="col-md-8"><input type="text" name="control" value="{__.urls.control}" id="control"  class="form-control"></div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label col-md-4" for="control_thumb">Control Thumbnail URL</label>
-                  <div class="col-md-8"><input type="text" name="control_thumb" value="{__.urls.control_thumb}" id="control_thumb"  class="form-control"></div>
-                </div>
-          
-                <div class="form-group">
-                  <label class="form-label col-md-4" for="client">Client Video URL</label>
-                  <div class="col-md-8"><input type="text" name="client" value="{__.urls.client}" id="client"  class="form-control"></div>
-                </div>
-                <div class="form-group">        
-                  <label class="form-label col-md-4" for="client_thumb">Client Thumbnail URL</label>
-                  <div class="col-md-8">
-                    <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" class="form-control">
-                    <hr />
-                    <input type="submit" value="Save Changes" class="btn btn-lg btn-success">
-              
-                  </div>
-                </div>
-          
-                <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
-
-              </form>
-            </section>
-          </script>  <!-- end show-room-div template -->
-      
+                   <div class="form-group">
+                     <label class="form-label col-md-4" for="client">Client Video URL</label>
+                     <div class="col-md-8"><input type="text" name="client" value="{__.urls.client}" id="client"  class="form-control"></div>
+                   </div>
+                   <div class="form-group">        
+                     <label class="form-label col-md-4" for="client_thumb">Client Thumbnail URL</label>
+                     <div class="col-md-8">
+                       <input type="text" name="client_thumb" value="{__.urls.client_thumb}" id="client_thumb" class="form-control">
+                       <hr />
+                       <input type="submit" value="Save Changes" class="btn btn-lg btn-success">              
+                     </div>
+                   </div>
+                   <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
+                 </form>
+                
+                
+               </div>
+               <div class="tab-pane {__.urls.control_thumb | then :active}" id="exits">        
+                 <h3>Exits</h3>
+                 <div class="row">      
+                   <div class="col-md-6">
+                     <h4>Current Exits</h4>
+                     <ul class="list-group">
+                       {begin exists | each data {__in.exits | list from-json}}
+                         <li class="exit-listing list-group-item" data-value="{_key}">
+                           <img src="{$game.rooms.{_value.room}.urls.control_thumb}" width="40" height="40">
+                           {$game.rooms.{_value.room}.name}
+                           <a href="" class="remove-exit" data-value="{_key}"><span class="glyphicon glyphicon-ban-circle"></span></a>
+                         </li>
+                       {end exists}
+                     </ul>
+                   </div>
+                   <div class="col-md-6">
+                     <form id="add-exit-form" class="form form-vertical">
+                       <h4>Add an Exit To:</h4>
+                       <div class="form-group">
+                         <select name="exit-id" id="add-an-exit" class="form-control">
+                           {begin rooms | each data $game.rooms}
+                             <option value="{_key}">{_value.name}</option>
+                           {end rooms}
+                         </select>
+                       </div>
+                       <input type="submit" value="Add Exit" class="btn btn-large btn-default">
+                     </form>
+                   </div>
+                 </div>
+               </div>
+             </div>
+          </script>  <!-- end show-room-div template -->      
         </div>
-      
     </div>
   </div>
   
