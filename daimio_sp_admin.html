@@ -58,13 +58,16 @@
       
       <div class="col-md-8">
         <div id="room-div" data-daimio-template="show-room-div">
+
           <div style="position:relative">
-            <img id="room" src="{__.urls.control_thumb}" style="max-width:1000px; max-height:1000px">
+            <img id="room" src="{__.urls.control_thumb}">
             {begin divs | merge data __in.exits}
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
               height: {_height | or 100}px; width: {_width | or 100}px; 
               position: absolute; background-color:green; opacity: 0.4">
+              {$game.rooms.{_room}.name}
+
               <div class="sizer" data-value="{_key}" draggable="true" 
               style="position: absolute; bottom: 0%; right: 0%; height: 30px; width: 30px; background-color: blue"></div>
             </div>
@@ -102,6 +105,7 @@
               </form>
             </div>
           </div>
+          
         </section>
     
         
@@ -144,6 +148,7 @@
 
           </form>
         </section>
+      
       </div>
       
     </div>
