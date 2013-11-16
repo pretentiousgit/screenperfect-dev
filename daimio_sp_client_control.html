@@ -47,7 +47,7 @@
         <div class="clickable" data-value="{_room}"
              style="top: {_top | or 0}px; left: {_left | or 0}px; 
                     height: {_height | or 100}px; width: {_width | or 100}px; 
-                    position: absolute; background-color:green; opacity: 0"></div>
+                    position: absolute; background-color:green; opacity: {$game.debug | then 0.4 else 0}"></div>
       {end divs}
     </div>
   </div>
@@ -56,6 +56,7 @@
     outer
       
       $game-id 0
+      $game  {}
       $rooms  {}
       $active-room {}
       $control-mode
@@ -76,7 +77,7 @@
       changed {__}
       changed-id {__}
       store-room-list 
-        {__.rooms | >$rooms | list keys | __.#1 | tap}
+        {__ | >$game | __.rooms | >$rooms | list keys | __.#1 | tap}
       store-active-room 
         {__ | >id | $rooms.{_id} | >$active-room}
 
