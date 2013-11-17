@@ -1,3 +1,6 @@
+body {
+  margin-bottom: 30px;
+}
 .thumbnail.room-label {
   cursor: pointer;
 }
