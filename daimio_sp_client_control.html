@@ -5,6 +5,7 @@
   <title>Screen Perfect Loves You</title>
   <script type="text/javascript" src="/daimio_composite.js"></script>
   <style>
+    body { padding: 0; margin: 0;}
     .hidden {
       display: none !important;
       visibility: hidden;
@@ -17,20 +18,20 @@
     <div id="rooms" data-daimio-template="build-room-display">
       {begin video_template | >$video-template | ""}
         <video id="{_key}" class="fullscreen hidden" style="max-width:1000px; max-height:1000px" loop="true">
-          <source  src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}" type="video/webm">
+          <source  src="{$control-mode | then $game.rooms.{_key}.urls.control else $game.rooms.{_key}.urls.client}" type="video/webm">
           Your browser does not support the video tag.
         </video>
       {end video_template}
     
       {begin image_template | >$image-template | ""}
-        <img src="{$control-mode | then $rooms.{_key}.urls.control else $rooms.{_key}.urls.client}"
+        <img src="{$control-mode | then $game.rooms.{_key}.urls.control else $game.rooms.{_key}.urls.client}"
               id="{_key}" class="fullscreen hidden" width="{$game.width}" height="{$game.height}">
       {end image_template}
     
-      {begin selection | each data $rooms}
+      {begin selection | each data $game.rooms}
         { $control-mode 
-        | then $rooms.{_key}.urls.control 
-          else $rooms.{_key}.urls.client
+        | then $game.rooms.{_key}.urls.control 
+          else $game.rooms.{_key}.urls.client
           with $false
         | string slice start -3 
         | is in (:ebm :m4v :mp4 :mov) 
@@ -43,7 +44,7 @@
   </div> <!-- TODO: examine this totally freaky webkit whitespace issue -->
   
     <div id="divs" data-daimio-template="show-divs">
-      {begin divs | merge data $active-room.exits | if $control-mode then __ else ""}
+      {begin divs | merge data $game.rooms.{$room-id}.exits | if $control-mode then __ else ""}
         <div class="clickable" data-value="{_room}"
              style="top: {_top | or 0}px; left: {_left | or 0}px; 
                     height: {_height | or 100}px; width: {_width | or 100}px; 
@@ -55,10 +56,8 @@
   <script id="control" type="text/daml" class="spaceseeds">
     outer
       
-      $game-id 0
-      $game  {}
-      $rooms  {}
-      $active-room {}
+      $game {}
+      $room-id 0
       $control-mode
       
       // NETWORK
@@ -69,40 +68,36 @@
 
       @init from-js
       @init -> @request-data
-      @init -> {__.game | >$game-id}
       
       @mode from-js
       @mode -> {__ | >$control-mode }
       
-      changed {__}
-      changed-id {__}
-      store-room-list 
-        {__ | >$game | __.rooms | >$rooms | list keys | __.#1 | tap}
-      store-active-room 
-        {__ | >id | $rooms.{_id} | >$active-room}
-
-      @room-play
-      // @receive-data -> {__ | 12341234}
-      // TODO: check out this weird bug i made dude
-      @receive-data -> store-room-list -> changed-id -> store-active-room -> changed
-                                          changed-id -> @room-play
-
       // DISPLAY 
-      build-room-display 
+      change-id 
+        {__ | >$room-id}
+      store-game 
+        {__ | >$game | __.rooms | list keys | __.#1}
+      make-room-packet 
+        { __ | >in | * (:room _in :game $game._id) }
 
+      build-room-display 
       show-divs
       
       @set-divs  dom-set-html divs
       @set-room dom-set-html rooms
-      changed -> show-divs -> @set-divs
-      store-room-list -> build-room-display -> @set-room
+      @room-play
+
+      // @receive-data -> {__ | 12341234}
+      // TODO: check out this weird bug i made dude
+      @receive-data -> store-game -> build-room-display -> @set-room
+                       store-game -> make-room-packet -> @send-active
+
+      @receive-active -> change-id -> show-divs -> @set-divs
+                         change-id -> @room-play
       
       // CLICKS
       @clicky dom-on-click .clickable
-
-      @clicky -> { __ | >in | * (:room _in :game $game-id) } -> @send-active
-      @receive-active -> {__ | tap} -> changed-id
-      
+      @clicky -> make-room-packet
   </script>
 
 
@@ -166,8 +161,35 @@
       // activate control mode
       if(window.location.pathname.replace(/\/$/, '').split('/').slice(-1)[0] == 'control')
         D.send_value_to_js_port(outerseed, 'mode', 'control')
-
     })
+    
+    // touchy feely stuff. http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices
+    function touchHandler(event) {
+      var first = event.changedTouches[0]
+        , ttype = event.type
+        , types = [].concat(ttype == 'touchstart' ? ['mousedown'] : [])
+                    .concat(ttype == 'touchmove'  ? ['mousemove'] : [])
+                    .concat(ttype == 'touchend'   ? ['mouseup', 'click'] : [])
+
+      types.forEach(function(type) {
+        var simulatedEvent = document.createEvent("MouseEvent")
+        simulatedEvent.initMouseEvent( type, true, true, window, 1
+                                     , first.screenX, first.screenY
+                                     , first.clientX, first.clientY
+                                     , false, false, false, false, 0, null)
+      
+        first.target.dispatchEvent(simulatedEvent)
+      })
+      //if(dragging) event.preventDefault()
+    }
+
+    ~function init() {
+      document.addEventListener("touchend", touchHandler, true);
+      document.addEventListener("touchmove", touchHandler, true);
+      document.addEventListener("touchstart", touchHandler, true);
+      document.addEventListener("touchcancel", touchHandler, true);    
+    }()
+    
   </script>
 
 </body>
