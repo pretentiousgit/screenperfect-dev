@@ -123,7 +123,7 @@
               <div id="exit-{_key}" class="hotspot" data-value="{_key}" draggable="true"
               style="top: {_top | or 0}px; left: {_left | or 0}px; 
                     height: {_height | or 100}px; width: {_width | or 100}px; 
-                    position: absolute; background-color:green; opacity: 0.4">
+                    position: absolute; background-color:#00ea89; opacity: 0.4">
               <p style="text-info">{$game.rooms.{_room}.name}</p>
 
               <div class="sizer" data-value="{_key}" draggable="true" style="position: absolute; bottom: 0%; right: 0%; height: 30px; width: 30px; background-color: blue"></div>
@@ -280,7 +280,7 @@
       @out-exit  dom-on-mouseout  .exit-listing
 
       @over-exit -> {* (:id {("exit-" __in) | join} :attr "background-color" :value :yellow)} -> @tweak-style
-      @out-exit  -> {* (:id {("exit-" __in) | join} :attr "background-color" :value :#00ea89)}  -> @tweak-style
+      @out-exit  -> {* (:id {("exit-" __in) | join} :attr "background-color" :value "#00ea89")}  -> @tweak-style
     
       // ADD AN EXIT
       add-an-exit
@@ -346,6 +346,12 @@
 
 
   <script src="/socket.io/socket.io.js"></script>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/public/js/bootstrap.min.js"></script>
+  
+  
   <script type="text/javascript">
 
   D.import_port_flavour('dom-on-dragend', {
@@ -406,20 +412,17 @@
       
     })
     
+    $('.popup').on("click",function (event) {
+      event.preventDefault();
+    
+      var client = $('#client-url').attr('href');
+      var control = $('#control-url').attr('href');
+      window.open(client,"","width={$game.width},height={$game.height}");
+      window.open(control,"","width={$game.width},height={$game.height}");
+    });
+    
   </script>
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="/public/js/bootstrap.min.js"></script>
   
-  <script type="text/javascript">
-  $('.popup').on("click",function (event) {
-    var client = $('#client-url').attr('href');
-    var control = $('#control-url').attr('href');
-    window.open(client,"","width={$game.width},height={$game.height}");
-    window.open(control,"","width={$game.width},height={$game.height}");
-  });
-  </script>
 </div>
 </body>
 </html>
