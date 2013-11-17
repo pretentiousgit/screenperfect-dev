@@ -378,8 +378,39 @@
       var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
       var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
       D.send_value_to_js_port(outerseed, 'init', data)
-      
     })
+    
+    // touchy feely stuff. http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices
+    function touchHandler(event) {
+      var touches = event.changedTouches,
+      first = touches[0],
+      type = "";
+
+      switch(event.type) {
+        case "touchstart": type="mousedown"; break;
+        case "touchmove":  type="mousemove"; break;        
+        case "touchend":   type="mouseup"; break;
+        default: return;
+      }
+      var simulatedEvent = document.createEvent("MouseEvent");
+      simulatedEvent.initMouseEvent(type, true, true, window, 1,
+        first.screenX, first.screenY,
+        first.clientX, first.clientY, false,
+        false, false, false, 0/*left*/, null
+      );
+      
+      first.target.dispatchEvent(simulatedEvent);
+      // if(dragging) event.preventDefault();
+    }
+
+    function init() {
+      document.addEventListener("touchstart", touchHandler, true);
+      document.addEventListener("touchmove", touchHandler, true);
+      document.addEventListener("touchend", touchHandler, true);
+      document.addEventListener("touchcancel", touchHandler, true);    
+    }
+    init();
+    
   </script>
 </div>
 </body>

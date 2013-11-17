@@ -166,8 +166,35 @@
       // activate control mode
       if(window.location.pathname.replace(/\/$/, '').split('/').slice(-1)[0] == 'control')
         D.send_value_to_js_port(outerseed, 'mode', 'control')
-
     })
+    
+    // touchy feely stuff. http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices
+    function touchHandler(event) {
+      var first = event.changedTouches[0]
+        , ttype = event.type
+        , types = [].concat(ttype == 'touchstart' ? ['mousedown'] : [])
+                    .concat(ttype == 'touchmove'  ? ['mousemove'] : [])
+                    .concat(ttype == 'touchend'   ? ['mouseup', 'click'] : [])
+
+      types.forEach(function(type) {
+        var simulatedEvent = document.createEvent("MouseEvent")
+        simulatedEvent.initMouseEvent( type, true, true, window, 1
+                                     , first.screenX, first.screenY
+                                     , first.clientX, first.clientY
+                                     , false, false, false, false, 0, null)
+      
+        first.target.dispatchEvent(simulatedEvent)
+      })
+      //if(dragging) event.preventDefault()
+    }
+
+    ~function init() {
+      document.addEventListener("touchend", touchHandler, true);
+      document.addEventListener("touchmove", touchHandler, true);
+      document.addEventListener("touchstart", touchHandler, true);
+      document.addEventListener("touchcancel", touchHandler, true);    
+    }()
+    
   </script>
 
 </body>
