@@ -30,10 +30,42 @@
     </div>
     <div class="row">
       <div class="col-md-4">
+       
+        
+        <h2>Rooms</h2>
+        
+        <form id="add-room-form" class="form-vertical">
+          <div class="form-group">
+            <input type="text" name="name" id="name" class="form-control" placeholder="Room Name">
+          </div>        
+          <input type="submit" name="submit" value="Add Room" class="btn btn-large btn-default">
+        </form>
+        
+        <hr />
+        
+        <div id="room-list" class="row">
+          <script data-daimio-template="show-all-rooms" type="text/daimio">
+          {begin list | merge data $game.rooms}
+            <div class="col-md-4">              
+              <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
+                <img src="{_urls.control_thumb | else "http://placehold.it/{$game.width | or 640}x{$game.height | or 480}"}" class="media-object img-responsive">
+                <h5>{_name}</h5>
+              </a>
+            </div>
+          {end list}
+          </script>
+        </div>
+        
         <h2>Game</h2>
         
         <form id="game-data" class="form-horizontal">
           <script data-daimio-template="game-data" type="text/daimio">
+          
+          <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+            Game Settings
+          </button>
+
+          <div id="demo" class="collapse">
             <!-- hide this whole thing? -->
             <div class="checkbox">
               <label>
@@ -63,32 +95,11 @@
               <textarea id="rooms" name="rooms" class="form-control">{$game.rooms}</textarea>
               <input type="hidden" name="_id" value="{$game._id}" id="_id">
             </div>
-          </script>
-        </form>
-        
-        <h2>Rooms</h2>
-        
-        <form id="add-room-form" class="form-vertical">
-          <div class="form-group">
-            <input type="text" name="name" id="name" class="form-control" placeholder="Room Name">
-          </div>        
-          <input type="submit" name="submit" value="Add Room" class="btn btn-large btn-default">
-        </form>
-        
-        <hr />
-        
-        <div id="room-list" class="row">
-          <script data-daimio-template="show-all-rooms" type="text/daimio">
-          {begin list | merge data $game.rooms}
-            <div class="col-md-4">              
-              <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
-                <img src="{_urls.control_thumb | else "http://placehold.it/{$game.width | or 640}x{$game.height | or 480}"}" class="media-object img-responsive">
-                <h5>{_name}</h5>
-              </a>
             </div>
-          {end list}
           </script>
-        </div>
+        </form>
+        
+        
       </div>
       <div class="col-md-8">
         <div id="room-div" style="position: relative;">
@@ -107,15 +118,41 @@
               {end divs}
             </div>
 
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs">
-              <li class="{__.urls.control_thumb | then :active}" data-toggle="tab"><a href="#exits" data-toggle="tab">Exits</a></li>
-              <li class="{__.urls.control_thumb | then "" else :active}" data-toggle="tab"><a href="#assets" data-toggle="tab">Assets</a></li>
-            </ul>
+            
              <!-- Tab panes -->
-             <div class="tab-content">
-               <div class="tab-pane {__.urls.control_thumb | then "" else :active}" id="assets">
-                
+            
+            
+            
+             <h3>Exits</h3>
+             <div class="row">      
+               <div class="col-md-6">
+                 <h4>Current Exits</h4>
+                 <ul class="list-group">
+                   {begin exists | each data {__in.exits | list from-json}}
+                     <li class="exit-listing list-group-item" data-value="{_key}">
+                       <img src="{$game.rooms.{_value.room}.urls.control_thumb}" width="40" height="40">
+                       {$game.rooms.{_value.room}.name}
+                       <span class="pull-right"><a href="" class="remove-exit" data-value="{_key}"><span class="glyphicon glyphicon-ban-circle" style="color: red;"></span></a></span>
+                     </li>
+                   {end exists}
+                 </ul>
+               </div>
+               <div class="col-md-6">
+                 <form id="add-exit-form" class="form form-vertical">
+                   <h4>Add an Exit To:</h4>
+                   <div class="form-group">
+                     <select name="exit-id" id="add-an-exit" class="form-control">
+                       {begin rooms | each data $game.rooms}
+                         <option value="{_key}">{_value.name}</option>
+                       {end rooms}
+                     </select>
+                   </div>
+                   <input type="submit" value="Add Exit" class="btn btn-large btn-default">
+                 </form>
+               </div>
+             </div>
+           </div>
+           <hr>
                  <form id="room-form" class="form form-horizontal">
                    <textarea id="exits" name="exits" width="60" height="3" style="display:none;">{__.exits}</textarea>    
                    <h3>Assets</h3>
@@ -145,39 +182,8 @@
                    <input type="hidden" name="index" value="{$selected-room-id}" id="room_index">
                  </form>
                 
-                
-               </div>
-               <div class="tab-pane {__.urls.control_thumb | then :active}" id="exits">        
-                 <h3>Exits</h3>
-                 <div class="row">      
-                   <div class="col-md-6">
-                     <h4>Current Exits</h4>
-                     <ul class="list-group">
-                       {begin exists | each data {__in.exits | list from-json}}
-                         <li class="exit-listing list-group-item" data-value="{_key}">
-                           <img src="{$game.rooms.{_value.room}.urls.control_thumb}" width="40" height="40">
-                           {$game.rooms.{_value.room}.name}
-                           <span class="pull-right"><a href="" class="remove-exit" data-value="{_key}"><span class="glyphicon glyphicon-ban-circle" style="color: red;"></span></a></span>
-                         </li>
-                       {end exists}
-                     </ul>
-                   </div>
-                   <div class="col-md-6">
-                     <form id="add-exit-form" class="form form-vertical">
-                       <h4>Add an Exit To:</h4>
-                       <div class="form-group">
-                         <select name="exit-id" id="add-an-exit" class="form-control">
-                           {begin rooms | each data $game.rooms}
-                             <option value="{_key}">{_value.name}</option>
-                           {end rooms}
-                         </select>
-                       </div>
-                       <input type="submit" value="Add Exit" class="btn btn-large btn-default">
-                     </form>
-                   </div>
-                 </div>
-               </div>
-             </div>
+              
+
           </script>  <!-- end show-room-div template -->      
         </div>
     </div>
@@ -412,6 +418,11 @@
     init();
     
   </script>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/public/js/bootstrap.min.js"></script>
+  
 </div>
 </body>
 </html>
