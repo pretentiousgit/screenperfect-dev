@@ -57,7 +57,7 @@
                {begin list | merge data $game.rooms}
                  <div class="col-md-4">              
                    <a data-value="{_key}" class="thumbnail room-label {_key | is like $selected-room-id | then :selected else ""}">
-                     <img src="{_urls.control_thumb | else "http://placehold.it/{$game.width | or 640}x{$game.height | or 480}"}" class="media-object img-responsive" height="{$game.height}" width="{$game.width}">
+                     <img src="{_urls.control_thumb | else "http://placehold.it/{$game.width | or 640}x{$game.height | or 480}"}" class="media-object img-responsive">
                      <h5>{_name}</h5>
                    </a>
                  </div>
