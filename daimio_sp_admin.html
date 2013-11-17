@@ -359,38 +359,36 @@
   
   <script type="text/javascript">
 
-  D.import_port_flavour('dom-on-dragend', {
-    dir: 'in',
-    outside_add: function() {
-      var self = this
-      var fun = function(value, event) {
-        event.dataTransfer.effectAllowed = "move"
-        event.dataTransfer.dropEffect = 'move'
-        event.value = value
-        self.enter(D.scrub_var(event))
+    D.import_port_flavour('dom-on-dragend', {
+      dir: 'in',
+      outside_add: function() {
+        var self = this
+        var fun = function(value, event) {
+          event.dataTransfer.effectAllowed = "move"
+          event.dataTransfer.dropEffect = 'move'
+          event.value = value
+          self.enter(D.scrub_var(event))
         }
         
         D.track_event('dragend', this.settings.thing, fun)
       }
     })
   
-  D.import_port_flavour('tweak-style', {
-    dir: 'out',
-    outside_exit: function(ship) {
-      try {
-        var el = document.getElementById(ship.id)
-        if(!el) return false
+    D.import_port_flavour('tweak-style', {
+      dir: 'out',
+      outside_exit: function(ship) {
+        try {
+          var el = document.getElementById(ship.id)
+          if(!el) return false
 
-        el.style[ship.attr] = ship.value        
-      } catch(e) {}
-    }
-  })
-  
+          el.style[ship.attr] = ship.value        
+        } catch(e) {}
+      }
+    })
   
     document.addEventListener('DOMContentLoaded', function() {
-      
       D.Etc.socket = io.connect('/')
-      
+    
       var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
         , templates    = template_els.reduce(function(acc, template) {
                            var name = template.attributes.getNamedItem('data-daimio-template').value
@@ -400,16 +398,16 @@
                          }, {})
 
       document.getElementsByTagName('body')[0].style.display = ''
-                       
+                     
       var seedlikes = Array.prototype.slice.call(
                         document.getElementsByClassName('spaceseeds')
                       ).map(function(node) {
                         return node.text
                       }).join("\n")
-      
+    
       var outerseed = D.make_some_space(seedlikes, templates)
       OuterSpace = new D.Space(outerseed) // published for debug
-      
+    
       // activate init port
       var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
       var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
@@ -439,11 +437,14 @@
       // if(dragging) event.preventDefault();
     }
 
+    ~function init() {
       document.addEventListener("touchstart", touchHandler, true);
       document.addEventListener("touchmove", touchHandler, true);
       document.addEventListener("touchend", touchHandler, true);
       document.addEventListener("touchcancel", touchHandler, true);    
+    }()
 
+    $('.popup').on("click",function (event) {
 
     
       $('.popup').on("click",function (event) {
