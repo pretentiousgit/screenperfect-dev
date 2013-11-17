@@ -388,15 +388,6 @@
   
     document.addEventListener('DOMContentLoaded', function() {
       
-      $('.popup').on("click",function (event) {
-        event.preventDefault();    
-        var client = $('#client-url').attr('href');
-        var control = $('#control-url').attr('href');
-        window.open(client,"","width={$game.width},height={$game.height}");
-        window.open(control,"","width={$game.width},height={$game.height}");
-      });
-      
-      
       D.Etc.socket = io.connect('/')
     
       var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
@@ -422,6 +413,16 @@
       var game_id = window.location.pathname.replace(/\/$/, '').split('/')[1]
       var data = {game: game_id} // {game: '5275ec64388d57ccb2f87d0e'}
       D.send_value_to_js_port(outerseed, 'init', data)
+      
+      setTimeout(function() {
+        $('.popup').on("click",function (event) {
+          event.preventDefault();    
+          var client = $('#client-url').attr('href');
+          var control = $('#control-url').attr('href');
+          window.open(client,"","width={$game.width},height={$game.height}");
+          window.open(control,"","width={$game.width},height={$game.height}");
+        })
+      }, 200)
     })
     
     // touchy feely stuff. http://stackoverflow.com/questions/5186441/javascript-drag-and-drop-for-touch-devices
@@ -454,14 +455,6 @@
       document.addEventListener("touchcancel", touchHandler, true);    
     }()
 
-    $('.popup').on("click",function (event) {
-      event.preventDefault();    
-      var client = $('#client-url').attr('href');
-      var control = $('#control-url').attr('href');
-      window.open(client,"","width={$game.width},height={$game.height}");
-      window.open(control,"","width={$game.width},height={$game.height}");
-    });
-    
   </script>
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://code.jquery.com/jquery.js"></script>
