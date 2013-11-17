@@ -387,6 +387,16 @@
     })
   
     document.addEventListener('DOMContentLoaded', function() {
+      
+      $('.popup').on("click",function (event) {
+        event.preventDefault();    
+        var client = $('#client-url').attr('href');
+        var control = $('#control-url').attr('href');
+        window.open(client,"","width={$game.width},height={$game.height}");
+        window.open(control,"","width={$game.width},height={$game.height}");
+      });
+      
+      
       D.Etc.socket = io.connect('/')
     
       var template_els = [].slice.call(document.querySelectorAll('[data-daimio-template]'))
