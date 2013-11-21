@@ -26,6 +26,23 @@ $(function(){
 		    var nextVideoInBranch;
 			console.log('send-video hotspot clicked');
 			
+			// pop up modal to set timing of spot appearance and disappearance
+	    	console.log(event.target);
+	    	var spot = $(event.target);
+			$('#timingDialog').dialog({
+				autoOpen: false,
+			    height: 300,
+			    width: 350,
+			    modal: true,
+			    buttons: [{
+			    	text:"Set",
+			    	click: function(){
+			    		$(spot).attr('start', '')
+			    		$(spot).attr('end', '')
+			    	}
+			    }]
+			})
+
 			// Dialog of available videos
 		    $('#dialog').dialog({
 		        modal: true,
